@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Private Channel Unlock</title>
+  <script src="https://cdn.monetag.com/monetag.js"></script>
+</head>
+<body>
+  <h2>Watch 1 ad to get private channel link</h2>
+
+  <button id="watchAdsBtn">Watch Ad</button>
+
+  <div id="channelLink" style="display:none;">
+    <p>Your private channel link:</p>
+    <a href="https://t.me/YourPrivateChannel" target="_blank">Join Channel</a>
+  </div>
+
+  <script>
+    document.getElementById('watchAdsBtn').addEventListener('click', () => {
+      // Monetag ad placeholder
+      alert('Watch 1 ad here (replace with Monetag JS)');
+
+      // Show channel link
+      document.getElementById('channelLink').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
