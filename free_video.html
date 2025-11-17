@@ -1,23 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Free Video Unlocker</title>
-  <script src="https://cdn.monetag.com/monetag.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free Video Unlock</title>
+
+<!-- Monetag SDK -->
+<script src='//libtl.com/sdk.js' data-zone='10196893' data-sdk='show_10196893'></script>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4b2f9b, #6a00ff);
+        height: 100vh;
+        color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .container {
+        width: 85%;
+        max-width: 380px;
+        background: rgba(255,255,255,0.1);
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    button {
+        background: #ffffff;
+        color: #4b2f9b;
+        font-size: 18px;
+        font-weight: bold;
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+</style>
 </head>
+
 <body>
-  <h2>Watch 2 ads to unlock your free video</h2>
 
-  <button id="watchAdsBtn">Watch Ads</button>
+<div class="container">
+    <h2>Unlock Free Video</h2>
+    <p>Watch <b>2 ads</b> to access your free video.</p>
+    <p id="counter">Ads Watched: 0 / 2</p>
 
-  <script>
-    document.getElementById('watchAdsBtn').addEventListener('click', () => {
-      // Monetag ad placeholder
-      alert('Watch 2 ads here (replace with Monetag JS)');
+    <button onclick="watchAd()">Watch Ad</button>
+</div>
 
-      // Redirect to Daily Content Bot
-      window.location.href = `https://t.me/DailyyContentBot?start=free_video`;
-    });
-  </script>
+<script>
+let adsWatched = 0;
+
+function watchAd() {
+    Monetag.showInterstitial()
+        .then(() => {
+            adsWatched++;
+            document.getElementById("counter").innerText = `Ads Watched: ${adsWatched} / 2`;
+
+            if (adsWatched >= 2) {
+                window.location.href = "YOUR_VIDEO_LINK_HERE";
+            }
+        })
+        .catch(() => {
+            alert("Please watch full ad!");
+        });
+}
+</script>
+
 </body>
 </html>
