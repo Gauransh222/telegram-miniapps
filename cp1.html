@@ -4,8 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CP1 Unlock</title>
+
+<!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- Monetag Rewarded Popup for CP1 -->
 <script src='//libtl.com/sdk.js' data-zone='10196834' data-sdk='show_10196834'></script>
+
 <style>
 body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#5d4fff,#9c4dff);height:100vh;display:flex;justify-content:center;align-items:center;color:#fff}
 .container{width:90%;max-width:400px;background:rgba(255,255,255,0.12);padding:20px;border-radius:18px;backdrop-filter:blur(10px);box-shadow:0 8px 25px rgba(0,0,0,0.2);text-align:center}
@@ -17,15 +22,18 @@ button:hover{background:#dedcff}
 </style>
 </head>
 <body>
+
 <div class="container">
 <h2>🔐 CP1 Unlock</h2>
 <p>Watch <b>3 rewarded ads</b> to unlock your content.</p>
 <button onclick="watchAd()">Watch Ad</button>
 <p id="progress">Ads watched: 0 / 3</p>
 </div>
+
 <script>
 Telegram.WebApp.ready();
 let adsWatched=0;
+
 function watchAd(){
     show_10196834('pop').then(()=>{
         adsWatched++;
@@ -37,5 +45,6 @@ function watchAd(){
     }).catch(e=>{alert("Please watch the full ad to count!")});
 }
 </script>
+
 </body>
 </html>
