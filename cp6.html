@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlock Content</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #5d4fff, #9c4dff);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 20px;
+        border-radius: 18px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+
+    p {
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    .copy-box {
+        background: rgba(255,255,255,0.2);
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 16px;
+        margin-bottom: 15px;
+        word-break: break-all;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 14px;
+        font-size: 18px;
+        cursor: pointer;
+        background: #ffffff;
+        color: #5c4cff;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #dedcff;
+    }
+
+    .small-note {
+        margin-top: 20px;
+        font-size: 12px;
+        opacity: 0.7;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🔓 Unlock the Content</h2>
+    <p>Copy the code below and complete the offer to unlock your content.</p>
+
+    <div id="cpCode" class="copy-box">3114566</div>
+
+    <button onclick="copyCode()">Copy Code</button>
+
+    <p class="small-note">⚡ Complete the verification below to unlock instantly.</p>
+
+    <!-- YOUR MONETAG SMARTLINK SCRIPT GOES HERE -->
+    <!-- Example placeholder: -->
+    <!-- <script src="https://example.monetag.com/script.js"></script> -->
+
+
+    
+    <script src='//libtl.com/sdk.js' data-zone='10196888' data-sdk='show_10196888'></script>
+
+</div>
+
+<script>
+function copyCode() {
+    let code = document.getElementById("cpCode").innerText;
+    navigator.clipboard.writeText(code);
+    alert("Code copied!");
+}
+</script>
+
+</body>
+</html>
