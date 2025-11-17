@@ -3,104 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unlock Content</title>
-
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #5d4fff, #9c4dff);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #fff;
-    }
-
-    .container {
-        width: 90%;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.12);
-        padding: 20px;
-        border-radius: 18px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        text-align: center;
-    }
-
-    h2 {
-        margin-bottom: 10px;
-        font-size: 24px;
-    }
-
-    p {
-        margin-bottom: 20px;
-        font-size: 16px;
-    }
-
-    .copy-box {
-        background: rgba(255,255,255,0.2);
-        padding: 12px;
-        border-radius: 12px;
-        font-size: 16px;
-        margin-bottom: 15px;
-        word-break: break-all;
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        border-radius: 14px;
-        font-size: 18px;
-        cursor: pointer;
-        background: #ffffff;
-        color: #5c4cff;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-    button:hover {
-        background: #dedcff;
-    }
-
-    .small-note {
-        margin-top: 20px;
-        font-size: 12px;
-        opacity: 0.7;
-    }
-</style>
+<title>CP4 Unlock</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src='//libtl.com/sdk.js' data-zone='10196862' data-sdk='show_10196862'></script>
+<style>body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#5d4fff,#9c4dff);height:100vh;display:flex;justify-content:center;align-items:center;color:#fff}.container{width:90%;max-width:400px;background:rgba(255,255,255,0.12);padding:20px;border-radius:18px;backdrop-filter:blur(10px);box-shadow:0 8px 25px rgba(0,0,0,0.2);text-align:center}h2{margin-bottom:10px;font-size:24px}p{margin-bottom:18px;font-size:16px}button{width:100%;padding:14px;border:none;border-radius:14px;font-size:18px;cursor:pointer;background:#fff;color:#5c4cff;font-weight:bold;transition:.3s}button:hover{background:#dedcff}#progress{margin-top:14px;font-size:17px;font-weight:bold}</style>
 </head>
-
 <body>
-
 <div class="container">
-    <h2>🔓 Unlock the Content</h2>
-    <p>Copy the code below and complete the offer to unlock your content.</p>
-
-    <div id="cpCode" class="copy-box">3114564</div>
-
-    <button onclick="copyCode()">Copy Code</button>
-
-    <p class="small-note">⚡ Complete the verification below to unlock instantly.</p>
-
-    <!-- YOUR MONETAG SMARTLINK SCRIPT GOES HERE -->
-    <!-- Example placeholder: -->
-    <!-- <script src="https://example.monetag.com/script.js"></script> -->
-
-
-    <script src='//libtl.com/sdk.js' data-zone='10196862' data-sdk='show_10196862'></script>
-
+<h2>🔐 CP4 Unlock</h2>
+<p>Watch <b>3 rewarded ads</b> to unlock your content.</p>
+<button onclick="watchAd()">Watch Ad</button>
+<p id="progress">Ads watched: 0 / 3</p>
 </div>
-
 <script>
-function copyCode() {
-    let code = document.getElementById("cpCode").innerText;
-    navigator.clipboard.writeText(code);
-    alert("Code copied!");
+Telegram.WebApp.ready();
+let adsWatched=0;
+function watchAd(){
+    show_10196862('pop').then(()=>{
+        adsWatched++;
+        document.getElementById('progress').innerText=`Ads watched: ${adsWatched} / 3`;
+        if(adsWatched>=3){
+            Telegram.WebApp.sendData(JSON.stringify({type:"cp",id:"4"}));
+            Telegram.WebApp.close();
+        }
+    }).catch(e=>{alert("Please watch the full ad to count!")});
 }
 </script>
-
 </body>
 </html>
