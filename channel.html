@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unlock Private Channel</title>
+
+<!-- Monetag SDK -->
+<script src='//libtl.com/sdk.js' data-zone='10196897' data-sdk='show_10196897'></script>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4b2f9b, #6a00ff);
+        height: 100vh;
+        color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .container {
+        width: 85%;
+        max-width: 380px;
+        background: rgba(255,255,255,0.1);
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    button {
+        background: #ffffff;
+        color: #4b2f9b;
+        font-size: 18px;
+        font-weight: bold;
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h2>Unlock Private Channel</h2>
+    <p>You must watch <b>1 ad</b> to unlock the channel link.</p>
+
+    <button onclick="showAd()">Watch Ad & Unlock</button>
+</div>
+
+<script>
+function showAd() {
+    Monetag.showInterstitial()
+        .then(() => {
+            window.location.href = "YOUR_CHANNEL_LINK_HERE";
+        })
+        .catch(() => {
+            alert("Please watch ad fully to unlock!");
+        });
+}
+</script>
+
+</body>
+</html>
