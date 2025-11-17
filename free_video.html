@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,3 +81,87 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Video Unlock</title>
+
+    <!-- Monetag SDK -->
+    
+    <script src='//libtl.com/sdk.js' data-zone='10196893' data-sdk='show_10196893'></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4b2cc2, #7623ff);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+        }
+        button {
+            background: #ffffff;
+            color: #4b2cc2;
+            padding: 14px 22px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        a.link {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🎬 Unlock Free Video</h2>
+
+    <div class="box">
+        <p>Watch <b>2 ads</b> to unlock your free video.</p>
+        <button onclick="watchAd()">Watch Ad</button>
+        <p id="count">Ads watched: 0 / 2</p>
+    </div>
+
+    <div id="unlockBox" class="hidden" style="margin-top:30px;">
+        <h3>🎉 Video Unlocked!</h3>
+        <a class="link" href="https://example.com/yourfreevideo.mp4" target="_blank">Click to Watch Video</a>
+    </div>
+
+    <script>
+        let ads = 0;
+
+        function watchAd() {
+            try {
+                atOptions.show();
+            } catch (e) {}
+
+            ads++;
+            document.getElementById("count").innerText = "Ads watched: " + ads + " / 2";
+
+            if (ads >= 2) {
+                document.getElementById("unlockBox").classList.remove("hidden");
+            }
+        }
+    </script>
+
+</body>
+</html>
+>>>>>>> f711221786228304a8e4cf5b378b15d451a0fde9
