@@ -40,6 +40,7 @@
         font-size: 26px;
         font-weight: bold;
         color: #ffdb75;
+        text-shadow: 0 0 8px #ffd700;
     }
 
     p {
@@ -59,10 +60,12 @@
         color: #4b3200;
         font-weight: bold;
         transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
     }
 
     button:hover {
         background: linear-gradient(135deg, #ffe9ad, #ffd458);
+        box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
     }
 
     #progress {
@@ -77,7 +80,7 @@
 
 <div class="container">
     <h2>✨ CP1 Unlock</h2>
-    <p>Watch <b>3 rewarded video ads</b> to unlock the content.</p>
+    <p>Watch <b>3 rewarded video ads</b> and stay <b>30 seconds</b> for each to unlock the content.</p>
 
     <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
@@ -88,21 +91,40 @@
 Telegram.WebApp.ready();
 
 let adsWatched = 0;
+let adCompleted = false;
+let timerCompleted = false;
 
 function watchAd() {
-    show_10196834().then(() => {
+    // Start 30-sec timer
+    timerCompleted = false;
+    setTimeout(() => {
+        timerCompleted = true;
+        checkReward();
+    }, 30000);
 
+    // Show rewarded interstitial
+    show_10196834().then(() => {
+        adCompleted = true;
+        checkReward();
+    }).catch(err => {
+        alert("⚠ Please watch the full ad to count!");
+    });
+}
+
+function checkReward() {
+    if(adCompleted && timerCompleted) {
         adsWatched++;
         document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
+
+        // Reset flags for next ad
+        adCompleted = false;
+        timerCompleted = false;
 
         if (adsWatched >= 3) {
             Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
             Telegram.WebApp.close();
         }
-
-    }).catch(err => {
-        alert("⚠ Please watch the full ad to count!");
-    });
+    }
 }
 </script>
 
