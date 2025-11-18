@@ -12,52 +12,78 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #4b2f9b, #6a00ff);
+        background: radial-gradient(circle at top, #000000, #0a0a0a, #000000);
         height: 100vh;
-        color: white;
-        text-align: center;
         display: flex;
         justify-content: center;
         align-items: center;
+        color: #ffd369;
+        text-shadow: 0 0 8px rgba(255, 211, 105, 0.7);
     }
+
     .container {
-        width: 85%;
-        max-width: 380px;
-        background: rgba(255,255,255,0.1);
+        width: 90%;
+        max-width: 400px;
         padding: 25px;
-        border-radius: 18px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        background: rgba(20, 20, 20, 0.7);
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(255, 200, 50, 0.35);
+        border: 1px solid rgba(255, 200, 50, 0.4);
+        text-align: center;
+        backdrop-filter: blur(8px);
     }
+
+    h2 {
+        font-size: 26px;
+        margin-bottom: 12px;
+        color: #ffdd70;
+        text-shadow: 0 0 10px rgba(255, 210, 90, 0.8);
+    }
+
+    p {
+        font-size: 17px;
+        margin-bottom: 20px;
+        opacity: 0.9;
+    }
+
     button {
-        background: #ffffff;
-        color: #4b2f9b;
-        font-size: 18px;
-        font-weight: bold;
         width: 100%;
         padding: 15px;
-        border: none;
+        font-size: 18px;
+        font-weight: bold;
         border-radius: 15px;
-        margin-top: 20px;
+        border: none;
+        cursor: pointer;
+        color: #000;
+        background: linear-gradient(135deg, #ffcc55, #ffb300);
+        box-shadow: 0 0 12px rgba(255, 200, 50, 0.7);
+        transition: 0.25s;
+    }
+
+    button:hover {
+        box-shadow: 0 0 20px rgba(255, 200, 50, 0.9);
+        transform: scale(1.03);
     }
 </style>
 </head>
 
 <body>
+
 <div class="container">
-    <h2>Unlock Private Channel</h2>
-    <p>You must watch <b>1 ad</b> to unlock the channel link.</p>
+    <h2>✨ Premium Unlock</h2>
+    <p>Watch <b>1 rewarded ad</b> to unlock your private channel.</p>
 
     <button onclick="showAd()">Watch Ad & Unlock</button>
 </div>
 
 <script>
 function showAd() {
-    Monetag.showInterstitial()
+    show_10196897()
         .then(() => {
-            window.location.href = "YOUR_CHANNEL_LINK_HERE";
+            window.location.href = "YOUR_CHANNEL_LINK_HERE"; // replace this
         })
         .catch(() => {
-            alert("Please watch ad fully to unlock!");
+            alert("Please watch the full ad to unlock!");
         });
 }
 </script>
