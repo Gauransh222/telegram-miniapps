@@ -12,75 +12,75 @@
 <script src='//libtl.com/sdk.js' data-zone='10196834' data-sdk='show_10196834'></script>
 
 <style>
-    body {
-        margin: 0;
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #1a1a1a, #3c3c3c);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #f9d97a;
-    }
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a1a, #3c3c3c);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f9d97a;
+}
 
-    .container {
-        width: 90%;
-        max-width: 420px;
-        background: rgba(255, 225, 130, 0.08);
-        padding: 24px;
-        border-radius: 20px;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        text-align: center;
-        border: 1px solid rgba(255, 215, 100, 0.3);
-    }
+.container {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255, 225, 130, 0.08);
+    padding: 24px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    text-align: center;
+    border: 1px solid rgba(255, 215, 100, 0.3);
+}
 
-    h2 {
-        margin-bottom: 12px;
-        font-size: 26px;
-        font-weight: bold;
-        color: #ffdb75;
-        text-shadow: 0 0 8px #ffd700;
-    }
+h2 {
+    margin-bottom: 12px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffdb75;
+    text-shadow: 0 0 8px #ffd700;
+}
 
-    p {
-        margin-bottom: 20px;
-        font-size: 17px;
-        color: #ffe9ad;
-    }
+p {
+    margin-bottom: 20px;
+    font-size: 17px;
+    color: #ffe9ad;
+}
 
-    button {
-        width: 100%;
-        padding: 15px;
-        border: none;
-        border-radius: 16px;
-        font-size: 19px;
-        cursor: pointer;
-        background: linear-gradient(135deg, #ffda78, #ffbc2c);
-        color: #4b3200;
-        font-weight: bold;
-        transition: 0.3s;
-        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
-    }
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 16px;
+    font-size: 19px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffda78, #ffbc2c);
+    color: #4b3200;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+}
 
-    button:hover {
-        background: linear-gradient(135deg, #ffe9ad, #ffd458);
-        box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
-    }
+button:hover {
+    background: linear-gradient(135deg, #ffe9ad, #ffd458);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
+}
 
-    #progress {
-        margin-top: 16px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #ffebc4;
-    }
+#progress {
+    margin-top: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffebc4;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
     <h2>✨ CP1 Unlock</h2>
-    <p>Watch <b>3 rewarded video ads</b> and stay <b>30 seconds</b> for each to unlock the content.</p>
+    <p>Watch <b>3 rewarded video ads</b> and stay <b>10 seconds</b> for each to unlock the content.</p>
 
     <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
@@ -95,12 +95,14 @@ let adCompleted = false;
 let timerCompleted = false;
 
 function watchAd() {
-    // Start 30-sec timer
+    adCompleted = false;
     timerCompleted = false;
+
+    // Start 10-second timer
     setTimeout(() => {
         timerCompleted = true;
         checkReward();
-    }, 30000);
+    }, 10000);
 
     // Show rewarded interstitial
     show_10196834().then(() => {
@@ -112,7 +114,8 @@ function watchAd() {
 }
 
 function checkReward() {
-    if(adCompleted && timerCompleted) {
+    // Only count if both ad and timer are completed
+    if (adCompleted && timerCompleted) {
         adsWatched++;
         document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
 
