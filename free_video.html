@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Video Unlock</title>
 
-    <!-- Monetag SDK -->
-    
+    <!-- Monetag Interstitial SDK -->
     <script src='//libtl.com/sdk.js' data-zone='10196893' data-sdk='show_10196893'></script>
 
     <style>
@@ -20,9 +19,10 @@
         }
         .box {
             background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 16px;
+            padding: 22px;
+            border-radius: 18px;
             backdrop-filter: blur(8px);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.25);
         }
         button {
             background: #ffffff;
@@ -51,7 +51,7 @@
     <h2>🎬 Unlock Free Video</h2>
 
     <div class="box">
-        <p>Watch <b>2 ads</b> to unlock your free video.</p>
+        <p>Watch <b>2 video ads</b> to unlock your free video.</p>
         <button onclick="watchAd()">Watch Ad</button>
         <p id="count">Ads watched: 0 / 2</p>
     </div>
@@ -61,22 +61,26 @@
         <a class="link" href="https://example.com/yourfreevideo.mp4" target="_blank">Click to Watch Video</a>
     </div>
 
-    <script>
-        let ads = 0;
+<script>
+let adsWatched = 0;
+const requiredAds = 2;
 
-        function watchAd() {
-            try {
-                atOptions.show();
-            } catch (e) {}
+function watchAd() {
+    show_10196893()
+        .then(() => {
+            adsWatched++;
+            document.getElementById("count").innerText =
+                `Ads watched: ${adsWatched} / ${requiredAds}`;
 
-            ads++;
-            document.getElementById("count").innerText = "Ads watched: " + ads + " / 2";
-
-            if (ads >= 2) {
+            if (adsWatched >= requiredAds) {
                 document.getElementById("unlockBox").classList.remove("hidden");
             }
-        }
-    </script>
+        })
+        .catch(() => {
+            alert("Ad failed to load. Please try again.");
+        });
+}
+</script>
 
 </body>
 </html>
