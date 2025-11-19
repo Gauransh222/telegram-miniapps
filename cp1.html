@@ -91,42 +91,38 @@ button:hover {
 Telegram.WebApp.ready();
 
 let adsWatched = 0;
-let adActive = false; // Flag to track if ad is still open
+let adActive = false;  // Tracks if ad is still active
 let adTimer;
 
 function watchAd() {
+    // Reset ad state
     adActive = true;
 
-    // Start the 10-second timer
+    // Start 10-second timer AFTER ad starts
     adTimer = setTimeout(() => {
         if (adActive) {
-            incrementAds();
+            // Timer finished while ad is still active
+            incrementAd();
         }
     }, 10000);
 
     // Show rewarded interstitial
-    show_10196834().then(() => {
-        // Ad closed naturally
-        if (adActive) {
-            // If 10 sec already passed, increment already done
-            // Otherwise, do nothing, wait for timer
-            adActive = false;
-        }
+    show_10196834('pop').then(() => {
+        // Ad finished successfully
+        adActive = false;
+        clearTimeout(adTimer); // Stop the timer if ad finished naturally before 10 sec
+        incrementAd();
     }).catch(err => {
-        // User closed ad early or error
+        // Ad closed early
         adActive = false;
         clearTimeout(adTimer);
-        alert("⚠ Ad was not completed. Watch full ad to count.");
+        alert("⚠ Ad was not completed. Watch full ad for reward!");
     });
 }
 
-function incrementAds() {
+function incrementAd() {
     adsWatched++;
     document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
-
-    // Reset flags for next ad
-    adActive = false;
-    clearTimeout(adTimer);
 
     if (adsWatched >= 3) {
         Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
