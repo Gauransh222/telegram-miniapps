@@ -5,80 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CP2 Unlock</title>
 
-<!-- Telegram SDK -->
+<!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <!-- Monetag Rewarded Interstitial for CP2 -->
 <script src='//libtl.com/sdk.js' data-zone='10196854' data-sdk='show_10196854'></script>
 
 <style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #0a0a0a, #1b1b1b);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #ffd700;
-    }
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a1a, #3c3c3c);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f9d97a;
+}
 
-    .container {
-        width: 90%;
-        max-width: 400px;
-        background: rgba(255, 215, 0, 0.08);
-        padding: 24px;
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 215, 0, 0.25);
-        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.35);
-        text-align: center;
-    }
+.container {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255, 225, 130, 0.08);
+    padding: 24px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    text-align: center;
+    border: 1px solid rgba(255, 215, 100, 0.3);
+}
 
-    h2 {
-        margin-bottom: 12px;
-        font-size: 26px;
-        font-weight: bold;
-    }
+h2 {
+    margin-bottom: 12px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffdb75;
+    text-shadow: 0 0 8px #ffd700;
+}
 
-    p {
-        margin-bottom: 20px;
-        font-size: 17px;
-        color: #ffffff;
-    }
+p {
+    margin-bottom: 20px;
+    font-size: 17px;
+    color: #ffe9ad;
+}
 
-    button {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        border-radius: 14px;
-        font-size: 18px;
-        cursor: pointer;
-        background: #ffd700;
-        color: #000;
-        font-weight: bold;
-        transition: 0.3s;
-    }
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 16px;
+    font-size: 19px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffda78, #ffbc2c);
+    color: #4b3200;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+}
 
-    button:hover {
-        background: #e6c200;
-    }
+button:hover {
+    background: linear-gradient(135deg, #ffe9ad, #ffd458);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
+}
 
-    #progress {
-        margin-top: 15px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #ffd700;
-    }
+#progress {
+    margin-top: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffebc4;
+}
 </style>
 </head>
-
 <body>
+
 <div class="container">
     <h2>✨ CP2 Premium Unlock</h2>
-    <p>Watch <b>3 full video ads</b> to unlock your content.</p>
+    <p>Watch <b>3 rewarded video ads</b> and stay <b>10 seconds</b> for each to unlock the content.</p>
 
-    <button onclick="watchAd()">Watch Rewarded Ad</button>
+    <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
     <p id="progress">Ads watched: 0 / 3</p>
 </div>
@@ -87,26 +91,44 @@
 Telegram.WebApp.ready();
 
 let adsWatched = 0;
+let adCompleted = false;
+let timerCompleted = false;
 
 function watchAd() {
-    // Correct rewarded interstitial video format
+    adCompleted = false;
+    timerCompleted = false;
+
+    // Start 10-second timer
+    const timer = setTimeout(() => {
+        timerCompleted = true;
+        checkReward();
+    }, 10000);
+
+    // Show rewarded interstitial
     show_10196854().then(() => {
-
-        adsWatched++;
-        document.getElementById("progress").innerText =
-            `Ads watched: ${adsWatched} / 3`;
-
-        if (adsWatched >= 3) {
-            Telegram.WebApp.sendData(JSON.stringify({
-                type: "cp",
-                id: "2"
-            }));
-            Telegram.WebApp.close();
-        }
-
-    }).catch(() => {
+        adCompleted = true;
+        checkReward();
+    }).catch(err => {
+        clearTimeout(timer); // stop timer if ad fails or closed
         alert("⚠️ Please watch the full video ad to count.");
     });
+}
+
+function checkReward() {
+    // Only count if both ad and timer are completed
+    if (adCompleted && timerCompleted) {
+        adsWatched++;
+        document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
+
+        // Reset flags for next ad
+        adCompleted = false;
+        timerCompleted = false;
+
+        if (adsWatched >= 3) {
+            Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "2" }));
+            Telegram.WebApp.close();
+        }
+    }
 }
 </script>
 
