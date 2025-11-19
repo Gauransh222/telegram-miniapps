@@ -12,37 +12,38 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #000000, #0a0a0a, #000000);
+    background: radial-gradient(circle at top, #0a0a0a, #1a1a1a, #0a0a0a);
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #f9d97a;
+    color: #ffd369;
+    text-shadow: 0 0 8px rgba(255, 211, 105, 0.7);
 }
 
 .container {
     width: 90%;
-    max-width: 420px;
+    max-width: 400px;
     padding: 25px;
-    background: rgba(30, 30, 30, 0.7);
+    background: rgba(20, 20, 20, 0.8);
     border-radius: 20px;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.35);
-    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 30px rgba(255, 200, 50, 0.35);
+    border: 1px solid rgba(255, 200, 50, 0.4);
     text-align: center;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
 }
 
 h2 {
     font-size: 26px;
     margin-bottom: 12px;
-    color: #ffd700;
-    text-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+    color: #ffdd70;
+    text-shadow: 0 0 10px rgba(255, 210, 90, 0.8);
 }
 
 p {
     font-size: 17px;
     margin-bottom: 20px;
-    color: #ffe9ad;
+    opacity: 0.9;
 }
 
 button {
@@ -50,58 +51,98 @@ button {
     padding: 15px;
     font-size: 18px;
     font-weight: bold;
-    border-radius: 16px;
+    border-radius: 15px;
     border: none;
     cursor: pointer;
-    color: #4b3200;
-    background: linear-gradient(135deg, #ffda78, #ffbc2c);
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
-    transition: 0.3s;
+    color: #000;
+    background: linear-gradient(135deg, #ffcc55, #ffb300);
+    box-shadow: 0 0 12px rgba(255, 200, 50, 0.7);
+    transition: 0.25s;
+    margin-bottom: 12px;
 }
 
 button:hover {
-    background: linear-gradient(135deg, #ffe9ad, #ffd458);
-    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
+    box-shadow: 0 0 20px rgba(255, 200, 50, 0.9);
     transform: scale(1.03);
+}
+
+#channelLinkBtn {
+    display: none;
+    background: linear-gradient(135deg, #ffd700, #ffc107);
+}
+
+#timerText {
+    display: none;
+    margin-top: 10px;
+    color: #ffdd70;
+    font-size: 16px;
+    text-shadow: 0 0 8px rgba(255, 210, 90, 0.8);
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-    <h2>✨ Premium Unlock</h2>
-    <p>Watch <b>1 rewarded ad</b> to unlock your private channel.</p>
+    <h2>✨ Premium Channel Unlock</h2>
+    <p>Watch <b>1 rewarded ad</b> to unlock your channel link.</p>
 
-    <button onclick="showAd()">🎥 Watch Ad & Unlock</button>
+    <button id="watchAdBtn" onclick="watchAd()">🎥 Watch Ad</button>
+
+    <p id="timerText">⏳ Please wait 10 seconds...</p>
+
+    <button id="channelLinkBtn" onclick="goToChannel()">🔗 Get Channel Link</button>
 </div>
 
 <script>
-function showAd() {
-    let adCompleted = false;
-    let timerCompleted = false;
+let adCompleted = false;
+let timerPassed = false;
 
-    // 10-second timer to prevent early reward
-    const timer = setTimeout(() => {
-        timerCompleted = true;
-        checkReward();
-    }, 10000);
-
+function watchAd() {
     show_10196897()
         .then(() => {
             adCompleted = true;
-            checkReward();
+            startTimer();
         })
         .catch(() => {
-            clearTimeout(timer); // stop timer if ad closed early
-            alert("⚠️ Please watch the full ad to unlock!");
+            alert("⚠ Please watch the full ad to unlock!");
         });
+}
 
-    function checkReward() {
-        if (adCompleted && timerCompleted) {
-            window.location.href = "YOUR_CHANNEL_LINK_HERE"; // replace with your channel
+function startTimer() {
+    document.getElementById("timerText").style.display = "block";
+    document.getElementById("watchAdBtn").style.display = "none";
+
+    let timeLeft = 10;
+
+    let countdown = setInterval(() => {
+        document.getElementById("timerText").innerText =
+            `⏳ Please wait ${timeLeft} seconds...`;
+
+        timeLeft--;
+
+        if (timeLeft < 0) {
+            clearInterval(countdown);
+            timerPassed = true;
+            unlockButton();
         }
+    }, 1000);
+}
+
+function unlockButton() {
+    if (adCompleted && timerPassed) {
+        document.getElementById("timerText").innerText = "✅ You can now get the channel link!";
+        document.getElementById("channelLinkBtn").style.display = "block";
+    }
+}
+
+function goToChannel() {
+    if (adCompleted && timerPassed) {
+        window.location.href = "https://t.me/YOUR_CHANNEL_LINK_HERE";
+    } else {
+        alert("⚠ You must watch the ad and wait 10 seconds!");
     }
 }
 </script>
+
 </body>
 </html>
