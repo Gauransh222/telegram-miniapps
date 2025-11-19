@@ -9,84 +9,99 @@
 <script src='//libtl.com/sdk.js' data-zone='10196897' data-sdk='show_10196897'></script>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: radial-gradient(circle at top, #000000, #0a0a0a, #000000);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #ffd369;
-        text-shadow: 0 0 8px rgba(255, 211, 105, 0.7);
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #000000, #0a0a0a, #000000);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f9d97a;
+}
 
-    .container {
-        width: 90%;
-        max-width: 400px;
-        padding: 25px;
-        background: rgba(20, 20, 20, 0.7);
-        border-radius: 20px;
-        box-shadow: 0 0 30px rgba(255, 200, 50, 0.35);
-        border: 1px solid rgba(255, 200, 50, 0.4);
-        text-align: center;
-        backdrop-filter: blur(8px);
-    }
+.container {
+    width: 90%;
+    max-width: 420px;
+    padding: 25px;
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.35);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
 
-    h2 {
-        font-size: 26px;
-        margin-bottom: 12px;
-        color: #ffdd70;
-        text-shadow: 0 0 10px rgba(255, 210, 90, 0.8);
-    }
+h2 {
+    font-size: 26px;
+    margin-bottom: 12px;
+    color: #ffd700;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+}
 
-    p {
-        font-size: 17px;
-        margin-bottom: 20px;
-        opacity: 0.9;
-    }
+p {
+    font-size: 17px;
+    margin-bottom: 20px;
+    color: #ffe9ad;
+}
 
-    button {
-        width: 100%;
-        padding: 15px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 15px;
-        border: none;
-        cursor: pointer;
-        color: #000;
-        background: linear-gradient(135deg, #ffcc55, #ffb300);
-        box-shadow: 0 0 12px rgba(255, 200, 50, 0.7);
-        transition: 0.25s;
-    }
+button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    color: #4b3200;
+    background: linear-gradient(135deg, #ffda78, #ffbc2c);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+    transition: 0.3s;
+}
 
-    button:hover {
-        box-shadow: 0 0 20px rgba(255, 200, 50, 0.9);
-        transform: scale(1.03);
-    }
+button:hover {
+    background: linear-gradient(135deg, #ffe9ad, #ffd458);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
+    transform: scale(1.03);
+}
 </style>
 </head>
 
 <body>
-
 <div class="container">
     <h2>✨ Premium Unlock</h2>
     <p>Watch <b>1 rewarded ad</b> to unlock your private channel.</p>
 
-    <button onclick="showAd()">Watch Ad & Unlock</button>
+    <button onclick="showAd()">🎥 Watch Ad & Unlock</button>
 </div>
 
 <script>
 function showAd() {
+    let adCompleted = false;
+    let timerCompleted = false;
+
+    // 10-second timer to prevent early reward
+    const timer = setTimeout(() => {
+        timerCompleted = true;
+        checkReward();
+    }, 10000);
+
     show_10196897()
         .then(() => {
-            window.location.href = "YOUR_CHANNEL_LINK_HERE"; // replace this
+            adCompleted = true;
+            checkReward();
         })
         .catch(() => {
-            alert("Please watch the full ad to unlock!");
+            clearTimeout(timer); // stop timer if ad closed early
+            alert("⚠️ Please watch the full ad to unlock!");
         });
+
+    function checkReward() {
+        if (adCompleted && timerCompleted) {
+            window.location.href = "YOUR_CHANNEL_LINK_HERE"; // replace with your channel
+        }
+    }
 }
 </script>
-
 </body>
 </html>
