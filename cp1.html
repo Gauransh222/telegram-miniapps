@@ -15,7 +15,7 @@
 body {
     margin: 0;
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a, #3c3c3c);
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -26,21 +26,21 @@ body {
 .container {
     width: 90%;
     max-width: 420px;
-    background: rgba(255, 225, 130, 0.08);
+    background: rgba(255, 215, 0, 0.08);
     padding: 24px;
     border-radius: 20px;
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     text-align: center;
-    border: 1px solid rgba(255, 215, 100, 0.3);
+    border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 h2 {
     margin-bottom: 12px;
     font-size: 26px;
     font-weight: bold;
-    color: #ffdb75;
-    text-shadow: 0 0 8px #ffd700;
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffcc00;
 }
 
 p {
@@ -56,15 +56,15 @@ button {
     border-radius: 16px;
     font-size: 19px;
     cursor: pointer;
-    background: linear-gradient(135deg, #ffda78, #ffbc2c);
-    color: #4b3200;
+    background: linear-gradient(135deg, #ffd700, #ffb700);
+    color: #1a1a1a;
     font-weight: bold;
     transition: 0.3s;
     box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
 }
 
 button:hover {
-    background: linear-gradient(135deg, #ffe9ad, #ffd458);
+    background: linear-gradient(135deg, #ffe94d, #ffc733);
     box-shadow: 0 6px 16px rgba(255, 215, 0, 0.7);
 }
 
@@ -91,42 +91,47 @@ button:hover {
 Telegram.WebApp.ready();
 
 let adsWatched = 0;
-let adCompleted = false;
-let timerCompleted = false;
+let adActive = false;     // Is ad currently active?
+let timer;                // Reference to the 10-second timer
 
 function watchAd() {
-    adCompleted = false;
-    timerCompleted = false;
+    if (adsWatched >= 3) return;
+
+    adActive = true;
 
     // Start 10-second timer
-    setTimeout(() => {
-        timerCompleted = true;
-        checkReward();
+    timer = setTimeout(() => {
+        if (adActive) {
+            countAd();
+        }
     }, 10000);
 
     // Show rewarded interstitial
     show_10196834().then(() => {
-        adCompleted = true;
-        checkReward();
-    }).catch(err => {
-        alert("⚠ Please watch the full ad to count!");
+        // Ad successfully viewed, check if timer finished
+        if (adActive) {
+            countAd();
+        }
+    }).catch(() => {
+        // User closed ad early
+        adActive = false;
+        clearTimeout(timer);
+        alert("⚠ You must watch the ad at least 10 seconds to count!");
     });
 }
 
-function checkReward() {
-    // Only count if both ad and timer are completed
-    if (adCompleted && timerCompleted) {
-        adsWatched++;
-        document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
+function countAd() {
+    // Only count once per ad
+    if (!adActive) return;
+    adActive = false;
+    clearTimeout(timer);
 
-        // Reset flags for next ad
-        adCompleted = false;
-        timerCompleted = false;
+    adsWatched++;
+    document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
 
-        if (adsWatched >= 3) {
-            Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
-            Telegram.WebApp.close();
-        }
+    if (adsWatched >= 3) {
+        Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
+        Telegram.WebApp.close();
     }
 }
 </script>
