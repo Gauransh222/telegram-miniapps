@@ -1,84 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Video Unlock</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Video Reward</title>
 
-    <!-- Monetag Interstitial SDK -->
-    <script src='//libtl.com/sdk.js' data-zone='10196893' data-sdk='show_10196893'></script>
+<!-- Monetag Rewarded -->
+<script src='//libtl.com/sdk.js' data-zone='10196897' data-sdk='show_10196897'></script>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #4b2cc2, #7623ff);
-            color: white;
-            text-align: center;
-            padding: 30px;
-        }
-        .box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 22px;
-            border-radius: 18px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 18px rgba(0,0,0,0.25);
-        }
-        button {
-            background: #ffffff;
-            color: #4b2cc2;
-            padding: 14px 22px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        .hidden {
-            display: none;
-        }
-        a.link {
-            font-size: 20px;
-            font-weight: bold;
-            color: #fff;
-            text-decoration: underline;
-        }
-    </style>
+<style>
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+    50% { box-shadow: 0 0 25px rgba(255,215,0,0.7); }
+    100% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+}
+
+@keyframes textGlow {
+    0% { text-shadow: 0 0 6px rgba(255,215,0,0.5); }
+    50% { text-shadow: 0 0 14px rgba(255,215,0,0.9); }
+    100% { text-shadow: 0 0 6px rgba(255,215,0,0.5); }
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #000, #111, #000);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffd369;
+    animation: textGlow 3s ease-in-out infinite;
+}
+
+.container {
+    width: 90%;
+    max-width: 400px;
+    background: rgba(255, 215, 0, 0.08);
+    padding: 22px;
+    border-radius: 18px;
+    text-align: center;
+    border: 1px solid rgba(255,215,0,0.35);
+    animation: glowPulse 3s infinite ease-in-out;
+    backdrop-filter: blur(10px);
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ffd700, #ffb300);
+    color: #000;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 14px rgba(255,215,0,0.6);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 22px rgba(255,215,0,1);
+}
+
+#botLinkBtn {
+    margin-top: 20px;
+    display: none;
+    background: linear-gradient(135deg, #13ff9c, #00e676);
+    box-shadow: 0 0 15px rgba(0,255,150,0.8);
+}
+
+#botLinkBtn:hover {
+    box-shadow: 0 0 25px rgba(0,255,150,1);
+    transform: scale(1.06);
+}
+
+#progress {
+    margin-top: 16px;
+    font-size: 19px;
+    font-weight: bold;
+    animation: textGlow 2.5s infinite;
+}
+</style>
 </head>
+
 <body>
 
-    <h2>🎬 Unlock Free Video</h2>
+<div class="container">
+    <h2 style="text-shadow:0 0 12px #ffd700;">🎬 Free Video Reward</h2>
+    <p>Watch <b>2 rewarded ads</b> and wait <b>10 seconds</b> to unlock your bot link.</p>
 
-    <div class="box">
-        <p>Watch <b>2 video ads</b> to unlock your free video.</p>
-        <button onclick="watchAd()">Watch Ad</button>
-        <p id="count">Ads watched: 0 / 2</p>
-    </div>
+    <button onclick="watchAd()">Watch Ad</button>
 
-    <div id="unlockBox" class="hidden" style="margin-top:30px;">
-        <h3>🎉 Video Unlocked!</h3>
-        <a class="link" href="https://example.com/yourfreevideo.mp4" target="_blank">Click to Watch Video</a>
-    </div>
+    <p id="progress">Ads watched: 0 / 2</p>
+
+    <button id="botLinkBtn" onclick="openBot()">Get Bot Link</button>
+</div>
 
 <script>
 let adsWatched = 0;
-const requiredAds = 2;
+let adCompleted = false;
+let timerCompleted = false;
+let adTimer = null;
 
 function watchAd() {
-    show_10196893()
-        .then(() => {
-            adsWatched++;
-            document.getElementById("count").innerText =
-                `Ads watched: ${adsWatched} / ${requiredAds}`;
+    adCompleted = false;
+    timerCompleted = false;
 
-            if (adsWatched >= requiredAds) {
-                document.getElementById("unlockBox").classList.remove("hidden");
-            }
-        })
-        .catch(() => {
-            alert("Ad failed to load. Please try again.");
-        });
+    adTimer = setTimeout(() => {
+        timerCompleted = true;
+        checkReward();
+    }, 10000);
+
+    show_10196897().then(() => {
+        adCompleted = true;
+        checkReward();
+    })
+    .catch(() => {
+        alert("⚠ Please watch the full ad!");
+        clearTimeout(adTimer);
+    });
+}
+
+function checkReward() {
+    if (adCompleted && timerCompleted) {
+        adsWatched++;
+        document.getElementById("progress").innerText =
+            `Ads watched: ${adsWatched} / 2`;
+
+        if (adsWatched >= 2) {
+            document.getElementById("botLinkBtn").style.display = "block";
+        }
+    }
+}
+
+function openBot() {
+    window.location.href = "YOUR_BOT_LINK_HERE"; 
 }
 </script>
 
