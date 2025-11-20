@@ -75,7 +75,7 @@ button:hover {
     color: #ffebc4;
 }
 
-/* NEW: glow button for unlock */
+/* Unlock button glowing */
 #unlockBtn {
     display: none;
     margin-top: 18px;
@@ -106,7 +106,7 @@ button:hover {
 
     <p id="progress">Ads watched: 0 / 3</p>
 
-    <!-- NEW Unlock Button -->
+    <!-- Unlock Button -->
     <button id="unlockBtn" onclick="unlockCP1()">🚀 Get CP1 Access</button>
 </div>
 
@@ -120,14 +120,15 @@ let adTimer;
 function watchAd() {
     adActive = true;
 
-    // Start 10-second requirement timer
+    // 10-second timer requirement
     adTimer = setTimeout(() => {
         if (adActive) {
             incrementAd();
         }
     }, 10000);
 
-    show_10196834('pop')
+    // CORRECT : Rewarded Interstitial
+    show_10196834()
         .then(() => {
             adActive = false;
             clearTimeout(adTimer);
@@ -136,15 +137,15 @@ function watchAd() {
         .catch(() => {
             adActive = false;
             clearTimeout(adTimer);
-            alert("⚠ Ad not completed. Watch fully to earn progress!");
+            alert("⚠ Please watch the full ad to count!");
         });
 }
 
 function incrementAd() {
     adsWatched++;
-    document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
+    document.getElementById("progress").innerText =
+        `Ads watched: ${adsWatched} / 3`;
 
-    // Show unlock button after 3 ads
     if (adsWatched >= 3) {
         document.getElementById("unlockBtn").style.display = "block";
     }
