@@ -74,17 +74,33 @@ button:hover {
     font-weight: bold;
     color: #ffebc4;
 }
+
+/* Glowing Unlock Button */
+#unlockBtn {
+    margin-top: 22px;
+    display: none;
+    background: linear-gradient(135deg, #ffe38a, #ffbf3c);
+    color: #000;
+    animation: glowPulse 1.6s infinite alternate;
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 8px gold; }
+    100% { box-shadow: 0 0 18px gold; }
+}
 </style>
 </head>
 <body>
 
 <div class="container">
     <h2>✨ CP2 Premium Unlock</h2>
-    <p>Watch <b>3 rewarded video ads</b> and stay <b>10 seconds</b> for each to unlock the content.</p>
+    <p>Watch <b>3 rewarded video ads</b> and stay <b>10 seconds</b> for each to unlock the bot link.</p>
 
     <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
     <p id="progress">Ads watched: 0 / 3</p>
+
+    <button id="unlockBtn" onclick="goBot()">🚀 Open Bot</button>
 </div>
 
 <script>
@@ -98,37 +114,37 @@ function watchAd() {
     adCompleted = false;
     timerCompleted = false;
 
-    // Start 10-second timer
     const timer = setTimeout(() => {
         timerCompleted = true;
         checkReward();
     }, 10000);
 
-    // Show rewarded interstitial
     show_10196854().then(() => {
         adCompleted = true;
         checkReward();
     }).catch(err => {
-        clearTimeout(timer); // stop timer if ad fails or closed
+        clearTimeout(timer);
         alert("⚠️ Please watch the full video ad to count.");
     });
 }
 
 function checkReward() {
-    // Only count if both ad and timer are completed
     if (adCompleted && timerCompleted) {
         adsWatched++;
-        document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
+        document.getElementById("progress").innerText =
+            `Ads watched: ${adsWatched} / 3`;
 
-        // Reset flags for next ad
         adCompleted = false;
         timerCompleted = false;
 
         if (adsWatched >= 3) {
-            Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "2" }));
-            Telegram.WebApp.close();
+            document.getElementById("unlockBtn").style.display = "block";
         }
     }
+}
+
+function goBot() {
+    window.location.href = "https://t.me/YOUR_BOT_HERE";
 }
 </script>
 
