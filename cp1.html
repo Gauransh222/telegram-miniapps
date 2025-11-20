@@ -74,6 +74,26 @@ button:hover {
     font-weight: bold;
     color: #ffebc4;
 }
+
+/* NEW: glow button for unlock */
+#unlockBtn {
+    display: none;
+    margin-top: 18px;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 16px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #fff4c2, #ffd700);
+    color: #5a4300;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(255, 225, 100, 0.9);
+    animation: glow 1.4s infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 10px #ffd700; }
+    to { box-shadow: 0 0 25px #ffef9d; }
+}
 </style>
 </head>
 <body>
@@ -85,49 +105,54 @@ button:hover {
     <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
     <p id="progress">Ads watched: 0 / 3</p>
+
+    <!-- NEW Unlock Button -->
+    <button id="unlockBtn" onclick="unlockCP1()">🚀 Get CP1 Access</button>
 </div>
 
 <script>
 Telegram.WebApp.ready();
 
 let adsWatched = 0;
-let adActive = false;  // Tracks if ad is still active
+let adActive = false;
 let adTimer;
 
 function watchAd() {
-    // Reset ad state
     adActive = true;
 
-    // Start 10-second timer AFTER ad starts
+    // Start 10-second requirement timer
     adTimer = setTimeout(() => {
         if (adActive) {
-            // Timer finished while ad is still active
             incrementAd();
         }
     }, 10000);
 
-    // Show rewarded interstitial
-    show_10196834('pop').then(() => {
-        // Ad finished successfully
-        adActive = false;
-        clearTimeout(adTimer); // Stop the timer if ad finished naturally before 10 sec
-        incrementAd();
-    }).catch(err => {
-        // Ad closed early
-        adActive = false;
-        clearTimeout(adTimer);
-        alert("⚠ Ad was not completed. Watch full ad for reward!");
-    });
+    show_10196834('pop')
+        .then(() => {
+            adActive = false;
+            clearTimeout(adTimer);
+            incrementAd();
+        })
+        .catch(() => {
+            adActive = false;
+            clearTimeout(adTimer);
+            alert("⚠ Ad not completed. Watch fully to earn progress!");
+        });
 }
 
 function incrementAd() {
     adsWatched++;
     document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
 
+    // Show unlock button after 3 ads
     if (adsWatched >= 3) {
-        Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
-        Telegram.WebApp.close();
+        document.getElementById("unlockBtn").style.display = "block";
     }
+}
+
+function unlockCP1() {
+    Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
+    Telegram.WebApp.close();
 }
 </script>
 
