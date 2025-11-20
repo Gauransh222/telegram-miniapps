@@ -8,7 +8,7 @@
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- Monetag Rewarded Interstitial -->
+<!-- Monetag Rewarded Interstitial CP1 -->
 <script src='//libtl.com/sdk.js' data-zone='10196834' data-sdk='show_10196834'></script>
 
 <style>
@@ -75,24 +75,11 @@ button:hover {
     color: #ffebc4;
 }
 
-/* Unlock button glowing */
 #unlockBtn {
+    margin-top: 22px;
     display: none;
-    margin-top: 18px;
-    padding: 15px;
-    font-size: 20px;
-    border-radius: 16px;
-    font-weight: bold;
-    background: linear-gradient(135deg, #fff4c2, #ffd700);
-    color: #5a4300;
-    cursor: pointer;
-    box-shadow: 0 0 18px rgba(255, 225, 100, 0.9);
-    animation: glow 1.4s infinite alternate;
-}
-
-@keyframes glow {
-    from { box-shadow: 0 0 10px #ffd700; }
-    to { box-shadow: 0 0 25px #ffef9d; }
+    background: linear-gradient(135deg, #ffe38a, #ffbf3c);
+    color: #000;
 }
 </style>
 </head>
@@ -100,60 +87,61 @@ button:hover {
 
 <div class="container">
     <h2>✨ CP1 Unlock</h2>
-    <p>Watch <b>3 rewarded video ads</b> and stay <b>10 seconds</b> for each to unlock the content.</p>
+    <p>Watch <b>3 rewarded ads</b> and stay <b>10 seconds</b> in each to unlock your bot link.</p>
 
     <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
     <p id="progress">Ads watched: 0 / 3</p>
 
-    <!-- Unlock Button -->
-    <button id="unlockBtn" onclick="unlockCP1()">🚀 Get CP1 Access</button>
+    <button id="unlockBtn" onclick="goBot()">🚀 Open Bot</button>
 </div>
 
 <script>
 Telegram.WebApp.ready();
 
 let adsWatched = 0;
-let adActive = false;
-let adTimer;
+let adCompleted = false;
+let timerCompleted = false;
 
 function watchAd() {
-    adActive = true;
+    adCompleted = false;
+    timerCompleted = false;
 
-    // 10-second timer requirement
-    adTimer = setTimeout(() => {
-        if (adActive) {
-            incrementAd();
-        }
+    // Start 10-second timer
+    const timer = setTimeout(() => {
+        timerCompleted = true;
+        checkReward();
     }, 10000);
 
-    // CORRECT : Rewarded Interstitial
-    show_10196834()
-        .then(() => {
-            adActive = false;
-            clearTimeout(adTimer);
-            incrementAd();
-        })
-        .catch(() => {
-            adActive = false;
-            clearTimeout(adTimer);
-            alert("⚠ Please watch the full ad to count!");
-        });
+    // Show rewarded interstitial
+    show_10196834().then(() => {
+        adCompleted = true;
+        checkReward();
+    }).catch(() => {
+        clearTimeout(timer);
+        alert("⚠ Please watch the full ad to count.");
+    });
 }
 
-function incrementAd() {
-    adsWatched++;
-    document.getElementById("progress").innerText =
-        `Ads watched: ${adsWatched} / 3`;
+function checkReward() {
+    if (adCompleted && timerCompleted) {
+        adsWatched++;
+        document.getElementById("progress").innerText =
+            `Ads watched: ${adsWatched} / 3`;
 
-    if (adsWatched >= 3) {
-        document.getElementById("unlockBtn").style.display = "block";
+        adCompleted = false;
+        timerCompleted = false;
+
+        // After 3 ads → DO NOT CLOSE the WebApp
+        if (adsWatched >= 3) {
+            document.getElementById("unlockBtn").style.display = "block";
+        }
     }
 }
 
-function unlockCP1() {
-    Telegram.WebApp.sendData(JSON.stringify({ type: "cp", id: "1" }));
-    Telegram.WebApp.close();
+function goBot() {
+    // your bot link here
+    window.location.href = "https://t.me/YOUR_BOT_HERE";
 }
 </script>
 
