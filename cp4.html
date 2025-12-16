@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CP4 Unlock</title>
 
-<!-- Telegram SDK -->
+<!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <!-- Monetag Rewarded Interstitial for CP4 -->
@@ -14,7 +14,7 @@
 <style>
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #1a1a1a, #3c3c3c);
     height: 100vh;
     display: flex;
@@ -44,7 +44,7 @@ h2 {
 }
 
 p {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     font-size: 17px;
     color: #ffe9ad;
 }
@@ -69,13 +69,17 @@ button:hover {
 }
 
 #progress {
-    margin-top: 16px;
+    margin-top: 14px;
     font-size: 18px;
     font-weight: bold;
-    color: #ffebc4;
 }
 
-/* Glowing unlock button */
+#timerText {
+    display: none;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
 #unlockBtn {
     display: none;
     margin-top: 22px;
@@ -90,15 +94,17 @@ button:hover {
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
     <h2>✨ CP4 Premium Unlock</h2>
-    <p>Watch <b>3 rewarded video ads</b> and stay <b>10 seconds</b> on each to unlock.</p>
+    <p>Watch <b>3 rewarded ads</b> and stay <b>10 seconds</b> each.</p>
 
-    <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
+    <button id="watchBtn" onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
     <p id="progress">Ads watched: 0 / 3</p>
+    <p id="timerText"></p>
 
     <button id="unlockBtn" onclick="goBot()">🚀 Open Bot</button>
 </div>
@@ -109,41 +115,70 @@ Telegram.WebApp.ready();
 let adsWatched = 0;
 let adCompleted = false;
 let timerCompleted = false;
+let timerRef = null;
+let timeLeft = 10;
 
 function watchAd() {
+    if (timerRef) return; // prevent spam clicking
+
     adCompleted = false;
     timerCompleted = false;
+    timeLeft = 10;
 
-    const timer = setTimeout(() => {
-        timerCompleted = true;
-        checkReward();
-    }, 10000);
+    document.getElementById("timerText").style.display = "block";
+    document.getElementById("timerText").innerText =
+        `⏳ Please wait ${timeLeft}s`;
 
-    show_10196862().then(() => {
-        adCompleted = true;
-        checkReward();
-    }).catch(() => {
-        clearTimeout(timer);
-        alert("⚠️ Please watch the full video ad to count!");
-    });
+    timerRef = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timerText").innerText =
+            `⏳ Please wait ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerRef);
+            timerRef = null;
+            timerCompleted = true;
+            checkReward();
+        }
+    }, 1000);
+
+    show_10196862()
+        .then(() => {
+            adCompleted = true;
+            checkReward();
+        })
+        .catch(() => {
+            resetTimer();
+            alert("⚠ Please watch the full ad to count.");
+        });
+}
+
+function resetTimer() {
+    clearInterval(timerRef);
+    timerRef = null;
+    document.getElementById("timerText").style.display = "none";
 }
 
 function checkReward() {
     if (adCompleted && timerCompleted) {
         adsWatched++;
-        document.getElementById("progress").innerText = `Ads watched: ${adsWatched} / 3`;
+
+        document.getElementById("progress").innerText =
+            `Ads watched: ${adsWatched} / 3`;
 
         adCompleted = false;
         timerCompleted = false;
+        document.getElementById("timerText").style.display = "none";
 
         if (adsWatched >= 3) {
+            document.getElementById("watchBtn").style.display = "none";
             document.getElementById("unlockBtn").style.display = "block";
         }
     }
 }
 
 function goBot() {
-    window.location.href = "https://t.me/yourbot"; // <-- replace your bot link
+    window.location.href = "https://t.me/YOUR_BOT_HERE"; // replace
 }
 </script>
 

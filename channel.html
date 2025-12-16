@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Unlock Private Channel</title>
 
-<!-- Monetag SDK -->
+<!-- Monetag Rewarded SDK -->
 <script src='//libtl.com/sdk.js' data-zone='10196897' data-sdk='show_10196897'></script>
 
 <style>
@@ -37,13 +37,11 @@ h2 {
     font-size: 26px;
     margin-bottom: 12px;
     color: #ffdd70;
-    text-shadow: 0 0 10px rgba(255, 210, 90, 0.8);
 }
 
 p {
     font-size: 17px;
-    margin-bottom: 18px;
-    opacity: 0.9;
+    margin-bottom: 16px;
 }
 
 button {
@@ -73,7 +71,6 @@ button:hover {
 
 #timerText {
     display: none;
-    margin-top: 10px;
     font-size: 16px;
 }
 </style>
@@ -97,12 +94,30 @@ let adsWatched = 0;
 let adCompleted = false;
 let timerCompleted = false;
 let timerRef = null;
+let timeLeft = 10;
 
 function watchAd() {
+    if (timerRef) return; // block spam clicks
+
     adCompleted = false;
     timerCompleted = false;
+    timeLeft = 10;
 
-    startTimer();
+    document.getElementById("timerText").style.display = "block";
+    document.getElementById("timerText").innerText = `⏳ Please wait ${timeLeft}s`;
+
+    timerRef = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timerText").innerText =
+            `⏳ Please wait ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerRef);
+            timerRef = null;
+            timerCompleted = true;
+            checkReward();
+        }
+    }, 1000);
 
     show_10196897()
         .then(() => {
@@ -110,36 +125,21 @@ function watchAd() {
             checkReward();
         })
         .catch(() => {
-            stopTimer();
+            resetTimer();
             alert("⚠ Please watch the full ad to count!");
         });
 }
 
-function startTimer() {
-    let timeLeft = 10;
-    document.getElementById("timerText").style.display = "block";
-    document.getElementById("timerText").innerText = `⏳ Please wait ${timeLeft}s`;
-
-    timerRef = setInterval(() => {
-        timeLeft--;
-        document.getElementById("timerText").innerText = `⏳ Please wait ${timeLeft}s`;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerRef);
-            timerCompleted = true;
-            checkReward();
-        }
-    }, 1000);
-}
-
-function stopTimer() {
+function resetTimer() {
     clearInterval(timerRef);
+    timerRef = null;
     document.getElementById("timerText").style.display = "none";
 }
 
 function checkReward() {
     if (adCompleted && timerCompleted) {
         adsWatched++;
+
         document.getElementById("progressText").innerText =
             `Ads watched: ${adsWatched} / 4`;
 
