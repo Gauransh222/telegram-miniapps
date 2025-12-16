@@ -42,7 +42,7 @@ h2 {
 
 p {
     font-size: 17px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     opacity: 0.9;
 }
 
@@ -74,9 +74,7 @@ button:hover {
 #timerText {
     display: none;
     margin-top: 10px;
-    color: #ffdd70;
     font-size: 16px;
-    text-shadow: 0 0 8px rgba(255, 210, 90, 0.8);
 }
 </style>
 </head>
@@ -84,63 +82,80 @@ button:hover {
 <body>
 <div class="container">
     <h2>✨ Premium Channel Unlock</h2>
-    <p>Watch <b>1 rewarded ad</b> to unlock your channel link.</p>
+    <p>Watch <b>4 rewarded ads</b> and stay <b>10 seconds</b> each.</p>
 
     <button id="watchAdBtn" onclick="watchAd()">🎥 Watch Ad</button>
 
-    <p id="timerText">⏳ Please wait 10 seconds...</p>
+    <p id="progressText">Ads watched: 0 / 4</p>
+    <p id="timerText"></p>
 
     <button id="channelLinkBtn" onclick="goToChannel()">🔗 Get Channel Link</button>
 </div>
 
 <script>
+let adsWatched = 0;
 let adCompleted = false;
-let timerPassed = false;
+let timerCompleted = false;
+let timerRef = null;
 
 function watchAd() {
+    adCompleted = false;
+    timerCompleted = false;
+
+    startTimer();
+
     show_10196897()
         .then(() => {
             adCompleted = true;
-            startTimer();
+            checkReward();
         })
         .catch(() => {
-            alert("⚠ Please watch the full ad to unlock!");
+            stopTimer();
+            alert("⚠ Please watch the full ad to count!");
         });
 }
 
 function startTimer() {
-    document.getElementById("timerText").style.display = "block";
-    document.getElementById("watchAdBtn").style.display = "none";
-
     let timeLeft = 10;
+    document.getElementById("timerText").style.display = "block";
+    document.getElementById("timerText").innerText = `⏳ Please wait ${timeLeft}s`;
 
-    let countdown = setInterval(() => {
-        document.getElementById("timerText").innerText =
-            `⏳ Please wait ${timeLeft} seconds...`;
-
+    timerRef = setInterval(() => {
         timeLeft--;
+        document.getElementById("timerText").innerText = `⏳ Please wait ${timeLeft}s`;
 
-        if (timeLeft < 0) {
-            clearInterval(countdown);
-            timerPassed = true;
-            unlockButton();
+        if (timeLeft <= 0) {
+            clearInterval(timerRef);
+            timerCompleted = true;
+            checkReward();
         }
     }, 1000);
 }
 
-function unlockButton() {
-    if (adCompleted && timerPassed) {
-        document.getElementById("timerText").innerText = "✅ You can now get the channel link!";
-        document.getElementById("channelLinkBtn").style.display = "block";
+function stopTimer() {
+    clearInterval(timerRef);
+    document.getElementById("timerText").style.display = "none";
+}
+
+function checkReward() {
+    if (adCompleted && timerCompleted) {
+        adsWatched++;
+        document.getElementById("progressText").innerText =
+            `Ads watched: ${adsWatched} / 4`;
+
+        adCompleted = false;
+        timerCompleted = false;
+        document.getElementById("timerText").style.display = "none";
+
+        if (adsWatched >= 4) {
+            document.getElementById("watchAdBtn").style.display = "none";
+            document.getElementById("channelLinkBtn").style.display = "block";
+        }
     }
 }
 
 function goToChannel() {
-    if (adCompleted && timerPassed) {
-        window.location.href = "https://t.me/YOUR_CHANNEL_LINK_HERE";
-    } else {
-        alert("⚠ You must watch the ad and wait 10 seconds!");
-    }
+    window.location.href = "https://t.me/YOUR_CHANNEL_LINK_HERE";
 }
 </script>
 
