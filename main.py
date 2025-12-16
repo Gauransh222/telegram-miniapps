@@ -1,7 +1,5 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-import firebase_admin
-from firebase_admin import credentials, db
 
 # -----------------------
 # CONFIGURATION
@@ -9,33 +7,18 @@ from firebase_admin import credentials, db
 BOT_TOKEN = "8515267662:AAGwvJNYs1X5RlTouR0X4vnlo7tfr4nSo50"
 
 BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
+
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
+
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/DailyyContentBot?start=free_photo"
 
-# -----------------------
-# FIREBASE SETUP
-# -----------------------
-cred = credentials.Certificate("firebasekey.json")  # Path to your Firebase JSON key
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://contentunlockerproject-default-rtdb.firebaseio.com/'
-})
-users_ref = db.reference("users")
 
 # -----------------------
 # HANDLERS
 # -----------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle /start and store user in Firebase."""
-    user = update.effective_user
-    user_id = str(user.id)
-    users_ref.child(user_id).set({
-        "username": user.username or "",
-        "first_name": user.first_name or "",
-        "last_name": user.last_name or ""
-    })
-
     keyboard = [
         [InlineKeyboardButton("CP", callback_data="cp")],
         [InlineKeyboardButton("Free Videos", callback_data="free_videos")],
@@ -54,18 +37,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
+    # CP MENU
     if query.data == "cp":
         keyboard = [[InlineKeyboardButton(f"CP{i}", callback_data=f"cp_{i}")] for i in range(1, 7)]
         keyboard.append([InlineKeyboardButton("⬅ Back", callback_data="back")])
         await query.edit_message_text("Select CP content:", reply_markup=InlineKeyboardMarkup(keyboard))
 
+    # OPEN CP MINI APP
     elif query.data.startswith("cp_"):
         cp_id = query.data.split("_")[1]
         url = MINI_APP_CP_URL.format(cp_id=cp_id)
+
         keyboard = [
             [InlineKeyboardButton("Open CP Mini App", web_app=WebAppInfo(url=url))],
             [InlineKeyboardButton("⬅ Back", callback_data="cp")]
@@ -75,6 +62,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # FREE VIDEOS MINI APP
     elif query.data == "free_videos":
         keyboard = [
             [InlineKeyboardButton("Open Free Video App", web_app=WebAppInfo(url=MINI_APP_FREE_VID_URL))],
@@ -85,11 +73,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # FREE PHOTOS
     elif query.data == "free_photos":
         await query.edit_message_text(
             f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}"
         )
 
+    # CHANNEL MINI APP
     elif query.data == "channel":
         keyboard = [
             [InlineKeyboardButton("Open Channel Mini App", web_app=WebAppInfo(url=MINI_APP_CHNL_URL))],
@@ -100,8 +90,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # BACK BUTTON
     elif query.data == "back":
         await start(update, context)
+
 
 # -----------------------
 # MAIN
