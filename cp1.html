@@ -87,13 +87,13 @@ button:hover {
 
 <div class="container">
     <h2>✨ CP1 Unlock</h2>
-    <p>Watch <b>3 rewarded ads</b> and stay <b>10 seconds</b> in each to unlock your bot link.</p>
+    <p>Watch <b>3 rewarded ads</b> and stay <b>10 seconds</b> in each to unlock your channel.</p>
 
     <button onclick="watchAd()">🎥 Watch Rewarded Ad</button>
 
     <p id="progress">Ads watched: 0 / 3</p>
 
-    <button id="unlockBtn" onclick="goBot()">🚀 Open Bot</button>
+    <button id="unlockBtn" onclick="goChannel()">🔗 Open Channel</button>
 </div>
 
 <script>
@@ -107,13 +107,11 @@ function watchAd() {
     adCompleted = false;
     timerCompleted = false;
 
-    // Start 10-second timer
     const timer = setTimeout(() => {
         timerCompleted = true;
         checkReward();
     }, 10000);
 
-    // Show rewarded interstitial
     show_10196834().then(() => {
         adCompleted = true;
         checkReward();
@@ -132,16 +130,14 @@ function checkReward() {
         adCompleted = false;
         timerCompleted = false;
 
-        // After 3 ads → DO NOT CLOSE the WebApp
         if (adsWatched >= 3) {
             document.getElementById("unlockBtn").style.display = "block";
         }
     }
 }
 
-function goBot() {
-    // your bot link here
-    window.location.href = "https://t.me/YOUR_BOT_HERE";
+function goChannel() {
+    window.location.href = "https://t.me/YOUR_CHANNEL_LINK_HERE";
 }
 </script>
 
