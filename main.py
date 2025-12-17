@@ -31,11 +31,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_text(
             "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
             "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
-    "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
-    "- 🎬 Free Video: Watch a long video.\n"
-    "- 🖼 Free Photo: Get free photos.\n"
-    "- 📺 Channel Link: Unlock 75 videos.\n\n"
-    "👉 To access any content, just click the button, watch the ads, and get your link.",
+            "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
+            "- 🎬 Free Video: Watch a long video.\n"
+            "- 🖼 Free Photo: Get free photos.\n"
+            "- 📺 Channel Link: Unlock 75 videos.\n\n"
+            "👉 To access any content, just click the button, watch the ads, and get your link.",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
@@ -43,11 +43,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Bot has started successfully!")
         await update.message.reply_text(
             "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
-    "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
-    "- 🎬 Free Video: Watch a long video.\n"
-    "- 🖼 Free Photo: Get free photos.\n"
-    "- 📺 Channel Link: Unlock 75 videos.\n\n"
-    "👉 To access any content, just click the button, watch the ads, and get your link.",
+            "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
+            "- 🎬 Free Video: Watch a long video.\n"
+            "- 🖼 Free Photo: Get free photos.\n"
+            "- 📺 Channel Link: Unlock 75 videos.\n\n"
+            "👉 To access any content, just click the button, watch the ads, and get your link.",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
