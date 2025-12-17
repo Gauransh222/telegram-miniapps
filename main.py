@@ -1,5 +1,5 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -115,8 +115,8 @@ def main():
     # Start dummy HTTP server (Render requires open port)
     threading.Thread(target=run_http_server, daemon=True).start()
 
-    # Build the bot (PTB 20.7 fixes Python 3.13 Updater error)
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    # ✅ FIXED for Python 3.13 / PTB 20.7
+    app = Application.builder().token(BOT_TOKEN).build()
 
     # Add handlers
     app.add_handler(CommandHandler("start", start))
