@@ -5,14 +5,16 @@ import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # -----------------------
-# CONFIGURATION
+# CONFIGURATION (unchanged)
 # -----------------------
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
+BOT_TOKEN = "8515267662:AAGwvJNYs1X5RlTouR0X4vnlo7tfr4nSo50"
 
 BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
+
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
+
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
 # -----------------------
@@ -101,12 +103,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # -----------------------
 def main():
-    # Start dummy HTTP server (Render requires open port)
+    # ✅ Start dummy HTTP server (Render requires open port)
     threading.Thread(target=run_http_server, daemon=True).start()
 
+    # ✅ Build the bot (PTB >=20.6 fixes Python 3.13 Updater issue)
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Add handlers
+    # ✅ Add handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
