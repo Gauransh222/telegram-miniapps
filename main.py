@@ -1,7 +1,5 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-
-# ✅ Required for Render Web Service
 import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -9,14 +7,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 # -----------------------
 # CONFIGURATION
 # -----------------------
-BOT_TOKEN = "8515267662:AAGwvJNYs1X5RlTouR0X4vnlo7tfr4nSo50"
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 
 BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
-
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
-
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
 # -----------------------
@@ -79,20 +75,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("Open CP Mini App", web_app=WebAppInfo(url=url))],
             [InlineKeyboardButton("⬅ Back", callback_data="cp")]
         ]
-        await query.edit_message_text(
-            f"Tap below to open CP{cp_id} mini app:",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
+        await query.edit_message_text(f"Tap below to open CP{cp_id} mini app:", reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif query.data == "free_videos":
         keyboard = [
             [InlineKeyboardButton("Open Free Video App", web_app=WebAppInfo(url=MINI_APP_FREE_VID_URL))],
             [InlineKeyboardButton("⬅ Back", callback_data="back")]
         ]
-        await query.edit_message_text(
-            "Tap below to open Free Video mini-app:",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
+        await query.edit_message_text("Tap below to open Free Video mini-app:", reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif query.data == "free_photos":
         await query.edit_message_text(f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}")
@@ -102,10 +92,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("Open Channel Mini App", web_app=WebAppInfo(url=MINI_APP_CHNL_URL))],
             [InlineKeyboardButton("⬅ Back", callback_data="back")]
         ]
-        await query.edit_message_text(
-            "Tap below to unlock the Channel:",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
+        await query.edit_message_text("Tap below to unlock the Channel:", reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif query.data == "back":
         await start(update, context)
@@ -114,11 +101,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # -----------------------
 def main():
-    # ✅ Start dummy HTTP server (Render requires open port)
+    # Start dummy HTTP server (Render requires open port)
     threading.Thread(target=run_http_server, daemon=True).start()
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
+    # Add handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
