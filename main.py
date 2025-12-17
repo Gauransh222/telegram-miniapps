@@ -1,6 +1,11 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
+# ✅ ADDED (required for Render Web Service)
+import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 # -----------------------
 # CONFIGURATION
 # -----------------------
@@ -16,6 +21,23 @@ DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
 
 # -----------------------
+# DUMMY HTTP SERVER (FOR RENDER)
+# -----------------------
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+
+def run_http_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthHandler)
+    server.serve_forever()
+
+
+# -----------------------
 # HANDLERS
 # -----------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -27,7 +49,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     if update.callback_query:
-        # Called when Back button is pressed → NO extra text here
         await update.callback_query.edit_message_text(
             "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
             "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
@@ -39,7 +60,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
-        # Called when user types /start → extra text here
         await update.message.reply_text("Bot has started successfully!")
         await update.message.reply_text(
             "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
@@ -57,13 +77,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # CP MENU
     if query.data == "cp":
         keyboard = [[InlineKeyboardButton(f"CP{i}", callback_data=f"cp_{i}")] for i in range(1, 7)]
         keyboard.append([InlineKeyboardButton("⬅ Back", callback_data="back")])
         await query.edit_message_text("Select CP content:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-    # OPEN CP MINI APP
     elif query.data.startswith("cp_"):
         cp_id = query.data.split("_")[1]
         url = MINI_APP_CP_URL.format(cp_id=cp_id)
@@ -77,7 +95,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-    # FREE VIDEOS MINI APP
     elif query.data == "free_videos":
         keyboard = [
             [InlineKeyboardButton("Open Free Video App", web_app=WebAppInfo(url=MINI_APP_FREE_VID_URL))],
@@ -88,13 +105,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-    # FREE PHOTOS
     elif query.data == "free_photos":
         await query.edit_message_text(
             f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}"
         )
 
-    # CHANNEL MINI APP
     elif query.data == "channel":
         keyboard = [
             [InlineKeyboardButton("Open Channel Mini App", web_app=WebAppInfo(url=MINI_APP_CHNL_URL))],
@@ -105,7 +120,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-    # BACK BUTTON
     elif query.data == "back":
         await start(update, context)
 
@@ -114,6 +128,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # -----------------------
 def main():
+    # ✅ START HTTP SERVER (RENDER REQUIRES OPEN PORT)
+    threading.Thread(target=run_http_server, daemon=True).start()
+
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
