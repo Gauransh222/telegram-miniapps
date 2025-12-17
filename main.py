@@ -12,7 +12,7 @@ MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 
-DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/DailyyContentBot?start=free_photo"
+DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
 
 # -----------------------
@@ -29,14 +29,25 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.callback_query:
         # Called when Back button is pressed → NO extra text here
         await update.callback_query.edit_message_text(
-            "Welcome! Choose an option:",
+            "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
+            "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
+    "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
+    "- 🎬 Free Video: Watch a long video.\n"
+    "- 🖼 Free Photo: Get free photos.\n"
+    "- 📺 Channel Link: Unlock 75 videos.\n\n"
+    "👉 To access any content, just click the button, watch the ads, and get your link.",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
         # Called when user types /start → extra text here
         await update.message.reply_text("Bot has started successfully!")
         await update.message.reply_text(
-            "Welcome! Choose an option:",
+            "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
+    "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
+    "- 🎬 Free Video: Watch a long video.\n"
+    "- 🖼 Free Photo: Get free photos.\n"
+    "- 📺 Channel Link: Unlock 75 videos.\n\n"
+    "👉 To access any content, just click the button, watch the ads, and get your link.",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
