@@ -1,7 +1,7 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# ✅ ADDED (required for Render Web Service)
+# ✅ Required for Render Web Service
 import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -19,7 +19,6 @@ MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
-
 # -----------------------
 # DUMMY HTTP SERVER (FOR RENDER)
 # -----------------------
@@ -30,12 +29,10 @@ class HealthHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b"OK")
 
-
 def run_http_server():
     port = int(os.environ.get("PORT", 10000))
     server = HTTPServer(("0.0.0.0", port), HealthHandler)
     server.serve_forever()
-
 
 # -----------------------
 # HANDLERS
@@ -48,30 +45,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Telegram Channel", callback_data="channel")]
     ]
 
+    message_text = (
+        "Welcome! Choose from the options below, WATCH DIRECT ADS NO JHANJHAT:\n\n"
+        "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
+        "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
+        "- 🎬 Free Video: Watch a long video.\n"
+        "- 🖼 Free Photo: Get free photos.\n"
+        "- 📺 Channel Link: Unlock 75 videos.\n\n"
+        "👉 To access any content, just click the button, watch the ads, and get your link."
+    )
+
     if update.callback_query:
         await update.callback_query.edit_message_text(
-            "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
-            "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
-            "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
-            "- 🎬 Free Video: Watch a long video.\n"
-            "- 🖼 Free Photo: Get free photos.\n"
-            "- 📺 Channel Link: Unlock 75 videos.\n\n"
-            "👉 To access any content, just click the button, watch the ads, and get your link.",
+            message_text,
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
-        await update.message.reply_text("Bot has started successfully!")
-        await update.message.reply_text(
-            "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
-            "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
-            "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
-            "- 🎬 Free Video: Watch a long video.\n"
-            "- 🖼 Free Photo: Get free photos.\n"
-            "- 📺 Channel Link: Unlock 75 videos.\n\n"
-            "👉 To access any content, just click the button, watch the ads, and get your link.",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
-
+        await update.message.reply_text(message_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -85,7 +75,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data.startswith("cp_"):
         cp_id = query.data.split("_")[1]
         url = MINI_APP_CP_URL.format(cp_id=cp_id)
-
         keyboard = [
             [InlineKeyboardButton("Open CP Mini App", web_app=WebAppInfo(url=url))],
             [InlineKeyboardButton("⬅ Back", callback_data="cp")]
@@ -106,9 +95,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     elif query.data == "free_photos":
-        await query.edit_message_text(
-            f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}"
-        )
+        await query.edit_message_text(f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}")
 
     elif query.data == "channel":
         keyboard = [
@@ -123,12 +110,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "back":
         await start(update, context)
 
-
 # -----------------------
 # MAIN
 # -----------------------
 def main():
-    # ✅ START HTTP SERVER (RENDER REQUIRES OPEN PORT)
+    # ✅ Start dummy HTTP server (Render requires open port)
     threading.Thread(target=run_http_server, daemon=True).start()
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -136,9 +122,8 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Main Bot is running...")
+    print("Bot is running...")
     app.run_polling()
-
 
 if __name__ == "__main__":
     main()
