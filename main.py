@@ -27,11 +27,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     if update.callback_query:
+        # Called when Back button is pressed → NO extra text here
         await update.callback_query.edit_message_text(
             "Welcome! Choose an option:",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
+        # Called when user types /start → extra text here
+        await update.message.reply_text("Bot has started successfully!")
         await update.message.reply_text(
             "Welcome! Choose an option:",
             reply_markup=InlineKeyboardMarkup(keyboard)
