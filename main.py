@@ -43,6 +43,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Bot has started successfully!")
         await update.message.reply_text(
             "Choose from the options below , WATCH DIRECT ADS NO JHANJHAT :\n\n"
+            "JOIN FREE PHOTO CHNL FOR BACKUP AND DAILY UPDATES\n"
             "- 📂 CP: Access 6 sections (CP1–CP6), each with 18 videos.\n"
             "- 🎬 Free Video: Watch a long video.\n"
             "- 🖼 Free Photo: Get free photos.\n"
