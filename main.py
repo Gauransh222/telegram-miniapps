@@ -21,6 +21,11 @@ class HealthHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b"Bot is alive \xE2\x9C\x85")  # ✅ emoji
 
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
+
+
 def run_health_server():
     port = int(os.environ.get("PORT", 10000))
     server = HTTPServer(("0.0.0.0", port), HealthHandler)
