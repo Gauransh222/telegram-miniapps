@@ -39,13 +39,13 @@ threading.Thread(target=run_health_server, daemon=True).start()
 # -----------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("CP", callback_data="cp")],
+        [InlineKeyboardButton("Free CP", callback_data="cp")],
         [InlineKeyboardButton("Free Videos", callback_data="free_videos")],
         [InlineKeyboardButton("Free Photos", callback_data="free_photos")],
-        [InlineKeyboardButton("Telegram Channel", callback_data="channel")]
+        [InlineKeyboardButton("Free100+ video Channel", callback_data="channel")]
     ]
     message_text = (
-        "Welcome! Choose from the options below and watch direct ads:\n\n"
+        "Welcome! NO URL SHORTNERS , NO OTP , watch direct ads AND GET CHNL LINL:\n\n"
         "- 📂 CP: Access 6 sections (CP1–CP6)\n"
          "- 🖼 contact for collaboration and doubt @DailyyContentBot\n"
         "- 🎬 Free Video: Watch a long video\n"
