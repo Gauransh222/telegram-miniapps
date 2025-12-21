@@ -1,7 +1,6 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
-from aiohttp import web
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -75,33 +74,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await start(update, context)
 
 # -----------------------
-# HEALTH CHECK ROUTE
-# -----------------------
-async def healthcheck(request: web.Request) -> web.Response:
-    return web.Response(text="Bot is alive ✅")
-
-async def post_init(application: Application):
-    # Attach root route to PTB's aiohttp app
-    application.web_app.router.add_get("/", healthcheck)
-
-# -----------------------
 # MAIN
 # -----------------------
 def main():
-    app = Application.builder().token(BOT_TOKEN).post_init(post_init).build()
+    app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    port = int(os.environ.get("PORT", 10000))
-
-    print("Bot is running with webhook...")
-
-    app.run_webhook(
-        listen="0.0.0.0",
-        port=port,
-        url_path=BOT_TOKEN,
-        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}"
-    )
+    print("Bot is running with polling...")
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
