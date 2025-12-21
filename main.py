@@ -91,8 +91,9 @@ def main():
 
     port = int(os.environ.get("PORT", 10000))
 
+    # Tornado app with both routes
     tornado_app = TornadoApp([
-        (r"/", RootHandler),                   # root URL for cron-job.org / Hetrix
+        (r"/", RootHandler),                   # root URL
         (r"/" + BOT_TOKEN, app.webhook_handler())  # Telegram webhook
     ])
 
