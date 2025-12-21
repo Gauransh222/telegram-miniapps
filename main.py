@@ -1,8 +1,7 @@
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
-import os
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from tornado.web import Application as TornadoApp, RequestHandler
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -13,29 +12,11 @@ MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
 # -----------------------
-# SIMPLE HOMEPAGE SERVER
+# HOMEPAGE HANDLER
 # -----------------------
-class HealthHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/":
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            self.wfile.write("Bot is alive ✅".encode("utf-8"))
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def do_HEAD(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-
-def run_health_server():
-    # Run on a different port to avoid conflict
-    health_port = 8080
-    server = HTTPServer(("0.0.0.0", health_port), HealthHandler)
-    server.serve_forever()
+class RootHandler(RequestHandler):
+    def get(self):
+        self.write("Bot is alive ✅")
 
 # -----------------------
 # HANDLERS
@@ -65,10 +46,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+
     if query.data == "cp":
         keyboard = [[InlineKeyboardButton(f"CP{i}", callback_data=f"cp_{i}")] for i in range(1, 7)]
         keyboard.append([InlineKeyboardButton("⬅ Back", callback_data="back")])
         await query.edit_message_text("Select CP content:", reply_markup=InlineKeyboardMarkup(keyboard))
+
     elif query.data.startswith("cp_"):
         cp_id = query.data.split("_")[1]
         url = MINI_APP_CP_URL.format(cp_id=cp_id)
@@ -77,20 +60,24 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("⬅ Back", callback_data="cp")]
         ]
         await query.edit_message_text(f"Tap below to open CP{cp_id} mini app:", reply_markup=InlineKeyboardMarkup(keyboard))
+
     elif query.data == "free_videos":
         keyboard = [
             [InlineKeyboardButton("Open Free Video App", web_app=WebAppInfo(url=MINI_APP_FREE_VID_URL))],
             [InlineKeyboardButton("⬅ Back", callback_data="back")]
         ]
         await query.edit_message_text("Tap below to open Free Video mini-app:", reply_markup=InlineKeyboardMarkup(keyboard))
+
     elif query.data == "free_photos":
         await query.edit_message_text(f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}")
+
     elif query.data == "channel":
         keyboard = [
             [InlineKeyboardButton("Open Channel Mini App", web_app=WebAppInfo(url=MINI_APP_CHNL_URL))],
             [InlineKeyboardButton("⬅ Back", callback_data="back")]
         ]
         await query.edit_message_text("Tap below to unlock the Channel:", reply_markup=InlineKeyboardMarkup(keyboard))
+
     elif query.data == "back":
         await start(update, context)
 
@@ -98,21 +85,25 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # -----------------------
 def main():
-    # Start health check server in background
-    threading.Thread(target=run_health_server, daemon=True).start()
-
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
+    port = int(os.environ.get("PORT", 10000))
+
+    tornado_app = TornadoApp([
+        (r"/", RootHandler),                   # root URL for cron-job.org / Hetrix
+        (r"/" + BOT_TOKEN, app.webhook_handler())  # Telegram webhook
+    ])
+
     print("Bot is running with webhook...")
 
-    port = int(os.environ.get("PORT", 10000))
     app.run_webhook(
         listen="0.0.0.0",
         port=port,
         url_path=BOT_TOKEN,
-        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}"
+        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}",
+        web_app=tornado_app
     )
 
 if __name__ == "__main__":
