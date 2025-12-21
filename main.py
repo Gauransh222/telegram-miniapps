@@ -1,7 +1,7 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
-from tornado.web import Application as TornadoApp, RequestHandler
+from aiohttp import web
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -10,13 +10,6 @@ MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
-
-# -----------------------
-# HOMEPAGE HANDLER
-# -----------------------
-class RootHandler(RequestHandler):
-    def get(self):
-        self.write("Bot is alive ✅")
 
 # -----------------------
 # HANDLERS
@@ -91,11 +84,9 @@ def main():
 
     port = int(os.environ.get("PORT", 10000))
 
-    # Tornado app with both routes
-    tornado_app = TornadoApp([
-        (r"/", RootHandler),                   # root URL
-        (r"/" + BOT_TOKEN, app.webhook_handler())  # Telegram webhook
-    ])
+    # aiohttp app for root health check
+    aio_app = web.Application()
+    aio_app.router.add_get("/", lambda request: web.Response(text="Bot is alive ✅"))
 
     print("Bot is running with webhook...")
 
@@ -104,7 +95,7 @@ def main():
         port=port,
         url_path=BOT_TOKEN,
         webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}",
-        web_app=tornado_app
+        web_app=aio_app
     )
 
 if __name__ == "__main__":
