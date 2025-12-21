@@ -1,13 +1,11 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 import os
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # -----------------------
 # CONFIGURATION
 # -----------------------
-BOT_TOKEN = os.getenv("BOT_TOKEN")  # ✅ use env variable in Render dashboard
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # safer: set BOT_TOKEN in Render dashboard
 
 BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
@@ -15,26 +13,6 @@ MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
-
-# -----------------------
-# DUMMY HTTP SERVER (FOR RENDER HEALTH CHECKS)
-# -----------------------
-class HealthHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        self.wfile.write(b"OK")
-
-    def do_HEAD(self):  # ✅ handle HEAD requests too
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-
-def run_http_server():
-    port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), HealthHandler)
-    server.serve_forever()
 
 # -----------------------
 # HANDLERS
@@ -117,9 +95,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # -----------------------
 def main():
-    # Start dummy HTTP server (Render requires open port)
-    threading.Thread(target=run_http_server, daemon=True).start()
-
     app = Application.builder().token(BOT_TOKEN).build()
 
     # Add handlers
@@ -128,7 +103,7 @@ def main():
 
     print("Bot is running with webhook...")
 
-    # ✅ Webhook mode instead of polling
+    # ✅ Webhook mode only (no dummy HTTP server)
     port = int(os.environ.get("PORT", 10000))
     app.run_webhook(
         listen="0.0.0.0",
