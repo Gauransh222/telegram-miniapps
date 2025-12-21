@@ -7,10 +7,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 # -----------------------
 # CONFIGURATION
 # -----------------------
-BOT_TOKEN = "8515267662:AAGwvJNYs1X5RlTouR0X4vnlo7tfr4nSo50"
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # ✅ use env variable in Render dashboard
 
 BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
-
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
@@ -18,7 +17,7 @@ MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
 
 # -----------------------
-# DUMMY HTTP SERVER (FOR RENDER)
+# DUMMY HTTP SERVER (FOR RENDER HEALTH CHECKS)
 # -----------------------
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -26,6 +25,11 @@ class HealthHandler(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/plain")
         self.end_headers()
         self.wfile.write(b"OK")
+
+    def do_HEAD(self):  # ✅ handle HEAD requests too
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
 
 def run_http_server():
     port = int(os.environ.get("PORT", 10000))
@@ -116,15 +120,22 @@ def main():
     # Start dummy HTTP server (Render requires open port)
     threading.Thread(target=run_http_server, daemon=True).start()
 
-    # ✅ FIXED for Python 3.13 / PTB 20.7
     app = Application.builder().token(BOT_TOKEN).build()
 
     # Add handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    print("Bot is running...")
-    app.run_polling()
+    print("Bot is running with webhook...")
+
+    # ✅ Webhook mode instead of polling
+    port = int(os.environ.get("PORT", 10000))
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=port,
+        url_path=BOT_TOKEN,
+        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}"
+    )
 
 if __name__ == "__main__":
     main()
