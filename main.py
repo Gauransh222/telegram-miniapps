@@ -1,7 +1,8 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 import os
-from aiohttp import web
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -10,6 +11,31 @@ MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
 DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
+
+# -----------------------
+# SIMPLE HOMEPAGE SERVER
+# -----------------------
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/":
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write("Bot is alive ✅".encode("utf-8"))
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_HEAD(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+
+def run_health_server():
+    # Run on a different port to avoid conflict
+    health_port = 8080
+    server = HTTPServer(("0.0.0.0", health_port), HealthHandler)
+    server.serve_forever()
 
 # -----------------------
 # HANDLERS
@@ -72,21 +98,21 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # -----------------------
 def main():
+    # Start health check server in background
+    threading.Thread(target=run_health_server, daemon=True).start()
+
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    # ✅ Add homepage route for UptimeRobot
-    async def homepage(request):
-        return web.Response(text="Bot is alive ✅", content_type="text/plain")
+    print("Bot is running with webhook...")
 
     port = int(os.environ.get("PORT", 10000))
     app.run_webhook(
         listen="0.0.0.0",
         port=port,
         url_path=BOT_TOKEN,
-        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}",
-        web_app=web.Application().add_routes([web.get("/", homepage)])
+        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}"
     )
 
 if __name__ == "__main__":
