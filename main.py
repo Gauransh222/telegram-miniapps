@@ -75,18 +75,24 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await start(update, context)
 
 # -----------------------
+# HEALTH CHECK ROUTE
+# -----------------------
+async def healthcheck(request: web.Request) -> web.Response:
+    return web.Response(text="Bot is alive ✅")
+
+async def post_init(application: Application):
+    # Attach root route to PTB's aiohttp app
+    application.web_app.router.add_get("/", healthcheck)
+
+# -----------------------
 # MAIN
 # -----------------------
 def main():
-    app = Application.builder().token(BOT_TOKEN).build()
+    app = Application.builder().token(BOT_TOKEN).post_init(post_init).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
     port = int(os.environ.get("PORT", 10000))
-
-    # aiohttp app for root health check
-    aio_app = web.Application()
-    aio_app.router.add_get("/", lambda request: web.Response(text="Bot is alive ✅"))
 
     print("Bot is running with webhook...")
 
@@ -94,8 +100,7 @@ def main():
         listen="0.0.0.0",
         port=port,
         url_path=BOT_TOKEN,
-        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}",
-        web_app=aio_app
+        webhook_url=f"https://telegram-bot-0x68.onrender.com/{BOT_TOKEN}"
     )
 
 if __name__ == "__main__":
