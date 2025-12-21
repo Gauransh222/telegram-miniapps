@@ -45,8 +45,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Telegram Channel", callback_data="channel")]
     ]
     message_text = (
-        "Welcome! Choose from the options below:\n\n"
+        "Welcome! Choose from the options below and watch direct ads:\n\n"
         "- 📂 CP: Access 6 sections (CP1–CP6)\n"
+         "- 🖼 contact for collaboration and doubt @DailyyContentBot\n"
         "- 🎬 Free Video: Watch a long video\n"
         "- 🖼 Free Photo: Get free photos\n"
         "- 📺 Channel Link: Unlock 75 videos\n\n"
