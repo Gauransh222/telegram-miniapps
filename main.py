@@ -40,17 +40,17 @@ threading.Thread(target=run_health_server, daemon=True).start()
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("Free CP", callback_data="cp")],
-        [InlineKeyboardButton("Free Videos", callback_data="free_videos")],
-        [InlineKeyboardButton("Free Photos", callback_data="free_photos")],
-        [InlineKeyboardButton("Free100+ video Channel", callback_data="channel")]
+        [InlineKeyboardButton("Long and Premium Video", callback_data="free_videos")],
+        [InlineKeyboardButton("Group and Free Photo", callback_data="free_photos")],
+        [InlineKeyboardButton(" Monday Free100+ video  ", callback_data="channel")]
     ]
     message_text = (
         "Welcome! NO URL SHORTNERS , NO OTP , watch direct ads AND GET CHNL LINL:\n\n"
-        "- 📂 CP: Access 6 sections (CP1–CP6)\n"
+        "- 📂 CP: Get CP zip files  (CP1–CP6)\n"
          "- 🖼 contact for collaboration and doubt @DailyyContentBot\n"
         "- 🎬 Free Video: Watch a long video\n"
         "- 🖼 Free Photo: Get free photos\n"
-        "- 📺 Channel Link: Unlock 75 videos\n\n"
+        "- 📺 Channel Link: Unlock 100 videos\n\n"
         "👉 Just click the button, watch the ads, and get your link."
     )
     if update.callback_query:
