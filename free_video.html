@@ -3,179 +3,327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Video Reward</title>
+<title>Unlock Content</title>
 
-<!-- Monetag Rewarded -->
-<script src='//libtl.com/sdk.js' data-zone='10196897' data-sdk='show_10196897'></script>
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- Monetag Rewarded Ads -->
+<script src='//libtl.com/sdk.js' data-zone='10196893' data-sdk='show_10196893'></script>
+<script src='//libtl.com/sdk.js' data-zone='10363909' data-sdk='show_10363909'></script>
+<script src='//libtl.com/sdk.js' data-zone='10363914' data-sdk='show_10363914'></script>
+
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-@keyframes neonGlow {
-    0% { box-shadow: 0 0 10px rgba(0,200,255,0.4); }
-    100% { box-shadow: 0 0 25px rgba(160,90,255,0.9); }
-}
-
-@keyframes textPulse {
-    0% { text-shadow: 0 0 6px #5cc9ff; }
-    100% { text-shadow: 0 0 14px #b48cff; }
-}
-
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #050015, #0b0030, #020010);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #cfe9ff;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #0b0f2a, #060813);
+    color: #fff;
 }
 
-.container {
-    width: 90%;
-    max-width: 420px;
-    background: rgba(30, 20, 60, 0.7);
-    padding: 24px;
-    border-radius: 20px;
+.wrapper {
+    padding: 90px 0 50px;
+    max-width: 440px;
+    margin: auto;
+}
+
+/* Top Text - RED GLOW */
+.top-text {
     text-align: center;
-    border: 1px solid rgba(120,180,255,0.35);
-    backdrop-filter: blur(12px);
-    animation: neonGlow 3s infinite alternate;
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #ff4b4b, #ff1a1a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(255,75,75,0.8), 0 0 8px rgba(255,26,26,0.5);
+    line-height: 1.4;
+    margin-bottom: 14px;
+}
+
+.tg-link {
+    color: #ff6b6b;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.tg-link:hover {
+    text-decoration: underline;
+}
+
+.love-text {
+    color: #ff1a1a;
+    font-weight: 700;
+    text-shadow: 0 0 10px #ff1a1a;
+}
+
+/* Native Ads */
+.native {
+    margin: 14px;
+    padding: 14px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #141c33, #0d1326);
+    border: 1px solid #1f2a4d;
+    text-align: center;
+    font-size: 13px;
+    color: #9aa6ff;
+}
+
+/* Steps */
+.steps {
+    margin: 16px 14px;
+    padding: 18px;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #10172d, #0a1024);
+    font-size: 14px;
+    line-height: 1.7;
+    color: #d6dbff;
+    box-shadow: inset 0 0 25px rgba(79,195,247,0.1);
+}
+
+.step-text {
+    display: block;
+    font-weight: 600;
+    color: #4fc3f7;
+    text-shadow: 0 0 6px rgba(79,195,247,0.6);
+}
+
+/* Main Card */
+.card {
+    margin: 18px 14px;
+    padding: 26px;
+    border-radius: 26px;
+    background: linear-gradient(160deg, #161f3d, #0c132b);
+    border: 1px solid rgba(255,75,75,0.35);
+    box-shadow:
+        0 0 35px rgba(255,75,75,0.25),
+        0 18px 45px rgba(0,0,0,0.7);
 }
 
 h2 {
-    font-size: 26px;
-    margin-bottom: 12px;
-    animation: textPulse 2s infinite alternate;
-}
-
-p {
-    font-size: 16px;
+    text-align: center;
+    margin-top: 0;
     margin-bottom: 18px;
-    opacity: 0.9;
+    background: linear-gradient(90deg, #4fc3f7, #1a75ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 14px rgba(79,195,247,0.8);
 }
 
+/* Buttons */
 button {
     width: 100%;
     padding: 15px;
-    border-radius: 16px;
+    margin-top: 14px;
+    border-radius: 18px;
     border: none;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    background: linear-gradient(135deg, #5cc9ff, #9b6bff);
-    color: #020014;
-    box-shadow: 0 0 14px rgba(120,180,255,0.8);
     transition: 0.3s;
 }
 
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 24px rgba(180,120,255,1);
+.watch {
+    background: linear-gradient(135deg, #4fc3f7, #1a75ff);
+    color: #fff;
+    box-shadow: 0 0 18px rgba(79,195,247,0.7);
 }
 
-#progress {
-    margin-top: 14px;
-    font-size: 18px;
-    font-weight: bold;
+.watch:hover {
+    box-shadow: 0 0 28px rgba(79,195,247,0.9);
 }
 
-#timerText {
-    display: none;
-    margin-top: 10px;
-    font-size: 16px;
+.watch:disabled {
+    background: #2b3355;
+    color: #8a94c8;
+    box-shadow: none;
+    cursor: not-allowed;
 }
 
-#botLinkBtn {
-    display: none;
-    margin-top: 22px;
-    background: linear-gradient(135deg, #00ffc8, #00c896);
-    box-shadow: 0 0 18px rgba(0,255,200,0.9);
-    animation: neonGlow 1.6s infinite alternate;
+.done {
+    background: linear-gradient(135deg, #22c55e, #2dd4bf);
+    color: #041b14;
+    box-shadow: 0 0 22px rgba(45,212,191,0.7);
+}
+
+.locked {
+    background: #1f2645;
+    color: #8b92c9;
+    cursor: not-allowed;
+}
+
+.progress, .timer {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #ffb3b3;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 26px;
+    font-size: 12px;
+    color: #ff7b7b;
+    opacity: 0.85;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h2>🎬 Free Video Reward</h2>
-    <p>Watch <b>2 rewarded ads</b> and stay <b>10 seconds</b> for each.</p>
+<div class="wrapper">
 
-    <button id="watchBtn" onclick="watchAd()">▶ Watch Ad</button>
+    <!-- Top Text -->
+    <div class="top-text">
+        🔥 Unlock Premium Content Instantly!<br>
+        All videos are already online — 18+ content. For removal or collab contact 
+        <a href="https://t.me/DailyyContentBot" class="tg-link">@DailyyContentBot</a>. 
+        We are not responsible for any video action. <span class="love-text">Love @durov</span>
+    </div>
 
-    <p id="progress">Ads watched: 0 / 2</p>
-    <p id="timerText"></p>
+    <!-- Top Social Bar -->
+    
 
-    <button id="botLinkBtn" onclick="openBot()">🔓 Get Video Bot</button>
+    <!-- Top Native Ads -->
+    <div class="native">
+        <script async="async" data-cfasync="false" src="https://pl28312504.effectivegatecpm.com/8a42e68e657a68a7626bcc7ca27a58d8/invoke.js"></script>
+        <div id="container-8a42e68e657a68a7626bcc7ca27a58d8"></div>
+    </div>
+
+    <div class="native">
+        <script async="async" data-cfasync="false" src="https://pl28312504.effectivegatecpm.com/8a42e68e657a68a7626bcc7ca27a58d8/invoke.js"></script>
+        <div id="container-8a42e68e657a68a7626bcc7ca27a58d8"></div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+        <b>How to unlock:</b><br>
+        <span class="step-text">• Watch Ad 1 → stay 10 seconds</span><br>
+        <span class="step-text">• Watch Ad 2 → stay 10 seconds</span><br>
+        <span class="step-text">• Watch Ad 3 → stay 10 seconds</span><br><br>
+        <span class="step-text">After completing all steps, the link will unlock automatically.</span>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <h2>Unlock Exclusive Content</h2>
+
+        <button id="btn1" class="watch" onclick="watchAd(1)">Watch Ad 1</button>
+        <div class="timer" id="timer1"></div>
+
+        <button id="btn2" class="watch" onclick="watchAd(2)" disabled>Watch Ad 2</button>
+        <div class="timer" id="timer2"></div>
+
+        <button id="btn3" class="watch" onclick="watchAd(3)" disabled>Watch Ad 3</button>
+        <div class="timer" id="timer3"></div>
+
+        <div class="progress" id="progress">Progress: 0 / 3</div>
+
+        <button id="finalBtn" class="locked" disabled>
+            🔒 Get Channel Link
+        </button>
+    </div>
+
+    <!-- Bottom Native Ads -->
+    <div class="native">
+        <script async="async" data-cfasync="false" src="https://pl28312504.effectivegatecpm.com/8a42e68e657a68a7626bcc7ca27a58d8/invoke.js"></script>
+        <div id="container-8a42e68e657a68a7626bcc7ca27a58d8"></div>
+    </div>
+
+    <div class="native">
+        <script async="async" data-cfasync="false" src="https://pl28312504.effectivegatecpm.com/8a42e68e657a68a7626bcc7ca27a58d8/invoke.js"></script>
+        <div id="container-8a42e68e657a68a7626bcc7ca27a58d8"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © @contentunlockerbot — All rights reserved
+    </div>
+
 </div>
 
 <script>
-let adsWatched = 0;
-let adCompleted = false;
-let timerCompleted = false;
-let timerRef = null;
-let timeLeft = 10;
+Telegram.WebApp.ready();
 
-function watchAd() {
-    if (timerRef) return;
+// Monetag ad zones mapping at top of script
+const adZones = {
+    1: "show_10196893", // Ad 1
+    2: "show_10363909",
+    3: "show_10363914"  // Ad 3
+};
 
-    adCompleted = false;
-    timerCompleted = false;
-    timeLeft = 10;
+let completed = 0;
+let waiting = false;
 
-    document.getElementById("timerText").style.display = "block";
-    document.getElementById("timerText").innerText = `⏳ Wait ${timeLeft}s`;
+function watchAd(step) {
+    if (waiting) return;
 
-    timerRef = setInterval(() => {
+    const btn = document.getElementById("btn" + step);
+    const timerDiv = document.getElementById("timer" + step);
+
+    btn.disabled = true;
+    waiting = true;
+    let timeLeft = 10;
+    timerDiv.innerText = "Watching ad: " + timeLeft + "s";
+
+    const countdown = setInterval(() => {
         timeLeft--;
-        document.getElementById("timerText").innerText = `⏳ Wait ${timeLeft}s`;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerRef);
-            timerRef = null;
-            timerCompleted = true;
-            checkReward();
-        }
+        timerDiv.innerText = "Watching ad: " + timeLeft + "s";
+        if (timeLeft <= 0) clearInterval(countdown);
     }, 1000);
 
-    show_10196897()
-        .then(() => {
-            adCompleted = true;
-            checkReward();
-        })
-        .catch(() => {
-            resetTimer();
-            alert("⚠ Please watch the full ad to count.");
-        });
-}
+    // Call Monetag ad
+    window[adZones[step]]().then(() => {
+        setTimeout(() => {
+            completed++;
+            btn.className = "done";
+            btn.innerText = "Ad " + step + " Completed ✅";
+            timerDiv.innerText = "Waiting 5s before next ad...";
 
-function resetTimer() {
-    clearInterval(timerRef);
-    timerRef = null;
-    document.getElementById("timerText").style.display = "none";
-}
+            // Disable all buttons during 5s wait
+            const allBtns = [1,2,3].map(i => document.getElementById("btn"+i));
+            allBtns.forEach(b => b.disabled = true);
 
-function checkReward() {
-    if (adCompleted && timerCompleted) {
-        adsWatched++;
-        document.getElementById("progress").innerText =
-            `Ads watched: ${adsWatched} / 2`;
+            let wait = 5;
+            const waitInterval = setInterval(() => {
+                timerDiv.innerText = "Next ad in: " + wait + "s";
+                wait--;
+                if (wait < 0) {
+                    clearInterval(waitInterval);
+                    waiting = false;
+                    // Enable next button if exists
+                    if (step < 3) document.getElementById("btn"+(step+1)).disabled = false;
+                    timerDiv.innerText = "";
+                }
+            }, 1000);
 
-        adCompleted = false;
-        timerCompleted = false;
-        document.getElementById("timerText").style.display = "none";
+            document.getElementById("progress").innerText = "Progress: " + completed + " / 3";
 
-        if (adsWatched >= 2) {
-            document.getElementById("watchBtn").style.display = "none";
-            document.getElementById("botLinkBtn").style.display = "block";
-        }
-    }
-}
+            if (completed === 3) {
+                const f = document.getElementById("finalBtn");
+                f.disabled = false;
+                f.className = "done";
+                f.innerText = "🔗 Open Channel";
+                f.onclick = () => {
+                    window.location.href = "https://t.me/+iB5Qy7mhNbc1ZTg1";
+                };
+            }
 
-function openBot() {
-    window.location.href = "https://t.me/+iB5Qy7mhNbc1ZTg1";
+        }, 1000);
+    }).catch(() => {
+        clearInterval(countdown);
+        alert("Please watch the full ad to continue.");
+        btn.disabled = false;
+        timerDiv.innerText = "";
+        waiting = false;
+    });
 }
 </script>
-
+<script src="https://pl28314987.effectivegatecpm.com/9d/63/e8/9d63e8c0ccbfde4dc47a26f727162d57.js"></script>
 </body>
 </html>
