@@ -42,7 +42,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Free CP", callback_data="cp")],
         [InlineKeyboardButton("Long and Premium Video", callback_data="free_videos")],
         [InlineKeyboardButton("Group and Free Photo", callback_data="free_photos")],
-        [InlineKeyboardButton(" Monday Free100+ video  ", callback_data="channel")]
+        [InlineKeyboardButton(" Wednesday Free50+ video  ", callback_data="channel")]
     ]
     message_text = (
         "Welcome! NO URL SHORTNERS , NO OTP , watch direct ads AND GET CHNL LINL:\n\n"
@@ -51,7 +51,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "- 🎬 Free Video: Watch a long video\n"
         "- 🖼 Free Photo: Get free photos\n"
         "- 📺 Channel Link: Unlock 100 videos\n\n"
-        "👉 Just click the button, watch the ads, and get your link."
+        "👉 Just click the button, watch the ads, and get your direct chnl link."
     )
     if update.callback_query:
         await update.callback_query.edit_message_text(
