@@ -40,9 +40,9 @@ threading.Thread(target=run_health_server, daemon=True).start()
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("Free CP", callback_data="cp")],
-        [InlineKeyboardButton("Long and Premium Video", callback_data="free_videos")],
+        [InlineKeyboardButton("Long and Premium Video(updated)", callback_data="free_videos")],
         [InlineKeyboardButton("Group and Free Photo", callback_data="free_photos")],
-        [InlineKeyboardButton(" Wednesday Free50+ video  ", callback_data="channel")]
+        [InlineKeyboardButton("Thrusday Free50+ video  ", callback_data="channel")]
     ]
     message_text = (
         "Welcome! NO URL SHORTNERS , NO OTP , watch direct ads AND GET CHNL LINL:\n\n"
