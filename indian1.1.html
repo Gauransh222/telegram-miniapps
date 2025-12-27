@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlock Content - India 1</title>
+
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- Monetag Rewarded Ads -->
+<script src="//libtl.com/sdk.js" data-zone="10196862" data-sdk='show_10196862'></script>
+<script src='//libtl.com/sdk.js' data-zone='10363825' data-sdk='show_10363825'></script>
+<script src='//libtl.com/sdk.js' data-zone='10363831' data-sdk='show_10363831'></script>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #0b0a0a, #010101);
+    color: #fff;
+}
+
+.wrapper {
+    padding: 90px 0 50px;
+    max-width: 440px;
+    margin: auto;
+}
+
+/* Top Text - Gold Glow */
+.top-text {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(255,215,0,0.8), 0 0 8px rgba(255,165,0,0.5);
+    line-height: 1.4;
+    margin-bottom: 14px;
+}
+
+.tg-link {
+    color: #FFD700;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.tg-link:hover {
+    text-decoration: underline;
+}
+
+.love-text {
+    color: #FFA500;
+    font-weight: 700;
+    text-shadow: 0 0 10px #FFD700;
+}
+
+/* Steps */
+.steps {
+    margin: 16px 14px;
+    padding: 18px;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #111111, #222222);
+    font-size: 14px;
+    line-height: 1.7;
+    color: #FFD700;
+    box-shadow: inset 0 0 25px rgba(255,215,0,0.1);
+}
+
+.step-text {
+    display: block;
+    font-weight: 600;
+    color: #FFD700;
+    text-shadow: 0 0 6px rgba(255,215,0,0.6);
+}
+
+/* Main Card */
+.card {
+    margin: 18px 14px;
+    padding: 26px;
+    border-radius: 26px;
+    background: linear-gradient(160deg, #111111, #000000);
+    border: 1px solid rgba(255,215,0,0.35);
+    box-shadow:
+        0 0 35px rgba(255,215,0,0.25),
+        0 18px 45px rgba(0,0,0,0.7);
+}
+
+h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 18px;
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 14px rgba(255,215,0,0.8);
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 14px;
+    border-radius: 18px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.watch {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    box-shadow: 0 0 18px rgba(255,215,0,0.7);
+}
+
+.watch:hover {
+    box-shadow: 0 0 28px rgba(255,215,0,0.9);
+}
+
+.watch:disabled {
+    background: #2b2b2b;
+    color: #999;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.done {
+    background: linear-gradient(135deg, #22c55e, #2dd4bf);
+    color: #041b14;
+    box-shadow: 0 0 22px rgba(45,212,191,0.7);
+}
+
+.locked {
+    background: #1f1f1f;
+    color: #555;
+    cursor: not-allowed;
+}
+
+.progress, .timer {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #FFD700;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 26px;
+    font-size: 12px;
+    color: #FFA500;
+    opacity: 0.85;
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+    <div class="top-text">
+        🔥 Unlock Premium India 1 Content!<br>
+        Contact <a href="https://t.me/DailyyContentBot" class="tg-link">@DailyyContentBot</a> for support.
+    </div>
+
+    <div class="steps">
+        <b>How to unlock:</b><br>
+        <span class="step-text">• Watch Ad 1 → stay 10 seconds</span><br>
+        <span class="step-text">• Watch Ad 2 → stay 10 seconds</span><br>
+        <span class="step-text">• Watch Ad 3 → stay 10 seconds</span><br><br>
+        <span class="step-text">After completing all steps, the link will unlock automatically.</span>
+    </div>
+
+    <div class="card">
+        <h2>Unlock Exclusive Content</h2>
+
+        <button id="btn1" class="watch" onclick="watchAd(1)">Watch Ad 1</button>
+        <div class="timer" id="timer1"></div>
+
+        <button id="btn2" class="watch" onclick="watchAd(2)" disabled>Watch Ad 2</button>
+        <div class="timer" id="timer2"></div>
+
+        <button id="btn3" class="watch" onclick="watchAd(3)" disabled>Watch Ad 3</button>
+        <div class="timer" id="timer3"></div>
+
+        <div class="progress" id="progress">Progress: 0 / 3</div>
+
+        <button id="finalBtn" class="locked" disabled>
+            🔒 Unlock Content
+        </button>
+    </div>
+
+    <div class="footer">
+        © @contentunlockerbot — All rights reserved
+    </div>
+
+</div>
+
+<script>
+Telegram.WebApp.ready();
+
+const adZones = { 1: "show_10196862", 2: "show_10363825", 3: "show_10363831" };
+let completed = 0;
+let waiting = false;
+
+function watchAd(step) {
+    if(waiting) return;
+    const btn = document.getElementById("btn"+step);
+    const timerDiv = document.getElementById("timer"+step);
+    btn.disabled = true;
+    waiting = true;
+    let timeLeft = 10;
+    timerDiv.innerText = "Watching ad: " + timeLeft + "s";
+    const countdown = setInterval(() => { timeLeft--; timerDiv.innerText = "Watching ad: " + timeLeft + "s"; if(timeLeft<=0) clearInterval(countdown); },1000);
+
+    window[adZones[step]]().then(() => {
+        setTimeout(() => {
+            completed++;
+            btn.className="done";
+            btn.innerText="Ad "+step+" Completed ✅";
+            timerDiv.innerText="Waiting 5s before next ad...";
+
+            const allBtns = [1,2,3].map(i=>document.getElementById("btn"+i));
+            allBtns.forEach(b=>b.disabled=true);
+
+            let wait=5;
+            const waitInterval=setInterval(()=>{
+                timerDiv.innerText="Next ad in: "+wait+"s"; wait--; if(wait<0){ clearInterval(waitInterval); waiting=false;
+                if(step<3) document.getElementById("btn"+(step+1)).disabled=false;
+                timerDiv.innerText="";
+            }},1000);
+
+            document.getElementById("progress").innerText="Progress: "+completed+" / 3";
+
+            if(completed===3){
+                const f=document.getElementById("finalBtn");
+                f.disabled=false;
+                f.className="done";
+                f.innerText="🔗 Unlock Content";
+                // ✅ Special parameter for bot
+                f.onclick = () => {
+                    window.location.href = "https://t.me/YourBotUsername?start=indian1_done";
+                };
+            }
+
+        },1000);
+    }).catch(()=>{
+        clearInterval(countdown);
+        alert("Please watch the full ad.");
+        btn.disabled=false;
+        timerDiv.innerText="";
+        waiting=false;
+    });
+}
+</script>
+
+</body>
+</html>

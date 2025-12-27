@@ -1,74 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background-color: #f4f4f4; }
-    button { padding: 8px 12px; margin: 4px; }
-    textarea { width: 100%; padding: 8px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Content Bot</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #0a0a0a;
+    color: #ffd700;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+    letter-spacing: 1px;
+    color: #ffcc00;
+    text-shadow: 0 0 8px #ffcc00;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #444;
+    text-align: center;
+}
+
+table th {
+    background: #222;
+    color: #ffd700;
+}
+
+table tr:nth-child(even) {
+    background: #111;
+}
+
+button {
+    background: linear-gradient(90deg, #ffcc00, #ffaa00);
+    color: #0a0a0a;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #ffaa00, #ffdd00);
+}
+
+input, select {
+    padding: 8px 10px;
+    margin-right: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #111;
+    color: #ffd700;
+}
+</style>
 </head>
 <body>
-  <h1>📊 Admin Panel</h1>
 
-  <h2>Send One-Way Message</h2>
-  <textarea id="broadcast_msg" rows="3" placeholder="Type message here..."></textarea>
-  <button onclick="sendBroadcast()">Send Broadcast</button>
+<header>Admin Panel - Content Bot</header>
 
-  <h2>Users</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>User ID</th>
-        <th>Name</th>
-        <th>Content Accessed</th>
-        <th>Last Access</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="user_table">
-      <!-- Filled dynamically -->
-    </tbody>
-  </table>
+<div class="container">
 
-  <script>
-    async function fetchUsers() {
-      const res = await fetch("/admin/users");
-      const users = await res.json();
-      const tbody = document.getElementById("user_table");
-      tbody.innerHTML = "";
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${u.user_id}</td>
-          <td>${u.name || "-"}</td>
-          <td>${u.content || "-"}</td>
-          <td>${new Date(u.last_access).toLocaleString()}</td>
-          <td>${u.blocked ? "Blocked" : "Active"}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+    <!-- Broadcast Section -->
+    <h2>Send One-Way Message</h2>
+    <div style="margin-bottom:20px;">
+        <input type="text" id="broadcastMessage" placeholder="Type message here..." style="width:70%;">
+        <button onclick="sendBroadcast()">Send Broadcast</button>
+    </div>
+
+    <!-- Users Table -->
+    <h2>Users & Stats</h2>
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Content Accessed</th>
+                <th>Blocked</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Filled dynamically via JS -->
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+const API_BASE = "/admin"; // your backend endpoints
+
+async function fetchUsers() {
+    try {
+        const res = await fetch(`${API_BASE}/users`);
+        const users = await res.json();
+
+        const tbody = document.querySelector("#usersTable tbody");
+        tbody.innerHTML = "";
+
+        users.forEach(u => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${u.user_id}</td>
+                <td>${u.name || "-"}</td>
+                <td>${u.content_accessed?.join(", ") || "-"}</td>
+                <td>${u.blocked ? "Yes" : "No"}</td>
+                <td>
+                    <button onclick="sendMessage(${u.user_id})">Send Message</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch(err) {
+        console.error(err);
+        alert("Failed to fetch users.");
     }
+}
 
-    async function sendBroadcast() {
-      const msg = document.getElementById("broadcast_msg").value;
-      if(!msg) { alert("Type message!"); return; }
-      const res = await fetch("/admin/broadcast", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({message: msg})
-      });
-      const data = await res.json();
-      alert(data.status);
-      document.getElementById("broadcast_msg").value = "";
+async function sendMessage(userId) {
+    const msg = prompt("Type message to send to user ID " + userId);
+    if (!msg) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/message`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({user_id: userId, message: msg})
+        });
+        const data = await res.json();
+        alert(data.status || "Message sent.");
+    } catch(err) {
+        console.error(err);
+        alert("Failed to send message.");
     }
+}
 
-    fetchUsers();
-    setInterval(fetchUsers, 10000); // Refresh every 10 seconds
-  </script>
+async function sendBroadcast() {
+    const msg = document.getElementById("broadcastMessage").value;
+    if (!msg) return alert("Type a message first.");
+
+    try {
+        const res = await fetch(`${API_BASE}/broadcast`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: msg})
+        });
+        const data = await res.json();
+        alert(data.status || "Broadcast sent.");
+    } catch(err) {
+        console.error(err);
+        alert("Failed to send broadcast.");
+    }
+}
+
+// Load users on page load
+fetchUsers();
+</script>
+
 </body>
 </html>
