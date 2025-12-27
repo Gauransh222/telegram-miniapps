@@ -31,10 +31,10 @@ DELETE_AFTER = 45*60
 # CONTENT CONFIG
 # -------------------------------
 CONTENT_CONFIG = {
-    "indian1":      {"channel": -1003573483388, "messages": list(range(1,61)), "html": "indian1.html"},
-    "indian2":      {"channel": -1002222222222, "messages": list(range(1,61)), "html": "indian2.html"},
-    "premium1":     {"channel": -1003333333333, "messages": list(range(1,61)), "html": "premium1.html"},
-    "childvideos1": {"channel": -1004444444444, "messages": list(range(1,61)), "html": "childvideos1.html"},
+    "indian1":      {"channel": -1003571861534, "messages": list(range(1,61)), "html": "indian1.html"},
+    "indian2":      {"channel": -1003520729513, "messages": list(range(1,61)), "html": "indian2.html"},
+    "premium1":     {"channel": -1003487224889, "messages": list(range(1,61)), "html": "premium1.html"},
+    "childvideos1": {"channel": -1003572102303, "messages": list(range(1,61)), "html": "childvideos1.html"},
     "indian1.1":    {"channel": -1005555555555, "messages": list(range(1,61)), "html": "indian1.1.html"},
     "indian1.2":    {"channel": -1006666666666, "messages": list(range(1,61)), "html": "indian1.2.html"}
 }
