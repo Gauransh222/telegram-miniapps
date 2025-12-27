@@ -31,7 +31,7 @@ def log_user_access(user_id: int, content: str):
 # -----------------------
 # CONSTANTS
 # -----------------------
-BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
+BASE_URL = "https://telegram-miniapps-liart.vercel.app/"
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
