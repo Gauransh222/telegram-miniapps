@@ -6,7 +6,7 @@ import asyncio
 from datetime import datetime, timezone
 from pymongo import MongoClient
 from telegram import (
-    Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo, InputMediaPhoto, InputMediaVideo
+    Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 )
 from telegram.ext import Application, CommandHandler, ContextTypes
 from telegram.error import Forbidden
@@ -18,7 +18,7 @@ from aiohttp import web
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 MONGO_URI = os.getenv("MONGO_URI")
 PORT = int(os.getenv("PORT", 8080))
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))  # Replace in .env
+ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))  # Telegram ID
 
 if not BOT_TOKEN or not MONGO_URI or not ADMIN_ID:
     raise RuntimeError("BOT_TOKEN, MONGO_URI, ADMIN_ID must be set in .env")
@@ -192,10 +192,53 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def healthcheck(request):
     return web.Response(text="OK")
 
+# -------------------------------
+# ADMIN PANEL ENDPOINTS
+# -------------------------------
+async def admin_users(request):
+    headers = request.headers
+    user_id = int(headers.get("X-Admin-ID", 0))
+    if user_id != ADMIN_ID:
+        return web.Response(text="Unauthorized", status=401)
+    
+    users = []
+    for u in users_col.find({}):
+        last_access = access_col.find_one({"user_id": u["user_id"]}, sort=[("timestamp", -1)])
+        users.append({
+            "user_id": u["user_id"],
+            "name": u.get("name"),
+            "content": last_access["content"] if last_access else None,
+            "joined_at": u["joined_at"].isoformat(),
+            "blocked": u.get("blocked", False)
+        })
+    return web.json_response(users)
+
+async def admin_broadcast(request):
+    headers = request.headers
+    user_id = int(headers.get("X-Admin-ID", 0))
+    if user_id != ADMIN_ID:
+        return web.Response(text="Unauthorized", status=401)
+    
+    data = await request.json()
+    msg = data.get("message", "")
+    count = 0
+    for u in users_col.find({"blocked": False}):
+        try:
+            await app.bot.send_message(u["user_id"], msg)
+            count += 1
+        except Forbidden:
+            mark_blocked(u["user_id"])
+    return web.json_response({"status": f"Sent to {count} users"})
+
+# -------------------------------
+# START WEB SERVER
+# -------------------------------
 async def start_web_server():
-    app = web.Application()
-    app.router.add_get("/", healthcheck)
-    runner = web.AppRunner(app)
+    web_app = web.Application()
+    web_app.router.add_get("/", healthcheck)
+    web_app.router.add_get("/admin/users", admin_users)
+    web_app.router.add_post("/admin/broadcast", admin_broadcast)
+    runner = web.AppRunner(web_app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", PORT)
     await site.start()
@@ -204,6 +247,7 @@ async def start_web_server():
 # MAIN
 # -------------------------------
 async def main():
+    global app
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("broadcast", broadcast))
