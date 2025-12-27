@@ -1,101 +1,162 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import asyncio
+from datetime import datetime
+from pymongo import MongoClient
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
+# -----------------------
+# ENV VARIABLES
+# -----------------------
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+MONGO_URI = os.getenv("MONGO_URI")
 
+# -----------------------
+# DATABASE SETUP
+# -----------------------
+mongo_client = MongoClient(MONGO_URI)
+mongo_db = mongo_client["content_bot"]
+access_collection = mongo_db["access_log"]
+
+def log_user_access(user_id: int, content: str):
+    access_collection.insert_one({
+        "user_id": user_id,
+        "content": content,
+        "timestamp": datetime.utcnow()
+    })
+
+# -----------------------
+# CONSTANTS
+# -----------------------
 BASE_URL = "https://gauransh222.github.io/telegram-miniapps/"
 MINI_APP_CP_URL = BASE_URL + "cp{cp_id}.html"
 MINI_APP_FREE_VID_URL = BASE_URL + "free_video.html"
 MINI_APP_CHNL_URL = BASE_URL + "channel.html"
-DAILY_CONTENT_BOT_FREE_PHOTO_LINK = "https://t.me/+qhYh7z_plJtjMGFl"
+
+# Storage channel for videos
+STORAGE_CHANNEL_ID = -1001234567890  # 🔴 Replace with your channel ID
+
+# Mapping of content to 60 video message IDs
+CONTENT_MAP = {
+    "cp11": list(range(1, 61)),
+    "cp21": list(range(61, 121)),
+    "premium1": list(range(121, 181)),
+    "chnl1": list(range(181, 241))
+}
+
+DELETE_AFTER = 45 * 60  # 45 minutes auto-delete
 
 # -----------------------
-# HEALTHCHECK SERVER
+# VIDEO FUNCTIONS
 # -----------------------
-class HealthHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"Bot is alive \xE2\x9C\x85")  # ✅ emoji
+async def delete_messages_after_delay(user_id, bot, message_ids):
+    await asyncio.sleep(DELETE_AFTER)
+    for mid in message_ids:
+        try:
+            await bot.delete_message(chat_id=user_id, message_id=mid)
+            await asyncio.sleep(0.2)
+        except Exception as e:
+            print(f"Failed to delete {mid}: {e}")
 
-    def do_HEAD(self):
-        self.send_response(200)
-        self.end_headers()
+async def send_videos(user_id, bot, key):
+    video_ids = CONTENT_MAP.get(key, [])
+    sent_message_ids = []
 
+    for msg_id in video_ids:
+        try:
+            sent = await bot.copy_message(
+                chat_id=user_id,
+                from_chat_id=STORAGE_CHANNEL_ID,
+                message_id=msg_id
+            )
+            sent_message_ids.append(sent.message_id)
+            await asyncio.sleep(0.6)  # anti-flood
+        except Exception as e:
+            print(f"Failed to send {msg_id}: {e}")
 
-def run_health_server():
-    port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), HealthHandler)
-    server.serve_forever()
-
-# Start health server in background
-threading.Thread(target=run_health_server, daemon=True).start()
+    # schedule deletion
+    asyncio.create_task(delete_messages_after_delay(user_id, bot, sent_message_ids))
 
 # -----------------------
 # BOT HANDLERS
 # -----------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    args = context.args
+    user_id = update.effective_user.id
+
+    # ---------- HANDLE START PARAM ----------
+    if args:
+        key = args[0]
+
+        # FINAL unlock param from mini-app
+        if key.endswith("_done"):
+            base_key = key.replace("_done", "")
+            log_user_access(user_id, base_key)
+            await update.message.reply_text(
+                f"✅ Access confirmed for **{base_key.upper()}**!\n"
+                "📤 Sending 60 videos now...\n"
+                "⏳ Videos will auto-delete after 45 minutes.",
+                parse_mode="Markdown"
+            )
+            await send_videos(user_id, context.bot, base_key)
+            return
+
+        # Initial param from channel
+        else:
+            mini_app_url = MINI_APP_CP_URL.format(cp_id=key)
+            keyboard = [
+                [InlineKeyboardButton(f"Watch {key} Mini-App", web_app=WebAppInfo(url=mini_app_url))]
+            ]
+            await update.message.reply_text(
+                f"👆 Click below to open the mini-app for **{key.upper()}**.\n"
+                "You need to complete the 3 ads inside to unlock the final button.",
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
+            return
+
+    # ---------- DEFAULT START MENU ----------
     keyboard = [
-        [InlineKeyboardButton("Free CP", callback_data="cp")],
-        [InlineKeyboardButton("Videshi and Premium Video(updated)", callback_data="free_videos")],
-        [InlineKeyboardButton("Group and Free Photo", callback_data="free_photos")],
-        [InlineKeyboardButton("Friday Free50+ video  ", callback_data="channel")]
+        [InlineKeyboardButton("CP11", callback_data="cp11")],
+        [InlineKeyboardButton("CP21", callback_data="cp21")],
+        [InlineKeyboardButton("Premium1", callback_data="premium1")],
+        [InlineKeyboardButton("Channel1", callback_data="chnl1")]
     ]
     message_text = (
-        "Welcome! NO URL SHORTNERS , NO OTP , watch direct ads AND GET CHNL LINL:\n\n"
-        "- 📂 CP: Get CP zip files  (CP1–CP6)\n"
-         "- 🖼 contact for collaboration and doubt @DailyyContentBot\n"
-        "- 🎬 Free Video: Watch a long video\n"
-        "- 🖼 Free Photo: Get free photos\n"
-        "- 📺 Channel Link: Unlock 100 videos\n\n"
-        "👉 Just click the button, watch the ads, and get your direct chnl link."
+        "Welcome! Select content to unlock:\n\n"
+        "- CP11 / CP21 / Premium1 / Channel1\n"
+        "After completing mini-app ads, click the final unlock button to get videos."
     )
+
     if update.callback_query:
         await update.callback_query.edit_message_text(
-            message_text, reply_markup=InlineKeyboardMarkup(keyboard)
+            message_text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
-        await update.message.reply_text(message_text, reply_markup=InlineKeyboardMarkup(keyboard))
+        await update.message.reply_text(
+            message_text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+    key = query.data
 
-    if query.data == "cp":
-        keyboard = [[InlineKeyboardButton(f"CP{i}", callback_data=f"cp_{i}")] for i in range(1, 7)]
-        keyboard.append([InlineKeyboardButton("⬅ Back", callback_data="back")])
-        await query.edit_message_text("Select CP content:", reply_markup=InlineKeyboardMarkup(keyboard))
+    mini_app_url = MINI_APP_CP_URL.format(cp_id=key)
+    keyboard = [
+        [InlineKeyboardButton(f"Watch {key} Mini-App", web_app=WebAppInfo(url=mini_app_url))],
+        [InlineKeyboardButton("⬅ Back", callback_data="back")]
+    ]
+    await query.edit_message_text(
+        f"Click below to open mini-app for **{key.upper()}**. Complete the 3 ads to unlock the final button.",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
 
-    elif query.data.startswith("cp_"):
-        cp_id = query.data.split("_")[1]
-        url = MINI_APP_CP_URL.format(cp_id=cp_id)
-        keyboard = [
-            [InlineKeyboardButton("Open CP Mini App", web_app=WebAppInfo(url=url))],
-            [InlineKeyboardButton("⬅ Back", callback_data="cp")]
-        ]
-        await query.edit_message_text(f"Tap below to open CP{cp_id} mini app:", reply_markup=InlineKeyboardMarkup(keyboard))
-
-    elif query.data == "free_videos":
-        keyboard = [
-            [InlineKeyboardButton("Open Free Video App", web_app=WebAppInfo(url=MINI_APP_FREE_VID_URL))],
-            [InlineKeyboardButton("⬅ Back", callback_data="back")]
-        ]
-        await query.edit_message_text("Tap below to open Free Video mini-app:", reply_markup=InlineKeyboardMarkup(keyboard))
-
-    elif query.data == "free_photos":
-        await query.edit_message_text(f"Tap to get Free Photos:\n{DAILY_CONTENT_BOT_FREE_PHOTO_LINK}")
-
-    elif query.data == "channel":
-        keyboard = [
-            [InlineKeyboardButton("Open Channel Mini App", web_app=WebAppInfo(url=MINI_APP_CHNL_URL))],
-            [InlineKeyboardButton("⬅ Back", callback_data="back")]
-        ]
-        await query.edit_message_text("Tap below to unlock the Channel:", reply_markup=InlineKeyboardMarkup(keyboard))
-
-    elif query.data == "back":
+    if key == "back":
         await start(update, context)
 
 # -----------------------
@@ -103,6 +164,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # -----------------------
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
