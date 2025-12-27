@@ -5,9 +5,7 @@ import os
 import asyncio
 from datetime import datetime, timezone
 from pymongo import MongoClient
-from telegram import (
-    Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-)
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
 from telegram.error import Forbidden
 from aiohttp import web
@@ -18,7 +16,7 @@ from aiohttp import web
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 MONGO_URI = os.getenv("MONGO_URI")
 PORT = int(os.getenv("PORT", 8080))
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))  # Telegram ID
+ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
 
 if not BOT_TOKEN or not MONGO_URI or not ADMIN_ID:
     raise RuntimeError("BOT_TOKEN, MONGO_URI, ADMIN_ID must be set in .env")
@@ -37,11 +35,9 @@ CONTENT_CONFIG = {
     "indian2":      {"channel": -1002222222222, "messages": list(range(1,61)), "html": "indian2.html"},
     "premium1":     {"channel": -1003333333333, "messages": list(range(1,61)), "html": "premium1.html"},
     "childvideos1": {"channel": -1004444444444, "messages": list(range(1,61)), "html": "childvideos1.html"},
-    # hidden
-    "indian1.1":  {"channel": -1005555555555, "messages": list(range(1,61)), "html": "indian1.1.html"},
-    "indian1.2":  {"channel": -1006666666666, "messages": list(range(1,61)), "html": "indian1.2.html"}
+    "indian1.1":    {"channel": -1005555555555, "messages": list(range(1,61)), "html": "indian1.1.html"},
+    "indian1.2":    {"channel": -1006666666666, "messages": list(range(1,61)), "html": "indian1.2.html"}
 }
-
 VALID_KEYS = set(CONTENT_CONFIG.keys())
 
 # -------------------------------
@@ -53,30 +49,31 @@ users_col = db["users"]
 access_col = db["access_log"]
 
 # -------------------------------
-# DATABASE HELPERS
+# HELPERS
 # -------------------------------
-def save_user(user_id: int):
+def save_user(user):
+    """Save any interacting user"""
+    user_id = user.id
     users_col.update_one(
         {"user_id": user_id},
         {"$setOnInsert": {
             "user_id": user_id,
+            "username": user.username or "",
+            "first_name": user.first_name or "",
             "joined_at": datetime.now(timezone.utc),
             "blocked": False,
         }},
-        upsert=True,
+        upsert=True
     )
 
 def mark_blocked(user_id: int):
-    users_col.update_one(
-        {"user_id": user_id},
-        {"$set": {"blocked": True}},
-    )
+    users_col.update_one({"user_id": user_id}, {"$set": {"blocked": True}})
 
 def log_access(user_id: int, key: str):
     access_col.insert_one({
         "user_id": user_id,
         "content": key,
-        "timestamp": datetime.now(timezone.utc),
+        "timestamp": datetime.now(timezone.utc)
     })
 
 # -------------------------------
@@ -99,11 +96,7 @@ async def send_videos(user_id, bot, key):
 
     for msg_id in cfg["messages"]:
         try:
-            m = await bot.copy_message(
-                chat_id=user_id,
-                from_chat_id=cfg["channel"],
-                message_id=msg_id
-            )
+            m = await bot.copy_message(chat_id=user_id, from_chat_id=cfg["channel"], message_id=msg_id)
             sent.append((user_id, m.message_id))
             await asyncio.sleep(0.6)
         except Forbidden:
@@ -118,40 +111,34 @@ async def send_videos(user_id, bot, key):
 # START HANDLER
 # -------------------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    save_user(update.effective_user)
     user_id = update.effective_user.id
-    save_user(user_id)
     args = context.args
 
-    # ---------- INTRO ----------
     if not args:
         await update.message.reply_text(
-            (
-                "✨ <b>Welcome to Premium Content Bot</b> ✨\n\n"
-                "🎥 Exclusive private videos\n"
-                "🔐 Access via special links only\n"
-                "⏳ Content auto-deletes after 45 minutes"
-            ),
+            "✨ <b>Welcome to Premium Content Bot</b> ✨\n\n"
+            "🎥 Exclusive private videos\n"
+            "🔐 Access via special links only\n"
+            "⏳ Content auto-deletes after 45 minutes",
             parse_mode="HTML"
         )
         return
 
     param = args[0]
 
-    # ---------- FINAL UNLOCK ----------
+    # Final unlock
     if param.endswith("_done"):
         key = param.replace("_done", "")
         if key not in VALID_KEYS:
             await update.message.reply_text("❌ Invalid or expired link.")
             return
         log_access(user_id, key)
-        await update.message.reply_text(
-            "✅ <b>Access Confirmed</b>\n📤 Sending content…",
-            parse_mode="HTML"
-        )
+        await update.message.reply_text("✅ <b>Access Confirmed</b>\n📤 Sending content…", parse_mode="HTML")
         await send_videos(user_id, context.bot, key)
         return
 
-    # ---------- INITIAL ACCESS ----------
+    # Initial access
     if param in VALID_KEYS:
         html_page = CONTENT_CONFIG[param]["html"]
         mini_app_url = BASE_MINIAPP_URL + html_page
@@ -187,12 +174,6 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"✅ Broadcast sent to {count} users.")
 
 # -------------------------------
-# HEALTH CHECK FOR RENDER
-# -------------------------------
-async def healthcheck(request):
-    return web.Response(text="OK")
-
-# -------------------------------
 # ADMIN PANEL ENDPOINTS
 # -------------------------------
 async def admin_users(request):
@@ -206,7 +187,7 @@ async def admin_users(request):
         last_access = access_col.find_one({"user_id": u["user_id"]}, sort=[("timestamp", -1)])
         users.append({
             "user_id": u["user_id"],
-            "name": u.get("name"),
+            "name": u.get("first_name") or "",
             "content": last_access["content"] if last_access else None,
             "joined_at": u["joined_at"].isoformat(),
             "blocked": u.get("blocked", False)
@@ -229,6 +210,12 @@ async def admin_broadcast(request):
         except Forbidden:
             mark_blocked(u["user_id"])
     return web.json_response({"status": f"Sent to {count} users"})
+
+# -------------------------------
+# HEALTHCHECK
+# -------------------------------
+async def healthcheck(request):
+    return web.Response(text="OK")
 
 # -------------------------------
 # START WEB SERVER
