@@ -119,8 +119,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "✨ <b>Welcome to Premium Content Bot</b> ✨\n\n"
             "🎥 Exclusive private videos\n"
-            "🔐 Access via special links only\n"
-            "⏳ Content auto-deletes after 45 minutes",
+            "🔐 watch direct video , no url shortener\n"
+            "⏳ Chcek chnl for free video and links for video https://t.me/+qhYh7z_plJtjMGFl",
             parse_mode="HTML"
         )
         return
@@ -142,7 +142,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if param in VALID_KEYS:
         html_page = CONTENT_CONFIG[param]["html"]
         mini_app_url = BASE_MINIAPP_URL + html_page
-        keyboard = [[InlineKeyboardButton("▶ Watch Ads to Unlock", web_app=WebAppInfo(mini_app_url))]]
+        keyboard = [[InlineKeyboardButton("▶ Watch 3 video ads ang get 25+ video ", web_app=WebAppInfo(mini_app_url))]]
         await update.message.reply_text(
             "🔒 <b>Locked Content</b>\nWatch 3 ads to unlock.",
             reply_markup=InlineKeyboardMarkup(keyboard),
