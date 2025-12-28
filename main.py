@@ -25,7 +25,7 @@ if not BOT_TOKEN or not MONGO_URI or not ADMIN_ID:
 # CONFIG
 # -------------------------------
 BASE_MINIAPP_URL = "https://telegram-miniapps-liart.vercel.app/"
-DELETE_AFTER = 45*60
+
 
 # -------------------------------
 # CONTENT CONFIG
@@ -79,13 +79,7 @@ def log_access(user_id: int, key: str):
 # -------------------------------
 # AUTO DELETE
 # -------------------------------
-async def auto_delete(bot, messages):
-    await asyncio.sleep(DELETE_AFTER)
-    for chat_id, msg_id in messages:
-        try:
-            await bot.delete_message(chat_id, msg_id)
-        except Exception:
-            pass
+
 
 # -------------------------------
 # SEND VIDEOS
@@ -105,7 +99,7 @@ async def send_videos(user_id, bot, key):
         except Exception as e:
             print("Send error:", e)
 
-    asyncio.create_task(auto_delete(bot, sent))
+    
 
 # -------------------------------
 # START HANDLER
