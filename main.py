@@ -142,9 +142,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if param in VALID_KEYS:
         html_page = CONTENT_CONFIG[param]["html"]
         mini_app_url = BASE_MINIAPP_URL + html_page
-        keyboard = [[InlineKeyboardButton("▶ Watch 3 video ads ang get 25+ video ", web_app=WebAppInfo(mini_app_url))]]
+        keyboard = [[InlineKeyboardButton("▶ Watch 3 video  ", web_app=WebAppInfo(mini_app_url))]]
         await update.message.reply_text(
-            "🔒 <b>Locked Content</b>\nWatch 3 ads to unlock.",
+            "🔒 <b>Locked Content</b>\nWatch 3 ads to unlock 25+ video and get directly .",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="HTML"
         )
