@@ -31,12 +31,12 @@ BASE_MINIAPP_URL = "https://telegram-miniapps-liart.vercel.app/"
 # CONTENT CONFIG
 # -------------------------------
 CONTENT_CONFIG = {
-    "indian1":      {"channel": -1003571861534, "messages": list(range(1,61)), "html": "indian1.html"},
-    "indian2":      {"channel": -1003520729513, "messages": list(range(1,61)), "html": "indian2.html"},
-    "premium1":     {"channel": -1003487224889, "messages": list(range(1,61)), "html": "premium1.html"},
-    "childvideos1": {"channel": -1003572102303, "messages": list(range(1,61)), "html": "childvideos1.html"},
-    "indian1.1":    {"channel": -1005555555555, "messages": list(range(1,61)), "html": "indian1.1.html"},
-    "indian1.2":    {"channel": -1006666666666, "messages": list(range(1,61)), "html": "indian1.2.html"}
+    "indian1":      {"channel": -1003571861534, "messages": list(range(1,601)), "html": "indian1.html"},
+    "indian2":      {"channel": -1003520729513, "messages": list(range(1,601)), "html": "indian2.html"},
+    "premium1":     {"channel": -1003487224889, "messages": list(range(1,601)), "html": "premium1.html"},
+    "childvideos1": {"channel": -1003572102303, "messages": list(range(1,601)), "html": "childvideos1.html"},
+    "indian1.1":    {"channel": -1005555555555, "messages": list(range(1,601)), "html": "indian1.1.html"},
+    "indian1.2":    {"channel": -1006666666666, "messages": list(range(1,601)), "html": "indian1.2.html"}
 }
 VALID_KEYS = set(CONTENT_CONFIG.keys())
 
