@@ -29,7 +29,6 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 MONGO_URI = os.getenv("MONGO_URI")
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
-
 # =======================
 # REQUIRED JOIN CHANNELS
 # =======================
@@ -273,6 +272,11 @@ class HealthHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"Bot is alive")
+
+    # ✅ Added to support UptimeRobot HEAD checks
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
 
 def run_http_server():
     port = int(os.environ.get("PORT", 10000))
