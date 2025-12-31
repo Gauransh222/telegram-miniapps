@@ -45,7 +45,7 @@ CONTENT_CONFIG = {
         "channel": -1003487224889,
         "html": "premium1.html",
         "ranges": {
-            "xyz99": range(1, 22),
+            "set1": range(1, 20),
             "abc55": range(22, 41),
         }
     },
@@ -53,14 +53,14 @@ CONTENT_CONFIG = {
         "channel": -1003571861534,
         "html": "indian1.html",
         "ranges": {
-            "set1": range(1, 26),
+            "set1": range(1, 60),
         }
     },
     "childvideos1": {
         "channel": -1003572102303,
         "html": "childvideos1.html",
         "ranges": {
-            "kids": range(1, 21),
+            "set1": range(1, 20),
         }
     }
 }
@@ -114,7 +114,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     save_user(user)
 
     if not context.args:
-        await update.message.reply_text("Welcome 👋\nUse a valid access link.")
+        await update.message.reply_text("Welcome 👋\nUse a valid access link from this free 18+ channel https://t.me/+2KSxXSbNbZwyY2Rl ")
         return
 
     param = context.args[0]
@@ -189,10 +189,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     mini_url = f"https://telegram-miniapps-liart.vercel.app/{cfg['html']}?start={param}"
-    btn = [[InlineKeyboardButton("▶ Watch Ads", web_app=WebAppInfo(mini_url))]]
+    btn = [[InlineKeyboardButton("▶ Watch 3 video ads ", web_app=WebAppInfo(mini_url))]]
 
     await update.message.reply_text(
-        "🔓 Almost done!\nWatch 3 ads to unlock.",
+        "🔓 Almost done!\nWatch 3 ads to unlock 30+ bulk media , no utl shortner .",
         reply_markup=InlineKeyboardMarkup(btn)
     )
 
