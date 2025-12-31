@@ -7,259 +7,203 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unlock Content - India 1</title>
+<title>Indian  Premium Unlock</title>
 
-<!-- Telegram WebApp SDK -->
+<!-- Telegram SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- Monetag Rewarded Ads -->
+<!-- Ads -->
 <script src='//libtl.com/sdk.js' data-zone='10363873' data-sdk='show_10363873'></script>
 <script src='//libtl.com/sdk.js' data-zone='10363858' data-sdk='show_10363858'></script>
 <script src='//libtl.com/sdk.js' data-zone='10363864' data-sdk='show_10363864'></script>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at top, #0b0a0a, #010101);
-    color: #fff;
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:radial-gradient(circle at top,#2a004f,#090013);
+    color:#fff;
 }
-
-.wrapper {
-    padding: 90px 0 50px;
-    max-width: 440px;
-    margin: auto;
+.container{
+    max-width:420px;
+    margin:auto;
+    padding:80px 14px 40px;
 }
-
-/* Top Text - Gold Glow */
-.top-text {
-    text-align: center;
-    font-family: 'Oswald', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    background: linear-gradient(90deg, #FFD700, #FFA500);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 12px rgba(255,215,0,0.8), 0 0 8px rgba(255,165,0,0.5);
-    line-height: 1.4;
-    margin-bottom: 14px;
+.title{
+    text-align:center;
+    font-family:'Montserrat',sans-serif;
+    font-size:22px;
+    font-weight:800;
+    background:linear-gradient(90deg,#c084fc,#a855f7);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:8px;
 }
-
-.tg-link {
-    color: #FFD700;
-    font-weight: 700;
-    text-decoration: none;
+.sub{
+    text-align:center;
+    font-size:13px;
+    color:#d8b4fe;
+    margin-bottom:20px;
 }
-
-.tg-link:hover {
-    text-decoration: underline;
+.card{
+    background:linear-gradient(160deg,#160028,#05000d);
+    border-radius:22px;
+    padding:26px;
+    border:1px solid rgba(192,132,252,0.35);
+    box-shadow:0 0 45px rgba(168,85,247,0.25);
 }
-
-.love-text {
-    color: #FFA500;
-    font-weight: 700;
-    text-shadow: 0 0 10px #FFD700;
+h2{
+    text-align:center;
+    margin-top:0;
+    font-size:18px;
+    background:linear-gradient(90deg,#c084fc,#a855f7);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
-
-/* Steps */
-.steps {
-    margin: 16px 14px;
-    padding: 18px;
-    border-radius: 20px;
-    background: linear-gradient(145deg, #111111, #222222);
-    font-size: 14px;
-    line-height: 1.7;
-    color: #FFD700;
-    box-shadow: inset 0 0 25px rgba(255,215,0,0.1);
+.step{
+    font-size:14px;
+    margin:6px 0;
+    color:#e9d5ff;
 }
-
-.step-text {
-    display: block;
-    font-weight: 600;
-    color: #FFD700;
-    text-shadow: 0 0 6px rgba(255,215,0,0.6);
+button{
+    width:100%;
+    padding:15px;
+    margin-top:14px;
+    border:none;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
 }
-
-/* Main Card */
-.card {
-    margin: 18px 14px;
-    padding: 26px;
-    border-radius: 26px;
-    background: linear-gradient(160deg, #111111, #000000);
-    border: 1px solid rgba(255,215,0,0.35);
-    box-shadow:
-        0 0 35px rgba(255,215,0,0.25),
-        0 18px 45px rgba(0,0,0,0.7);
+.watch{
+    background:linear-gradient(135deg,#c084fc,#9333ea);
+    color:#160028;
 }
-
-h2 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 18px;
-    background: linear-gradient(90deg, #FFD700, #FFA500);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 14px rgba(255,215,0,0.8);
+.watch:disabled{
+    background:#2a003f;
+    color:#777;
+    cursor:not-allowed;
 }
-
-/* Buttons */
-button {
-    width: 100%;
-    padding: 15px;
-    margin-top: 14px;
-    border-radius: 18px;
-    border: none;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
+.done{
+    background:linear-gradient(135deg,#22c55e,#2dd4bf);
+    color:#06211b;
 }
-
-.watch {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    color: #000;
-    box-shadow: 0 0 18px rgba(255,215,0,0.7);
+.locked{
+    background:#1b1025;
+    color:#666;
 }
-
-.watch:hover {
-    box-shadow: 0 0 28px rgba(255,215,0,0.9);
+.status{
+    text-align:center;
+    margin-top:10px;
+    font-size:13px;
+    color:#e9d5ff;
 }
-
-.watch:disabled {
-    background: #2b2b2b;
-    color: #999;
-    box-shadow: none;
-    cursor: not-allowed;
-}
-
-.done {
-    background: linear-gradient(135deg, #22c55e, #2dd4bf);
-    color: #041b14;
-    box-shadow: 0 0 22px rgba(45,212,191,0.7);
-}
-
-.locked {
-    background: #1f1f1f;
-    color: #555;
-    cursor: not-allowed;
-}
-
-.progress, .timer {
-    text-align: center;
-    margin-top: 12px;
-    font-size: 14px;
-    color: #FFD700;
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    margin-top: 26px;
-    font-size: 12px;
-    color: #FFA500;
-    opacity: 0.85;
+.footer{
+    text-align:center;
+    font-size:11px;
+    margin-top:24px;
+    color:#c084fc;
 }
 </style>
 </head>
 
 <body>
-<div class="wrapper">
+<div class="container">
 
-    <div class="top-text">
-        🔥 Unlock Premium India 1 Content!<br>
-        Contact <a href="https://t.me/DailyyContentBot" class="tg-link">@DailyyContentBot</a> for support.
-    </div>
+<div class="title">Premium Unlock</div>
+<div class="sub">Watch ads to unlock private videos</div>
 
-    <div class="steps">
-        <b>How to unlock:</b><br>
-        <span class="step-text">• Watch Ad 1 → stay 10 seconds</span><br>
-        <span class="step-text">• Watch Ad 2 → stay 10 seconds</span><br>
-        <span class="step-text">• Watch Ad 3 → stay 10 seconds</span><br><br>
-        <span class="step-text">After completing all steps, the link will unlock automatically.</span>
-    </div>
+<div class="card">
+<h2>Steps</h2>
 
-    <div class="card">
-        <h2>Unlock Exclusive Content</h2>
+<div class="step">• Watch Ad 1 (10 sec)</div>
+<div class="step">• Watch Ad 2 (10 sec)</div>
+<div class="step">• Watch Ad 3 (10 sec)</div>
 
-        <button id="btn1" class="watch" onclick="watchAd(1)">Watch Ad 1</button>
-        <div class="timer" id="timer1"></div>
+<button id="b1" class="watch" onclick="watchAd(1)">Watch Ad 1</button>
+<div id="t1" class="status"></div>
 
-        <button id="btn2" class="watch" onclick="watchAd(2)" disabled>Watch Ad 2</button>
-        <div class="timer" id="timer2"></div>
+<button id="b2" class="watch" onclick="watchAd(2)" disabled>Watch Ad 2</button>
+<div id="t2" class="status"></div>
 
-        <button id="btn3" class="watch" onclick="watchAd(3)" disabled>Watch Ad 3</button>
-        <div class="timer" id="timer3"></div>
+<button id="b3" class="watch" onclick="watchAd(3)" disabled>Watch Ad 3</button>
+<div id="t3" class="status"></div>
 
-        <div class="progress" id="progress">Progress: 0 / 3</div>
+<div id="prog" class="status">Progress: 0 / 3</div>
 
-        <button id="finalBtn" class="locked" disabled>
-            🔒 Unlock Content
-        </button>
-    </div>
+<button id="final" class="locked" disabled>🔒 Unlock Content</button>
+</div>
 
-    <div class="footer">
-        © @contentunlockerbot — All rights reserved
-    </div>
-
+<div class="footer">© ContentUnlockerBot</div>
 </div>
 
 <script>
 Telegram.WebApp.ready();
 
-const adZones = { 1: "show_10363873", 2: "show_10363858", 3: "show_10363864" };
+/* ✅ FIXED PARAM HANDLING */
+const param =
+    Telegram.WebApp.initDataUnsafe?.start_param ||
+    new URLSearchParams(window.location.search).get("start");
+
+if(!param){
+    alert("Invalid or expired link");
+    Telegram.WebApp.close();
+}
+
 let completed = 0;
-let waiting = false;
+let busy = false;
 
-function watchAd(step) {
-    if(waiting) return;
-    const btn = document.getElementById("btn"+step);
-    const timerDiv = document.getElementById("timer"+step);
+const ads = {
+    1:"show_10363873",
+    2:"show_10363858",
+    3:"show_10363864"
+};
+
+function watchAd(i){
+    if(busy) return;
+    busy = true;
+
+    const btn = document.getElementById("b"+i);
+    const txt = document.getElementById("t"+i);
     btn.disabled = true;
-    waiting = true;
-    let timeLeft = 10;
-    timerDiv.innerText = "Watching ad: " + timeLeft + "s";
-    const countdown = setInterval(() => { timeLeft--; timerDiv.innerText = "Watching ad: " + timeLeft + "s"; if(timeLeft<=0) clearInterval(countdown); },1000);
 
-    window[adZones[step]]().then(() => {
-        setTimeout(() => {
-            completed++;
-            btn.className="done";
-            btn.innerText="Ad "+step+" Completed ✅";
-            timerDiv.innerText="Waiting 5s before next ad...";
+    let sec = 10;
+    txt.innerText = "Watching ad: "+sec+"s";
+    const timer = setInterval(()=>{
+        sec--;
+        txt.innerText = "Watching ad: "+sec+"s";
+        if(sec<=0) clearInterval(timer);
+    },1000);
 
-            const allBtns = [1,2,3].map(i=>document.getElementById("btn"+i));
-            allBtns.forEach(b=>b.disabled=true);
+    window[ads[i]]().then(()=>{
+        completed++;
+        btn.className="done";
+        btn.innerText="Completed ✅";
+        document.getElementById("prog").innerText=`Progress: ${completed} / 3`;
 
-            let wait=5;
-            const waitInterval=setInterval(()=>{
-                timerDiv.innerText="Next ad in: "+wait+"s"; wait--; if(wait<0){ clearInterval(waitInterval); waiting=false;
-                if(step<3) document.getElementById("btn"+(step+1)).disabled=false;
-                timerDiv.innerText="";
-            }},1000);
+        if(i<3) document.getElementById("b"+(i+1)).disabled=false;
 
-            document.getElementById("progress").innerText="Progress: "+completed+" / 3";
-
-            if(completed===3){
-                const f=document.getElementById("finalBtn");
-                f.disabled=false;
-                f.className="done";
-                f.innerText="🔗 Unlock Content";
-                // ✅ Special parameter for bot
-                f.onclick = () => {
-                    window.location.href = "https://t.me/ContentUnlockerBot?start=indian1_done";
-                };
-            }
-
-        },1000);
+        if(completed===3){
+            const f=document.getElementById("final");
+            f.disabled=false;
+            f.className="done";
+            f.innerText="🔗 Get Videos";
+            f.onclick=()=>{
+                Telegram.WebApp.openTelegramLink(
+                    `https://t.me/ContentUnlockerBot?start=${param}_done`
+                );
+                Telegram.WebApp.close();
+            };
+        }
+        busy=false;
     }).catch(()=>{
-        clearInterval(countdown);
-        alert("Please watch the full ad.");
+        busy=false;
         btn.disabled=false;
-        timerDiv.innerText="";
-        waiting=false;
+        txt.innerText="";
     });
 }
 </script>

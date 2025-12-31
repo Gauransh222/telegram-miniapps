@@ -3,243 +3,295 @@ load_dotenv()
 
 import os
 import asyncio
-from datetime import datetime, timezone
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from datetime import datetime, timedelta, timezone
 from pymongo import MongoClient
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import Application, CommandHandler, ContextTypes
-from telegram.error import Forbidden
-from aiohttp import web
 
-# -------------------------------
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    WebAppInfo,
+)
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    CallbackQueryHandler,
+    ContextTypes
+)
+from telegram.error import Forbidden
+
+# =======================
 # ENV
-# -------------------------------
+# =======================
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 MONGO_URI = os.getenv("MONGO_URI")
-PORT = int(os.getenv("PORT", 8080))
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
-
-if not BOT_TOKEN or not MONGO_URI or not ADMIN_ID:
-    raise RuntimeError("BOT_TOKEN, MONGO_URI, ADMIN_ID must be set in .env")
-
-# -------------------------------
-# CONFIG
-# -------------------------------
-BASE_MINIAPP_URL = "https://telegram-miniapps-liart.vercel.app/"
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
 
-# -------------------------------
-# CONTENT CONFIG
-# -------------------------------
+# =======================
+# REQUIRED JOIN CHANNELS
+# =======================
+JOIN_CHANNELS = [
+    ("Channel 1", "https://t.me/+2KSxXSbNbZwyY2Rl", -1003636767769),
+    ("Channel 2", "https://t.me/+VriQFTsENPg2ODdl", -1003326198393),
+]
+
+# =======================
+# STORAGE CONFIG (ONLY 3)
+# =======================
 CONTENT_CONFIG = {
-    "indian1":      {"channel": -1003571861534, "messages": list(range(1,601)), "html": "indian1.html"},
-    "indian2":      {"channel": -1003520729513, "messages": list(range(1,601)), "html": "indian2.html"},
-    "premium1":     {"channel": -1003487224889, "messages": list(range(1,601)), "html": "premium1.html"},
-    "childvideos1": {"channel": -1003572102303, "messages": list(range(1,601)), "html": "childvideos1.html"},
-    "indian1.1":    {"channel": -1005555555555, "messages": list(range(1,601)), "html": "indian1.1.html"},
-    "indian1.2":    {"channel": -1006666666666, "messages": list(range(1,601)), "html": "indian1.2.html"}
+    "premium1": {
+        "channel": -1003487224889,
+        "html": "premium1.html",
+        "ranges": {
+            "xyz99": range(1, 22),
+            "abc55": range(22, 41),
+        }
+    },
+    "indian1": {
+        "channel": -1003571861534,
+        "html": "indian1.html",
+        "ranges": {
+            "set1": range(1, 26),
+        }
+    },
+    "childvideos1": {
+        "channel": -1003572102303,
+        "html": "childvideos1.html",
+        "ranges": {
+            "kids": range(1, 21),
+        }
+    }
 }
-VALID_KEYS = set(CONTENT_CONFIG.keys())
 
-# -------------------------------
+# =======================
 # DATABASE
-# -------------------------------
+# =======================
 mongo = MongoClient(MONGO_URI)
 db = mongo["content_bot"]
-users_col = db["users"]
-access_col = db["access_log"]
+users = db["users"]
+access = db["access"]
 
-# -------------------------------
+# =======================
 # HELPERS
-# -------------------------------
+# =======================
 def save_user(user):
-    """Save any interacting user"""
-    user_id = user.id
-    users_col.update_one(
-        {"user_id": user_id},
-        {"$setOnInsert": {
-            "user_id": user_id,
-            "username": user.username or "",
-            "first_name": user.first_name or "",
-            "joined_at": datetime.now(timezone.utc),
-            "blocked": False,
+    users.update_one(
+        {"user_id": user.id},
+        {"$set": {
+            "user_id": user.id,
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_seen": datetime.now(timezone.utc)
         }},
         upsert=True
     )
 
-def mark_blocked(user_id: int):
-    users_col.update_one({"user_id": user_id}, {"$set": {"blocked": True}})
-
-def log_access(user_id: int, key: str):
-    access_col.insert_one({
-        "user_id": user_id,
-        "content": key,
-        "timestamp": datetime.now(timezone.utc)
-    })
-
-# -------------------------------
-# AUTO DELETE
-# -------------------------------
-
-
-# -------------------------------
-# SEND VIDEOS
-# -------------------------------
-async def send_videos(user_id, bot, key):
-    cfg = CONTENT_CONFIG[key]
-    sent = []
-
-    for msg_id in cfg["messages"]:
+async def check_joins(bot, user_id):
+    for _, _, ch_id in JOIN_CHANNELS:
         try:
-            m = await bot.copy_message(chat_id=user_id, from_chat_id=cfg["channel"], message_id=msg_id)
-            sent.append((user_id, m.message_id))
-            await asyncio.sleep(0.6)
-        except Forbidden:
-            mark_blocked(user_id)
-            return
-        except Exception as e:
-            print("Send error:", e)
+            member = await bot.get_chat_member(ch_id, user_id)
+            if member.status not in ("member", "administrator", "creator"):
+                return False
+        except:
+            return False
+    return True
 
-    
+async def auto_delete(bot, records):
+    await asyncio.sleep(45 * 60)
+    for r in records:
+        try:
+            await bot.delete_message(r["user_id"], r["msg_id"])
+        except:
+            pass
 
-# -------------------------------
+# =======================
 # START HANDLER
-# -------------------------------
+# =======================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    save_user(update.effective_user)
-    user_id = update.effective_user.id
-    args = context.args
+    user = update.effective_user
+    save_user(user)
 
-    if not args:
-        await update.message.reply_text(
-            "✨ <b>Welcome to Premium Content Bot</b> ✨\n\n"
-            "🎥 Exclusive private videos\n"
-            "🔐 watch direct video , no url shortener\n"
-            "⏳ Chcek chnl for free video and links for video https://t.me/+qhYh7z_plJtjMGFl",
-            parse_mode="HTML"
-        )
+    if not context.args:
+        await update.message.reply_text("Welcome 👋\nUse a valid access link.")
         return
 
-    param = args[0]
+    param = context.args[0]
 
-    # Final unlock
+    # ========= FINAL UNLOCK =========
     if param.endswith("_done"):
-        key = param.replace("_done", "")
-        if key not in VALID_KEYS:
-            await update.message.reply_text("❌ Invalid or expired link.")
+        raw = param[:-5]  # remove _done
+        if "_" not in raw:
+            await update.message.reply_text("Invalid link.")
             return
-        log_access(user_id, key)
-        await update.message.reply_text("✅ <b>Access Confirmed</b>\n📤 Sending content…", parse_mode="HTML")
-        await send_videos(user_id, context.bot, key)
-        return
 
-    # Initial access
-    if param in VALID_KEYS:
-        html_page = CONTENT_CONFIG[param]["html"]
-        mini_app_url = BASE_MINIAPP_URL + html_page
-        keyboard = [[InlineKeyboardButton("▶ Watch 3 video  ", web_app=WebAppInfo(mini_app_url))]]
+        main, sub = raw.split("_", 1)
+        cfg = CONTENT_CONFIG.get(main)
+
+        if not cfg or sub not in cfg["ranges"]:
+            await update.message.reply_text("Invalid or expired link.")
+            return
+
+        access.insert_one({
+            "user_id": user.id,
+            "content": raw,
+            "time": datetime.now(timezone.utc)
+        })
+
         await update.message.reply_text(
-            "🔒 <b>Locked Content</b>\nWatch 3 ads to unlock 25+ video and get directly .",
-            reply_markup=InlineKeyboardMarkup(keyboard),
-            parse_mode="HTML"
+            "✅ Access unlocked\n"
+            "📦 Sending videos\n\n"
+            "⚠️ Auto delete after 45 minutes\n"
+            "📌 Save or forward now"
         )
+
+        sent = []
+        for i, msg_id in enumerate(cfg["ranges"][sub], 1):
+            try:
+                m = await context.bot.copy_message(
+                    chat_id=user.id,
+                    from_chat_id=cfg["channel"],
+                    message_id=msg_id
+                )
+                sent.append({"user_id": user.id, "msg_id": m.message_id})
+
+                await asyncio.sleep(0.6)
+                if i % 5 == 0:
+                    await asyncio.sleep(2)
+
+            except Forbidden:
+                return
+            except:
+                pass
+
+        asyncio.create_task(auto_delete(context.bot, sent))
         return
 
-    await update.message.reply_text("❌ Invalid access link.")
+    # ========= JOIN CHECK =========
+    if not await check_joins(context.bot, user.id):
+        buttons = [[InlineKeyboardButton(name, url=url)] for name, url, _ in JOIN_CHANNELS]
+        buttons.append([InlineKeyboardButton("✅ I Joined", callback_data="check_join")])
 
-# -------------------------------
-# ADMIN BROADCAST
-# -------------------------------
+        await update.message.reply_text(
+            "🔒 Join required channels first",
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
+        context.user_data["pending"] = param
+        return
+
+    # ========= MINI APP =========
+    main = param.split("_")[0]
+    cfg = CONTENT_CONFIG.get(main)
+
+    if not cfg:
+        await update.message.reply_text("Invalid link.")
+        return
+
+    mini_url = f"https://telegram-miniapps-liart.vercel.app/{cfg['html']}?start={param}"
+    btn = [[InlineKeyboardButton("▶ Watch Ads", web_app=WebAppInfo(mini_url))]]
+
+    await update.message.reply_text(
+        "🔓 Almost done!\nWatch 3 ads to unlock.",
+        reply_markup=InlineKeyboardMarkup(btn)
+    )
+
+# =======================
+# JOIN CALLBACK
+# =======================
+async def check_join_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query
+    await q.answer()
+
+    if not await check_joins(context.bot, q.from_user.id):
+        await q.message.reply_text("❌ You haven’t joined all channels.")
+        return
+
+    param = context.user_data.get("pending")
+    main = param.split("_")[0]
+    cfg = CONTENT_CONFIG.get(main)
+
+    mini_url = f"https://telegram-miniapps-liart.vercel.app/{cfg['html']}?start={param}"
+    btn = [[InlineKeyboardButton("▶ Watch Ads", web_app=WebAppInfo(mini_url))]]
+
+    await q.message.reply_text(
+        "✅ Verified!\nNow watch ads to unlock.",
+        reply_markup=InlineKeyboardMarkup(btn)
+    )
+
+# =======================
+# STATS
+# =======================
+async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
+
+    total = users.count_documents({})
+    last24 = users.count_documents({
+        "last_seen": {"$gte": datetime.now(timezone.utc) - timedelta(hours=24)}
+    })
+    unlocks = access.count_documents({})
+
+    await update.message.reply_text(
+        f"📊 Stats\n\n"
+        f"👤 Users: {total}\n"
+        f"🕒 Active 24h: {last24}\n"
+        f"🎬 Unlocks: {unlocks}"
+    )
+
+# =======================
+# BROADCAST
+# =======================
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         return
-    if not context.args:
-        await update.message.reply_text("Usage: /broadcast <your message here>")
-        return
-    text = " ".join(context.args)
-    users = users_col.find({"blocked": False})
-    count = 0
-    for user in users:
+
+    sent = 0
+    for u in users.find({}):
         try:
-            await context.bot.send_message(user["user_id"], text)
-            count += 1
-        except Forbidden:
-            mark_blocked(user["user_id"])
-        await asyncio.sleep(0.3)
-    await update.message.reply_text(f"✅ Broadcast sent to {count} users.")
+            if update.message.photo:
+                await context.bot.send_photo(
+                    u["user_id"],
+                    update.message.photo[-1].file_id,
+                    caption=update.message.caption
+                )
+            else:
+                await context.bot.send_message(u["user_id"], update.message.text)
+            sent += 1
+            await asyncio.sleep(0.3)
+        except:
+            pass
 
-# -------------------------------
-# ADMIN PANEL ENDPOINTS
-# -------------------------------
-async def admin_users(request):
-    headers = request.headers
-    user_id = int(headers.get("X-Admin-ID", 0))
-    if user_id != ADMIN_ID:
-        return web.Response(text="Unauthorized", status=401)
-    
-    users = []
-    for u in users_col.find({}):
-        last_access = access_col.find_one({"user_id": u["user_id"]}, sort=[("timestamp", -1)])
-        users.append({
-            "user_id": u["user_id"],
-            "name": u.get("first_name") or "",
-            "content": last_access["content"] if last_access else None,
-            "joined_at": u["joined_at"].isoformat(),
-            "blocked": u.get("blocked", False)
-        })
-    return web.json_response(users)
+    await update.message.reply_text(f"✅ Sent to {sent} users")
 
-async def admin_broadcast(request):
-    headers = request.headers
-    user_id = int(headers.get("X-Admin-ID", 0))
-    if user_id != ADMIN_ID:
-        return web.Response(text="Unauthorized", status=401)
-    
-    data = await request.json()
-    msg = data.get("message", "")
-    count = 0
-    for u in users_col.find({"blocked": False}):
-        try:
-            await app.bot.send_message(u["user_id"], msg)
-            count += 1
-        except Forbidden:
-            mark_blocked(u["user_id"])
-    return web.json_response({"status": f"Sent to {count} users"})
+# =======================
+# HTTP SERVER (RENDER)
+# =======================
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive")
 
-# -------------------------------
-# HEALTHCHECK
-# -------------------------------
-async def healthcheck(request):
-    return web.Response(text="OK")
+def run_http_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthHandler)
+    server.serve_forever()
 
-# -------------------------------
-# START WEB SERVER
-# -------------------------------
-async def start_web_server():
-    web_app = web.Application()
-    web_app.router.add_get("/", healthcheck)
-    web_app.router.add_get("/admin/users", admin_users)
-    web_app.router.add_post("/admin/broadcast", admin_broadcast)
-    runner = web.AppRunner(web_app)
-    await runner.setup()
-    site = web.TCPSite(runner, "0.0.0.0", PORT)
-    await site.start()
-
-# -------------------------------
+# =======================
 # MAIN
-# -------------------------------
-async def main():
-    global app
+# =======================
+def main():
     app = Application.builder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("broadcast", broadcast))
 
-    await start_web_server()
-    print(f"Bot running on port {PORT}…")
-    await app.initialize()
-    await app.start()
-    await app.bot.initialize()
-    await app.updater.start_polling()
-    await asyncio.Event().wait()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("stats", stats))
+    app.add_handler(CommandHandler("broadcast", broadcast))
+    app.add_handler(CallbackQueryHandler(check_join_cb, pattern="check_join"))
+
+    threading.Thread(target=run_http_server, daemon=True).start()
+    app.run_polling()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
