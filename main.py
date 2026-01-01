@@ -45,22 +45,24 @@ CONTENT_CONFIG = {
         "channel": -1003487224889,
         "html": "premium1.html",
         "ranges": {
-            "set1": range(1, 20),
-            "abc55": range(22, 41),
+            "set1": range(1, 9),
+            "set2": range(10, 13),
         }
     },
     "indian1": {
         "channel": -1003571861534,
         "html": "indian1.html",
         "ranges": {
-            "set1": range(1, 60),
+            "set1": range(1, 56),
+            "set2": range(57, 100),
         }
     },
     "childvideos1": {
         "channel": -1003572102303,
         "html": "childvideos1.html",
         "ranges": {
-            "set1": range(1, 20),
+            "set1": range(1, 10),
+            "set2": range(11, 15),
         }
     }
 }
