@@ -38,7 +38,7 @@ JOIN_CHANNELS = [
 ]
 
 # =======================
-# STORAGE CONFIG (ONLY 3)
+# STORAGE CONFIG
 # =======================
 CONTENT_CONFIG = {
     "premium1": {
@@ -75,6 +75,12 @@ db = mongo["content_bot"]
 users = db["users"]
 access = db["access"]
 
+# INDEXES (safe)
+users.create_index("user_id", unique=True)
+users.create_index("last_seen")
+access.create_index("time")
+access.create_index("content")
+
 # =======================
 # HELPERS
 # =======================
@@ -109,21 +115,23 @@ async def auto_delete(bot, records):
             pass
 
 # =======================
-# START HANDLER
+# START
 # =======================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     save_user(user)
 
     if not context.args:
-        await update.message.reply_text("Welcome 👋\nUse a valid access link from this free 18+ channel https://t.me/+2KSxXSbNbZwyY2Rl ")
+        await update.message.reply_text(
+            "Welcome 👋\nUse a valid access link from this free 18+ channel"
+        )
         return
 
     param = context.args[0]
 
-    # ========= FINAL UNLOCK =========
+    # ===== FINAL UNLOCK =====
     if param.endswith("_done"):
-        raw = param[:-5]  # remove _done
+        raw = param[:-5]
         if "_" not in raw:
             await update.message.reply_text("Invalid link.")
             return
@@ -143,9 +151,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(
             "✅ Access unlocked\n"
-            "📦 Sending videos\n\n"
-            "⚠️ Auto delete after 45 minutes\n"
-            "📌 Save or forward now"
+            "📦 Sending videos\n"
+            "⚠️ Auto delete after 45 minutes"
         )
 
         sent = []
@@ -157,11 +164,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     message_id=msg_id
                 )
                 sent.append({"user_id": user.id, "msg_id": m.message_id})
-
                 await asyncio.sleep(0.6)
-                if i % 5 == 0:
-                    await asyncio.sleep(2)
-
             except Forbidden:
                 return
             except:
@@ -170,7 +173,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         asyncio.create_task(auto_delete(context.bot, sent))
         return
 
-    # ========= JOIN CHECK =========
+    # ===== JOIN CHECK =====
     if not await check_joins(context.bot, user.id):
         buttons = [[InlineKeyboardButton(name, url=url)] for name, url, _ in JOIN_CHANNELS]
         buttons.append([InlineKeyboardButton("✅ I Joined", callback_data="check_join")])
@@ -182,7 +185,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["pending"] = param
         return
 
-    # ========= MINI APP =========
+    # ===== MINI APP =====
     main = param.split("_")[0]
     cfg = CONTENT_CONFIG.get(main)
 
@@ -191,10 +194,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     mini_url = f"https://telegram-miniapps-liart.vercel.app/{cfg['html']}?start={param}"
-    btn = [[InlineKeyboardButton("▶ Watch 3 video ads ", web_app=WebAppInfo(mini_url))]]
+    btn = [[InlineKeyboardButton("▶ Watch Ads", web_app=WebAppInfo(mini_url))]]
 
     await update.message.reply_text(
-        "🔓 Almost done!\nWatch 3 ads to unlock 30+ bulk media , no utl shortner .",
+        "🔓 Almost done!\nWatch ads to unlock.",
         reply_markup=InlineKeyboardMarkup(btn)
     )
 
@@ -222,23 +225,47 @@ async def check_join_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 # =======================
-# STATS
+# STATS (NO TOP USERS)
 # =======================
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         return
 
-    total = users.count_documents({})
-    last24 = users.count_documents({
-        "last_seen": {"$gte": datetime.now(timezone.utc) - timedelta(hours=24)}
-    })
-    unlocks = access.count_documents({})
+    now = datetime.now(timezone.utc)
+    day = now - timedelta(hours=24)
+    week = now - timedelta(days=7)
+
+    total_users = users.count_documents({})
+    active_24h = users.count_documents({"last_seen": {"$gte": day}})
+    active_7d = users.count_documents({"last_seen": {"$gte": week}})
+
+    total_unlocks = access.count_documents({})
+    unlocks_24h = access.count_documents({"time": {"$gte": day}})
+    unlocks_7d = access.count_documents({"time": {"$gte": week}})
+
+    per_content = access.aggregate([
+        {"$group": {"_id": "$content", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}}
+    ])
+
+    content_lines = []
+    for c in per_content:
+        main = c["_id"].split("_")[0]
+        content_lines.append(f"• {main}: {c['count']}")
 
     await update.message.reply_text(
-        f"📊 Stats\n\n"
-        f"👤 Users: {total}\n"
-        f"🕒 Active 24h: {last24}\n"
-        f"🎬 Unlocks: {unlocks}"
+        "📊 **BOT STATS**\n\n"
+        "👥 Users\n"
+        f"• Total: `{total_users}`\n"
+        f"• Active 24h: `{active_24h}`\n"
+        f"• Active 7d: `{active_7d}`\n\n"
+        "🎬 Unlocks\n"
+        f"• Total: `{total_unlocks}`\n"
+        f"• Last 24h: `{unlocks_24h}`\n"
+        f"• Last 7d: `{unlocks_7d}`\n\n"
+        "📦 Unlocks by Content\n"
+        + ("\n".join(content_lines) if content_lines else "• None"),
+        parse_mode="Markdown"
     )
 
 # =======================
@@ -251,14 +278,7 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sent = 0
     for u in users.find({}):
         try:
-            if update.message.photo:
-                await context.bot.send_photo(
-                    u["user_id"],
-                    update.message.photo[-1].file_id,
-                    caption=update.message.caption
-                )
-            else:
-                await context.bot.send_message(u["user_id"], update.message.text)
+            await context.bot.send_message(u["user_id"], update.message.text)
             sent += 1
             await asyncio.sleep(0.3)
         except:
@@ -267,7 +287,7 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"✅ Sent to {sent} users")
 
 # =======================
-# HTTP SERVER (RENDER)
+# HTTP SERVER
 # =======================
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -275,15 +295,13 @@ class HealthHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b"Bot is alive")
 
-    # ✅ Added to support UptimeRobot HEAD checks
     def do_HEAD(self):
         self.send_response(200)
         self.end_headers()
 
 def run_http_server():
     port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), HealthHandler)
-    server.serve_forever()
+    HTTPServer(("0.0.0.0", port), HealthHandler).serve_forever()
 
 # =======================
 # MAIN
