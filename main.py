@@ -51,6 +51,7 @@ CONTENT_CONFIG = {
             "set4": range(14, 15),
             "set5": range(16, 17),
             "set6": range(18, 19),
+            "set7": range(19, 20),
         }
     },
     "indian1": {
@@ -63,6 +64,7 @@ CONTENT_CONFIG = {
             "set4": range(144, 166),
             "set5": range(166, 201),
             "set6": range(200, 260),
+            "set7": range(260, 310),
         }
     },
     "childvideos1": {
@@ -74,7 +76,8 @@ CONTENT_CONFIG = {
             "set3": range(14,15),
             "set4": range(16, 17),
             "set5": range(17, 17),
-            "set6": range(17, 20),
+            "set6": range(17, 19),
+            "set7": range(20,21),
         }
     }
 }
