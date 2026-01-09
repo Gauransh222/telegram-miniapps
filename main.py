@@ -52,7 +52,7 @@ CONTENT_CONFIG = {
             "set5": range(16, 17),
             "set6": range(18, 19),
             "set7": range(19, 21),
-            "set8": range(21, 21),
+            "set8": range(21, 23),
         }
     },
     "indian1": {
@@ -80,7 +80,7 @@ CONTENT_CONFIG = {
             "set5": range(17, 17),
             "set6": range(17, 19),
             "set7": range(20,21),
-            "set8": range(22,23),
+            "set8": range(21,22),
         }
     }
 }
