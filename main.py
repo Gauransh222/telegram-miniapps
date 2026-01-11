@@ -67,6 +67,7 @@ CONTENT_CONFIG = {
             "set6": range(200, 243),
             "set7": range(243, 300),
             "set8": range(293, 444),
+            "set9": range(444, 481),
         }
     },
     "childvideos1": {
@@ -81,6 +82,7 @@ CONTENT_CONFIG = {
             "set6": range(17, 19),
             "set7": range(20,21),
             "set8": range(21,22),
+            "set9": range(22,25),
         }
     }
 }
