@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>NightStream — Trending Now</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0a0f;--sf:#13131a;--sf2:#1c1c26;--ac:#e8462a;--ac2:#ff6b47;--go:#f5c842;--tx:#f0eff5;--mu:#7a7a8c;--bd:#2a2a3a;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;pointer-events:none;z-index:0}
+.b1,.b2{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.b1{width:300px;height:300px;background:rgba(232,70,42,.12);top:-80px;right:-60px}
+.b2{width:250px;height:250px;background:rgba(100,80,255,.08);bottom:100px;left:-80px}
+.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:60px}
+
+.ad{width:100%;min-height:60px;background:var(--sf);display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--bd)}
+.ad+.ad{border-top:1px solid var(--bd)}
+.ad-lbl{position:absolute;top:3px;right:7px;font-size:9px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase}
+.ad-ph{font-size:11px;color:var(--mu);padding:16px 0}
+
+nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--fd);font-weight:800;font-size:20px;letter-spacing:-.5px}
+.logo span{color:var(--ac)}
+.live-tag{background:var(--ac);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase}
+
+.hero{margin:15px 15px 0;border-radius:16px;overflow:hidden;background:var(--sf);border:1px solid var(--bd)}
+.hero-art{aspect-ratio:16/9;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);display:flex;align-items:center;justify-content:center;position:relative}
+.hero-art::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.8))}
+.h-badge{position:absolute;top:12px;left:12px;background:var(--ac);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:4px;text-transform:uppercase;z-index:2}
+.play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;background:rgba(232,70,42,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;backdrop-filter:blur(4px)}
+.play::after{content:'';border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:4px}
+.hero-body{padding:13px 15px 15px}
+.h-cat{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--ac2);text-transform:uppercase;margin-bottom:5px}
+.h-title{font-family:var(--fd);font-size:17px;font-weight:700;line-height:1.3;margin-bottom:7px}
+.h-meta{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--mu)}
+.dot{width:3px;height:3px;border-radius:50%;background:var(--mu)}
+.stars{color:var(--go);font-size:11px}
+
+.stats{margin:14px 15px;background:var(--sf);border-radius:13px;padding:15px;display:flex;justify-content:space-around;border:1px solid var(--bd)}
+.sc .sn{font-family:var(--fd);font-size:21px;font-weight:800;text-align:center;line-height:1}
+.sc .sl{font-size:11px;color:var(--mu);margin-top:3px;text-align:center}
+
+.sh{padding:16px 15px 8px;display:flex;justify-content:space-between;align-items:center}
+.sh h2{font-family:var(--fd);font-size:15px;font-weight:700}
+.sh span{font-size:12px;color:var(--ac2);font-weight:500}
+
+.hscroll{padding:0 15px;display:flex;gap:11px;overflow-x:auto;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.hcard{flex:0 0 128px;background:var(--sf);border-radius:12px;overflow:hidden;border:1px solid var(--bd)}
+.hthumb{width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.ha{background:linear-gradient(160deg,#1e1e2e,#2d2d42)}
+.hb{background:linear-gradient(160deg,#1e2e1e,#2d422d)}
+.hc{background:linear-gradient(160deg,#2e1e1e,#422d2d)}
+.hd{background:linear-gradient(160deg,#1e1e2e,#42422d)}
+.he{background:linear-gradient(160deg,#2e1e2e,#422d42)}
+.nb{position:absolute;top:5px;left:5px;background:var(--ac);color:#fff;font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px}
+.hi{padding:8px 9px 10px}
+.ht{font-size:12px;font-weight:500;margin-bottom:3px;color:var(--tx)}
+.hs{font-size:10px;color:var(--mu)}
+
+.articles{padding:0 15px;display:flex;flex-direction:column;gap:10px}
+.art{background:var(--sf);border-radius:13px;padding:13px;display:flex;gap:11px;border:1px solid var(--bd)}
+.art-num{font-family:var(--fd);font-size:30px;font-weight:800;color:var(--bd);line-height:1;width:32px;flex-shrink:0;margin-top:-2px}
+.art-tag{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--ac2);text-transform:uppercase;margin-bottom:3px}
+.art-title{font-size:13px;font-weight:400;line-height:1.4;margin-bottom:5px;color:var(--tx)}
+.art-meta{font-size:11px;color:var(--mu)}
+
+/* Timer */
+.cta-box{padding:16px 15px 0}
+.timer{background:var(--sf);border:1px solid var(--bd);border-radius:13px;padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
+.t-cnt{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--go);min-width:32px;text-align:right}
+.t-body .t-h{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px}
+.t-body .t-s{font-size:11px;color:var(--mu)}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;transition:opacity .2s}
+.btn:disabled{background:var(--sf2);color:var(--mu);cursor:not-allowed}
+.btn:not(:disabled):active{opacity:.85}
+.btn-s{text-align:center;font-size:11px;color:var(--mu);margin-top:7px}
+
+.foot{text-align:center;padding:20px 15px 0;font-size:11px;color:var(--mu);line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.w>*{animation:fadeUp .35s ease both}
+.w>*:nth-child(2){animation-delay:.04s}.w>*:nth-child(3){animation-delay:.08s}
+.w>*:nth-child(4){animation-delay:.12s}.w>*:nth-child(5){animation-delay:.16s}
+.w>*:nth-child(6){animation-delay:.2s}.w>*:nth-child(7){animation-delay:.24s}
+.w>*:nth-child(8){animation-delay:.28s}
+</style>
+</head>
+<body>
+<div class="b1"></div><div class="b2"></div>
+<div class="w">
+  <!-- TOP AD 1 -->
+  <div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 1 --><div class="ad-ph">Advertisement</div></div>
+  <!-- TOP AD 2 -->
+  <div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 2 --><div class="ad-ph">Advertisement</div></div>
+
+  <nav>
+    <div class="logo">Night<span>Stream</span></div>
+    <div class="live-tag">Live</div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-art">
+      <div class="h-badge">🔥 Trending</div>
+      <div class="play"></div>
+    </div>
+    <div class="hero-body">
+      <div class="h-cat">Top Picks This Week</div>
+      <div class="h-title">Exclusive Content Drop — Vol. 47</div>
+      <div class="h-meta"><span class="stars">★★★★★</span><span class="dot"></span><span>4.9 rating</span><span class="dot"></span><span>128K views</span></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sn">47</div><div class="sl">New Today</div></div>
+    <div class="sc"><div class="sn">1.2M</div><div class="sl">Total Views</div></div>
+    <div class="sc"><div class="sn">4.8★</div><div class="sl">Avg Rating</div></div>
+  </div>
+
+  <div class="sh"><h2>🎬 Trending Collections</h2><span>See all</span></div>
+  <div class="hscroll">
+    <div class="hcard"><div class="hthumb ha">🎭<div class="nb">NEW</div></div><div class="hi"><div class="ht">Collection A</div><div class="hs">89K views</div></div></div>
+    <div class="hcard"><div class="hthumb hb">🌟</div><div class="hi"><div class="ht">Collection B</div><div class="hs">74K views</div></div></div>
+    <div class="hcard"><div class="hthumb hc">💫<div class="nb">HOT</div></div><div class="hi"><div class="ht">Collection C</div><div class="hs">61K views</div></div></div>
+    <div class="hcard"><div class="hthumb hd">🔥</div><div class="hi"><div class="ht">Collection D</div><div class="hs">55K views</div></div></div>
+    <div class="hcard"><div class="hthumb he">✨<div class="nb">NEW</div></div><div class="hi"><div class="ht">Collection E</div><div class="hs">48K views</div></div></div>
+  </div>
+
+  <div class="sh"><h2>📰 Latest Updates</h2></div>
+  <div class="articles">
+    <div class="art"><div class="art-num">01</div><div><div class="art-tag">Exclusive</div><div class="art-title">New exclusive drop just arrived — limited access for early viewers</div><div class="art-meta">2 hours ago · 5 min read</div></div></div>
+    <div class="art"><div class="art-num">02</div><div><div class="art-tag">Hot</div><div class="art-title">Most requested content of the month is finally here</div><div class="art-meta">5 hours ago · 3 min read</div></div></div>
+    <div class="art"><div class="art-num">03</div><div><div class="art-tag">Update</div><div class="art-title">Faster streaming + new content every 6 hours</div><div class="art-meta">1 day ago · 2 min read</div></div></div>
+  </div>
+
+  <div class="cta-box">
+    <div class="timer">
+      <div style="font-size:22px">⏳</div>
+      <div class="t-body"><div class="t-h">Preparing your content</div><div class="t-s">Loading exclusive video collection…</div></div>
+      <div class="t-cnt" id="tc">--</div>
+    </div>
+    <button class="btn" id="startBtn" onclick="startTimer()">⚡ Tap to Prepare Content</button>
+    <button class="btn" id="btn" style="display:none" disabled>⏳ Please wait…</button>
+    <div class="btn-s" id="bs">Tap the button above to begin</div>
+  </div>
+
+  <!-- BOTTOM AD 1 -->
+  <div class="ad" style="margin-top:20px;border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 3 --><div class="ad-ph">Advertisement</div></div>
+  <!-- BOTTOM AD 2 -->
+  <div class="ad" style="border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 4 --><div class="ad-ph">Advertisement</div></div>
+
+  <div class="foot">NightStream · Premium content platform · 18+ only</div>
+</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+const sp = params.get('start') || '';
+if(sp) sessionStorage.setItem('sp_ms', sp);
+let timerStarted = false;
+
+function startTimer() {
+  if(timerStarted) return;
+  timerStarted = true;
+  document.getElementById('startBtn').style.display = 'none';
+  const btn = document.getElementById('btn');
+  const bs = document.getElementById('bs');
+  const tc = document.getElementById('tc');
+  btn.style.display = 'block';
+  btn.disabled = true;
+  bs.textContent = 'Preparing your content…';
+  let t = 10;
+  tc.textContent = t;
+  const iv = setInterval(() => {
+    t--; tc.textContent = t;
+    if(t <= 0) {
+      clearInterval(iv);
+      tc.textContent = '✓';
+      btn.disabled = false;
+      btn.textContent = 'Continue to Full Content →';
+      btn.style.animation = 'pop 1.5s ease-in-out infinite';
+      bs.textContent = 'Tap to continue — free access';
+    }
+  }, 1000);
+}
+
+btn.onclick = () => { if(!btn.disabled) window.location.href = 'misc_page2.html?start=' + encodeURIComponent(sp); };
+</script>
+</body>
+</html>

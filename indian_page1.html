@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>DesiStream — Bollywood & Desi Content</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Hind:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#120a00;--sf:#1e1200;--sf2:#2a1a00;--ac:#ff9500;--ac2:#ff6b00;--pu:#9b59b6;--gr:#27ae60;--tx:#fff5e6;--mu:#a08060;--bd:#3a2810;--fd:'Baloo 2',sans-serif;--fb:'Hind',sans-serif}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at top right,rgba(255,149,0,.08) 0,transparent 60%),radial-gradient(ellipse at bottom left,rgba(155,89,182,.06) 0,transparent 60%);pointer-events:none;z-index:0}
+.b1,.b2{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.b1{width:280px;height:280px;background:rgba(255,149,0,.12);top:-60px;right:-50px}
+.b2{width:220px;height:220px;background:rgba(155,89,182,.1);bottom:60px;left:-60px}
+.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:60px}
+
+.ad{width:100%;min-height:60px;background:var(--sf);display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--bd)}
+.ad+.ad{border-top:1px solid var(--bd)}
+.ad-lbl{position:absolute;top:3px;right:7px;font-size:9px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase}
+.ad-ph{font-size:11px;color:var(--mu);padding:16px 0}
+
+nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--fd);font-weight:800;font-size:22px;color:var(--ac)}
+.logo span{color:var(--tx)}
+.live-tag{background:linear-gradient(135deg,var(--ac2),var(--ac));color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:var(--fd)}
+
+/* Hero */
+.hero{margin:13px;border-radius:18px;overflow:hidden;border:2px solid var(--bd);background:var(--sf)}
+.hero-art{height:155px;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,#2a1400,#4a2200)}
+.hero-art::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(0,0,0,.7))}
+.h-badge{position:absolute;top:10px;left:10px;background:var(--ac);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;font-family:var(--fd);z-index:2}
+.h-emojis{font-size:40px;display:flex;gap:14px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.6));position:relative;z-index:1}
+.hero-body{padding:12px 14px 15px}
+.hero-title{font-family:var(--fd);font-size:17px;font-weight:800;margin-bottom:5px;color:var(--tx)}
+.hero-meta{font-size:12px;color:var(--mu);display:flex;gap:7px;align-items:center}
+.stars{color:var(--ac)}
+
+/* Cats */
+.cats{padding:11px 13px 0;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--bd);color:var(--mu);font-family:var(--fd)}
+.cat.on{background:var(--ac);color:#120a00;border-color:var(--ac)}
+
+.sh{padding:14px 14px 8px;display:flex;justify-content:space-between;align-items:center}
+.sh h2{font-family:var(--fd);font-size:15px;font-weight:800}
+.sh span{font-size:12px;color:var(--ac);font-weight:700}
+
+/* Horizontal scroll */
+.hscroll{padding:0 13px;display:flex;gap:11px;overflow-x:auto;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.hcard{flex:0 0 120px;background:var(--sf);border-radius:13px;overflow:hidden;border:1.5px solid var(--bd)}
+.hthumb{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.ha{background:linear-gradient(160deg,#2a1400,#5a3000)}
+.hb{background:linear-gradient(160deg,#1a0a2a,#3a1a5a)}
+.hc{background:linear-gradient(160deg,#001a2a,#003a5a)}
+.hd{background:linear-gradient(160deg,#2a0a0a,#5a1a1a)}
+.he{background:linear-gradient(160deg,#0a2a0a,#1a5a1a)}
+.nb{position:absolute;top:5px;left:5px;background:var(--ac);color:#fff;font-size:8px;font-weight:800;padding:2px 5px;border-radius:4px}
+.hi{padding:8px 9px 10px}
+.ht{font-size:11px;font-weight:700;font-family:var(--fd);margin-bottom:2px;color:var(--tx)}
+.hs{font-size:10px;color:var(--mu)}
+
+/* Articles */
+.articles{padding:0 13px;display:flex;flex-direction:column;gap:10px}
+.art{background:var(--sf);border-radius:13px;padding:13px;display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--bd)}
+.art-num{font-family:var(--fd);font-size:30px;font-weight:800;color:var(--bd);line-height:1;width:34px;flex-shrink:0;margin-top:-2px}
+.art-tag{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--ac);text-transform:uppercase;margin-bottom:3px}
+.art-title{font-size:13px;font-weight:500;line-height:1.4;margin-bottom:5px;color:var(--tx)}
+.art-meta{font-size:11px;color:var(--mu)}
+
+/* Stats */
+.stats{margin:13px;display:flex;gap:9px}
+.sc{flex:1;background:var(--sf);border-radius:13px;padding:11px;text-align:center;border:1.5px solid var(--bd)}
+.sn{font-family:var(--fd);font-size:19px;font-weight:800;line-height:1}
+.sn.o{color:var(--ac)}.sn.p{color:var(--pu)}.sn.g{color:var(--gr)}
+.sl{font-size:10px;color:var(--mu);margin-top:3px;font-weight:500}
+
+/* Timer */
+.cta-box{padding:0 13px}
+.timer{background:var(--sf);border:1.5px solid var(--bd);border-radius:13px;padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
+.t-cnt{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--ac);min-width:32px;text-align:right}
+.t-body .t-h{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px}
+.t-body .t-s{font-size:11px;color:var(--mu)}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--ac2),var(--ac));color:#fff;transition:opacity .2s}
+.btn:disabled{background:var(--sf2);color:var(--mu);cursor:not-allowed}
+.btn:not(:disabled):active{opacity:.85}
+.btn-s{text-align:center;font-size:11px;color:var(--mu);margin-top:7px;font-weight:500}
+
+.foot{text-align:center;padding:18px 15px 0;font-size:11px;color:var(--mu);line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.w>*{animation:fadeUp .35s ease both}
+.w>*:nth-child(2){animation-delay:.04s}.w>*:nth-child(3){animation-delay:.08s}
+.w>*:nth-child(4){animation-delay:.12s}.w>*:nth-child(5){animation-delay:.16s}
+.w>*:nth-child(6){animation-delay:.2s}.w>*:nth-child(7){animation-delay:.24s}
+.w>*:nth-child(8){animation-delay:.28s}
+</style>
+</head>
+<body>
+<div class="b1"></div><div class="b2"></div>
+<div class="w">
+  <!-- TOP AD 1 -->
+  <div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 1 --><div class="ad-ph">Advertisement</div></div>
+  <!-- TOP AD 2 -->
+  <div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 2 --><div class="ad-ph">Advertisement</div></div>
+
+  <nav>
+    <div class="logo">Desi<span>Stream</span></div>
+    <div class="live-tag">🔴 LIVE</div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-art">
+      <div class="h-badge">🎬 New Drop</div>
+      <div class="h-emojis">🎭 💃 🎶 🌟</div>
+    </div>
+    <div class="hero-body">
+      <div class="hero-title">Biggest Desi Collection — Vol. 12 Dropped</div>
+      <div class="hero-meta"><span class="stars">★★★★★</span><span>4.9</span><span>·</span><span>310K views</span><span>·</span><span>Today</span></div>
+    </div>
+  </div>
+
+  <div class="cats">
+    <div class="cat on">All</div><div class="cat">Bollywood</div>
+    <div class="cat">Web Series</div><div class="cat">South</div><div class="cat">Music</div>
+  </div>
+
+  <div class="sh"><h2>🎬 Latest Releases</h2><span>See all</span></div>
+  <div class="hscroll">
+    <div class="hcard"><div class="hthumb ha">🎭<div class="nb">NEW</div></div><div class="hi"><div class="ht">Drama Vol.1</div><div class="hs">89K views</div></div></div>
+    <div class="hcard"><div class="hthumb hb">💃</div><div class="hi"><div class="ht">Dance Mix</div><div class="hs">74K views</div></div></div>
+    <div class="hcard"><div class="hthumb hc">🎶<div class="nb">HOT</div></div><div class="hi"><div class="ht">Music Hits</div><div class="hs">61K views</div></div></div>
+    <div class="hcard"><div class="hthumb hd">🌟</div><div class="hi"><div class="ht">Star Pack</div><div class="hs">55K views</div></div></div>
+    <div class="hcard"><div class="hthumb he">🏆<div class="nb">NEW</div></div><div class="hi"><div class="ht">Best Of</div><div class="hs">48K views</div></div></div>
+  </div>
+
+  <div class="sh"><h2>📰 Latest Updates</h2></div>
+  <div class="articles">
+    <div class="art"><div class="art-num">01</div><div><div class="art-tag">Exclusive</div><div class="art-title">New bulk desi collection just uploaded — 50+ videos in one pack</div><div class="art-meta">2 hours ago · 4 min read</div></div></div>
+    <div class="art"><div class="art-num">02</div><div><div class="art-tag">Trending</div><div class="art-title">Most requested Bollywood pack of the month finally available</div><div class="art-meta">6 hours ago · 3 min read</div></div></div>
+    <div class="art"><div class="art-num">03</div><div><div class="art-tag">Update</div><div class="art-title">New content drops every 12 hours — never miss a release</div><div class="art-meta">1 day ago · 2 min read</div></div></div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sn o">1000+</div><div class="sl">Videos</div></div>
+    <div class="sc"><div class="sn p">FREE</div><div class="sl">Always</div></div>
+    <div class="sc"><div class="sn g">HD</div><div class="sl">Quality</div></div>
+  </div>
+
+  <div class="cta-box">
+    <div class="timer">
+      <div style="font-size:22px">⏳</div>
+      <div class="t-body"><div class="t-h">Preparing your content</div><div class="t-s">Loading desi video collection…</div></div>
+      <div class="t-cnt" id="tc">--</div>
+    </div>
+    <button class="btn" id="startBtn" onclick="startTimer()">⚡ Tap to Prepare Content</button>
+    <button class="btn" id="btn" style="display:none" disabled>⏳ Please wait…</button>
+    <div class="btn-s" id="bs">Tap the button above to begin</div>
+  </div>
+
+  <!-- BOTTOM AD 1 -->
+  <div class="ad" style="margin-top:20px;border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 3 --><div class="ad-ph">Advertisement</div></div>
+  <!-- BOTTOM AD 2 -->
+  <div class="ad" style="border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 4 --><div class="ad-ph">Advertisement</div></div>
+
+  <div class="foot">DesiStream · Premium desi content · Updated daily</div>
+</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+const sp = params.get('start') || '';
+if(sp) sessionStorage.setItem('sp_in', sp);
+let timerStarted = false;
+
+function startTimer() {
+  if(timerStarted) return;
+  timerStarted = true;
+  document.getElementById('startBtn').style.display = 'none';
+  const btn = document.getElementById('btn');
+  const bs = document.getElementById('bs');
+  const tc = document.getElementById('tc');
+  btn.style.display = 'block';
+  btn.disabled = true;
+  bs.textContent = 'Preparing your content…';
+  let t = 10;
+  tc.textContent = t;
+  const iv = setInterval(() => {
+    t--; tc.textContent = t;
+    if(t <= 0) {
+      clearInterval(iv);
+      tc.textContent = '✓';
+      btn.disabled = false;
+      btn.textContent = '▶ Watch Desi Content Now';
+      btn.style.animation = 'pop 1.5s ease-in-out infinite';
+      bs.textContent = 'Tap to continue — free access';
+    }
+  }, 1000);
+}
+
+btn.onclick = () => { if(!btn.disabled) window.location.href = 'indian_page2.html?start=' + encodeURIComponent(sp); };
+</script>
+</body>
+</html>

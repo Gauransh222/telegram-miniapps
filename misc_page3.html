@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>NightStream — Your Content is Ready</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0a0f;--sf:#13131a;--sf2:#1c1c26;--ac:#e8462a;--ac2:#ff6b47;--go:#f5c842;--gn:#2ecc71;--tx:#f0eff5;--mu:#7a7a8c;--bd:#2a2a3a;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;pointer-events:none;z-index:0}
+.b1,.b2{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.b1{width:280px;height:280px;background:rgba(245,200,66,.08);top:5%;right:-70px}
+.b2{width:220px;height:220px;background:rgba(46,204,113,.07);bottom:15%;left:-70px}
+.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:40px}
+
+/* Ad overlay for 2nd Adsgram */
+.ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(4px)}
+.ad-ov.show{display:flex}
+.spin{width:38px;height:38px;border:3px solid var(--bd);border-top-color:var(--ac2);border-radius:50%;animation:spin .8s linear infinite}
+.ad-ov-txt{font-size:13px;color:var(--mu)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--fd);font-weight:800;font-size:20px;letter-spacing:-.5px}
+.logo span{color:var(--ac)}
+.prog{display:flex;gap:5px}
+.dot{width:22px;height:4px;border-radius:2px;background:var(--bd)}
+.dot.done{background:var(--ac)}
+
+/* Pre-unlock state */
+.pre-unlock{padding:18px 15px 0}
+.pre-card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px}
+.pre-icon{font-size:40px;margin-bottom:10px}
+.pre-title{font-family:var(--fd);font-size:17px;font-weight:700;margin-bottom:6px}
+.pre-sub{font-size:13px;color:var(--mu);line-height:1.5}
+.ad-note{background:rgba(232,70,42,.08);border:1px solid rgba(232,70,42,.2);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.5}
+.ad-note strong{color:var(--ac2)}
+.btn-pre{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;transition:opacity .2s;position:relative;overflow:hidden}
+.btn-pre:active{opacity:.88}
+.btn-pre::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
+.btn-sub{text-align:center;font-size:11px;color:var(--mu);margin-top:7px}
+
+/* Info grid */
+.info{margin:0 15px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ic{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:13px;text-align:center}
+.ic-i{font-size:22px;margin-bottom:5px}
+.ic-l{font-size:10px;color:var(--mu);line-height:1.4}
+.ic-v{font-family:var(--fd);font-size:15px;font-weight:700;margin-top:4px}
+
+/* After unlock */
+.after{display:none;margin:18px 15px 0;background:var(--sf);border:1px solid rgba(46,204,113,.3);border-radius:16px;padding:22px;text-align:center}
+.after.show{display:block}
+.after-icon{font-size:38px;margin-bottom:9px}
+.after-title{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--gn);margin-bottom:7px}
+.after-txt{font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:14px}
+.pb-wrap{margin:10px 0;background:var(--sf2);border-radius:10px;height:8px;overflow:hidden}
+.pb{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:10px;width:0%;transition:width .5s linear}
+.pb-lbl{font-size:11px;color:var(--mu);margin-top:5px;font-family:var(--fd);font-weight:600}
+.back-btn{width:100%;padding:13px;background:var(--gn);border:none;border-radius:12px;color:#fff;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;transition:opacity .2s}
+.back-btn:active{opacity:.88}
+
+.foot{text-align:center;padding:20px 15px 0;font-size:11px;color:var(--mu);line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.w>*{animation:fadeUp .35s ease both}
+.w>*:nth-child(2){animation-delay:.05s}.w>*:nth-child(3){animation-delay:.1s}
+.w>*:nth-child(4){animation-delay:.15s}
+.btn-pre{animation:pulse 2.5s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div class="b1"></div><div class="b2"></div>
+<div class="ad-ov" id="ov"><div class="spin"></div><div class="ad-ov-txt">Loading your content…</div></div>
+<div class="w">
+  <nav>
+    <div class="logo">Night<span>Stream</span></div>
+    <div class="prog"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+  </nav>
+
+  <!-- Pre-unlock: shows Adsgram ad before final unlock -->
+  <div class="pre-unlock" id="preSection">
+    <div class="pre-card">
+      <div class="pre-icon">🎬</div>
+      <div class="pre-title">Your content is almost ready</div>
+      <div class="pre-sub">One last step to unlock your full exclusive video collection.</div>
+    </div>
+    <div class="info" style="margin:0 0 14px">
+      <div class="ic"><div class="ic-i">⚡</div><div class="ic-l">Quality</div><div class="ic-v">HD</div></div>
+      <div class="ic"><div class="ic-i">⏱️</div><div class="ic-l">Access window</div><div class="ic-v">45 min</div></div>
+      <div class="ic"><div class="ic-i">📦</div><div class="ic-l">Videos ready</div><div class="ic-v">Multiple</div></div>
+      <div class="ic"><div class="ic-i">🔓</div><div class="ic-l">Cost</div><div class="ic-v">Free</div></div>
+    </div>
+    <div class="ad-note"><strong>Almost there!</strong> One more sponsored clip keeps everything on this platform 100% free for you.</div>
+    <div class="timer" id="timerBox" style="display:none">
+      <div style="font-size:22px">⏳</div>
+      <div class="t-body" style="flex:1"><div class="t-h" style="font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Preparing final access</div><div class="t-s" style="font-size:11px;color:var(--mu)">Almost there…</div></div>
+      <div style="font-family:var(--fd);font-size:24px;font-weight:700;color:var(--go);min-width:32px;text-align:right" id="tc">10</div>
+    </div>
+    <button class="btn-pre" id="startBtn" onclick="startTimer()">▶ Tap to Unlock My Videos</button>
+    <button class="btn-pre" id="mainBtn" style="display:none" disabled>⏳ Please wait…</button>
+    <div class="btn-sub" id="bs">Tap to begin · Videos arrive instantly after</div>
+  </div>
+
+  <!-- After unlock state -->
+  <div class="after" id="afterSection">
+    <div class="after-icon">✅</div>
+    <div class="after-title">Videos are being sent!</div>
+    <div class="after-txt">Your exclusive content is being delivered to your Telegram chat right now.</div>
+    <div class="pb-wrap"><div class="pb" id="pb"></div></div>
+    <div class="pb-lbl" id="pbl">Sending… 0%</div>
+    <button class="back-btn" onclick="goTelegram()">Open Telegram to Watch →</button>
+  </div>
+
+  <div class="foot">NightStream · Content auto-deletes after 45 minutes · 18+ only</div>
+</div>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const sp = params.get('start') || sessionStorage.getItem('sp_ms') || '';
+const MONETAG_URL = "YOUR_MONETAG_URL_HERE";
+const RENDER_URL = "https://telegram-bot-0x68.onrender.com";
+const BOT_USERNAME = "ContentUnlockerBot";
+let timerStarted = false;
+const BLOCK_ID = 'YOUR_ADSGRAM_BLOCK_ID';
+let AdCtrl; async function initAd(){try{AdCtrl=await window.Adsgram.init({blockId:BLOCK_ID});}catch(e){}}
+
+async function loadFinalAd(){
+  document.getElementById('preBtn').disabled=true;
+  document.getElementById('ov').classList.add('show');
+  try{if(AdCtrl) await AdCtrl.show();}catch(e){}
+  finally{document.getElementById('ov').classList.remove('show');triggerUnlock();}
+}
+
+function startTimer() {
+  if(timerStarted) return;
+  timerStarted = true;
+  document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('timerBox').style.display = 'flex';
+  const btn = document.getElementById('mainBtn');
+  const bs = document.getElementById('bs');
+  const tc = document.getElementById('tc');
+  btn.style.display = 'block';
+  btn.disabled = true;
+  bs.textContent = 'Finalizing your access…';
+  let t = 10;
+  tc.textContent = t;
+  const iv = setInterval(() => {
+    t--; tc.textContent = t;
+    if(t <= 0) {
+      clearInterval(iv);
+      tc.textContent = '✓';
+      btn.disabled = false;
+      btn.textContent = '🎬 Get My Videos Now';
+      btn.style.animation = 'pulse 1.5s ease-in-out infinite';
+      bs.textContent = 'Tap now — videos will arrive in seconds';
+    }
+  }, 1000);
+}
+
+document.getElementById('mainBtn').onclick = function() {
+  if(this.disabled) return;
+  loadFinalAd();
+};
+
+function getVideos(){
+  if(MONETAG_URL !== "YOUR_MONETAG_URL_HERE") window.open(MONETAG_URL,'_blank');
+  document.getElementById('ctaSection').style.display='none';
+  document.getElementById('afterSection').classList.add('show');
+  const pb=document.getElementById('pb'), pbl=document.getElementById('pbl') || document.getElementById('progLabel') || document.getElementById('pbl');
+  const pbEl = document.getElementById('pb') || document.getElementById('progBar');
+  const lblEl = document.getElementById('pbl') || document.getElementById('progLabel');
+  let pct=0;
+  const iv=setInterval(()=>{
+    pct+=2; pbEl.style.width=pct+'%'; lblEl.textContent='Sending… '+pct+'%';
+    if(pct>=100){clearInterval(iv);lblEl.textContent='✓ Videos sent!';}
+  },100);
+  setTimeout(()=>{
+    fetch(RENDER_URL+'/send-videos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({start_param: sp+'_done', user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id})
+    }).catch(()=>{});
+  },5000);
+}
+
+function triggerUnlock(){getVideos();}
+
+function goTelegram(){
+  const url='https://t.me/'+BOT_USERNAME;
+  if(window.Telegram&&window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(url);
+  else window.location.href=url;
+}
+if(window.Telegram&&window.Telegram.WebApp){window.Telegram.WebApp.ready();window.Telegram.WebApp.expand();}
+initAd();
+</script>
+</body>
+</html>
