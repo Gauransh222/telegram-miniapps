@@ -165,16 +165,18 @@ function startTimer() {
   }, 1000);
 }
 
-document.getElementById('btn').onclick = async function() {
-  if(this.disabled) return;
-  this.disabled = true;
-  document.getElementById('ov').classList.add('show');
-  try{ if(AdCtrl) await AdCtrl.show(); }catch(e){}
-  finally{
-    document.getElementById('ov').classList.remove('show');
-    window.location.href = 'indian_page3.html?start=' + encodeURIComponent(sp);
-  }
-};
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('btn').onclick = async function() {
+    if(this.disabled) return;
+    this.disabled = true;
+    document.getElementById('ov').classList.add('show');
+    try{ if(AdCtrl) await AdCtrl.show(); }catch(e){}
+    finally{
+      document.getElementById('ov').classList.remove('show');
+      window.location.href = 'indian_page3.html?start=' + encodeURIComponent(sp);
+    }
+  };
+});
 initAd();
 </script>
 </body>

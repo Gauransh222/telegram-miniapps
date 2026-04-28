@@ -135,7 +135,7 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
   </div>
 
   <div class="cta-box">
-    <div class="timer">
+    <div class="timer" id="timerBox" style="display:none">
       <div style="font-size:22px">⏳</div>
       <div class="t-body"><div class="t-h">Preparing your content</div><div class="t-s">Loading free video collection…</div></div>
       <div class="t-cnt" id="tc">--</div>
@@ -153,39 +153,45 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
   <div class="foot">ToonVault · Free kids entertainment · Safe &amp; fun · Updated daily</div>
 </div>
 <script>
-const params = new URLSearchParams(window.location.search);
-const sp = params.get('start') || '';
-if(sp) sessionStorage.setItem('sp_cv', sp);
+window.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const sp = params.get('start') || '';
+  if(sp) sessionStorage.setItem('sp_cv', sp);
+  let timerStarted = false;
 
-const tc = document.getElementById('tc');
-const startBtn = document.getElementById('startBtn');
-const btn = document.getElementById('btn');
-const bs = document.getElementById('bs');
-let timerStarted = false;
+  function startTimer() {
+    if(timerStarted) return;
+    timerStarted = true;
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('timerBox').style.display = 'flex';
+    const btn = document.getElementById('btn');
+    const bs = document.getElementById('bs');
+    const tc = document.getElementById('tc');
+    btn.style.display = 'block';
+    btn.disabled = true;
+    bs.textContent = 'Preparing your content…';
+    let t = 10;
+    tc.textContent = t;
+    const iv = setInterval(() => {
+      t--; tc.textContent = t;
+      if(t <= 0) {
+        clearInterval(iv);
+        tc.textContent = '✓';
+        btn.disabled = false;
+        btn.textContent = '▶ Watch Free Content Now';
+        btn.style.animation = 'pop 1.5s ease-in-out infinite';
+        bs.textContent = 'Tap to continue — free access';
+      }
+    }, 1000);
+  }
 
-function startTimer() {
-  if(timerStarted) return;
-  timerStarted = true;
-  startBtn.style.display = 'none';
-  btn.style.display = 'block';
-  btn.disabled = true;
-  bs.textContent = 'Preparing your content…';
-  let t = 10;
-  tc.textContent = t;
-  const iv = setInterval(() => {
-    t--; tc.textContent = t;
-    if(t <= 0) {
-      clearInterval(iv);
-      tc.textContent = '✓';
-      btn.disabled = false;
-      btn.textContent = '▶ Watch Free Content Now';
-      btn.style.animation = 'pop 1.5s ease-in-out infinite';
-      bs.textContent = 'Tap to continue — free access';
-    }
-  }, 1000);
-}
+  document.getElementById('startBtn').onclick = startTimer;
 
-btn.onclick = () => { if(!btn.disabled) window.location.href = 'childvideos_page2.html?start=' + encodeURIComponent(sp); };
+  document.getElementById('btn').onclick = function() {
+    if(!this.disabled)
+      window.location.href = 'childvideos_page2.html?start=' + encodeURIComponent(sp);
+  };
+});
 </script>
 </body>
 </html>

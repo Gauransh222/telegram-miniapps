@@ -136,7 +136,7 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
   </div>
 
   <div class="cta-box">
-    <div class="timer">
+    <div class="timer" id="timerBox" style="display:none">
       <div style="font-size:22px">⏳</div>
       <div class="t-body"><div class="t-h">Preparing your content</div><div class="t-s">Loading exclusive video collection…</div></div>
       <div class="t-cnt" id="tc">--</div>
@@ -154,37 +154,45 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
   <div class="foot">NightStream · Premium content platform · 18+ only</div>
 </div>
 <script>
-const params = new URLSearchParams(window.location.search);
-const sp = params.get('start') || '';
-if(sp) sessionStorage.setItem('sp_ms', sp);
-let timerStarted = false;
+window.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const sp = params.get('start') || '';
+  if(sp) sessionStorage.setItem('sp_ms', sp);
+  let timerStarted = false;
 
-function startTimer() {
-  if(timerStarted) return;
-  timerStarted = true;
-  document.getElementById('startBtn').style.display = 'none';
-  const btn = document.getElementById('btn');
-  const bs = document.getElementById('bs');
-  const tc = document.getElementById('tc');
-  btn.style.display = 'block';
-  btn.disabled = true;
-  bs.textContent = 'Preparing your content…';
-  let t = 10;
-  tc.textContent = t;
-  const iv = setInterval(() => {
-    t--; tc.textContent = t;
-    if(t <= 0) {
-      clearInterval(iv);
-      tc.textContent = '✓';
-      btn.disabled = false;
-      btn.textContent = 'Continue to Full Content →';
-      btn.style.animation = 'pop 1.5s ease-in-out infinite';
-      bs.textContent = 'Tap to continue — free access';
-    }
-  }, 1000);
-}
+  function startTimer() {
+    if(timerStarted) return;
+    timerStarted = true;
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('timerBox').style.display = 'flex';
+    const btn = document.getElementById('btn');
+    const bs = document.getElementById('bs');
+    const tc = document.getElementById('tc');
+    btn.style.display = 'block';
+    btn.disabled = true;
+    bs.textContent = 'Preparing your content…';
+    let t = 10;
+    tc.textContent = t;
+    const iv = setInterval(() => {
+      t--; tc.textContent = t;
+      if(t <= 0) {
+        clearInterval(iv);
+        tc.textContent = '✓';
+        btn.disabled = false;
+        btn.textContent = 'Continue to Full Content →';
+        btn.style.animation = 'pop 1.5s ease-in-out infinite';
+        bs.textContent = 'Tap to continue — free access';
+      }
+    }, 1000);
+  }
 
-btn.onclick = () => { if(!btn.disabled) window.location.href = 'misc_page2.html?start=' + encodeURIComponent(sp); };
+  document.getElementById('startBtn').onclick = startTimer;
+
+  document.getElementById('btn').onclick = function() {
+    if(!this.disabled)
+      window.location.href = 'misc_page2.html?start=' + encodeURIComponent(sp);
+  };
+});
 </script>
 </body>
 </html>

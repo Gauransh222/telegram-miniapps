@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>ToonVault — More Shows</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0d1b2a;--sf:#162032;--sf2:#1e2d40;--ac:#ff6b35;--ac2:#ffd23f;--bl:#4ecdc4;--gr:#a8e063;--tx:#f8f9ff;--mu:#8a9bb0;--bd:#243447;--fd:'Nunito',sans-serif;--fb:'Quicksand',sans-serif}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,rgba(255,255,255,.2) 0,transparent 100%),radial-gradient(1px 1px at 70% 15%,rgba(255,255,255,.15) 0,transparent 100%);pointer-events:none;z-index:0}
+.b1,.b2{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
+.b1{width:230px;height:230px;background:rgba(78,205,196,.12);top:20%;right:-50px}
+.b2{width:200px;height:200px;background:rgba(255,107,53,.1);top:5px;left:-50px}
+.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:60px}
+
+/* Ad overlay */
+.ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(4px)}
+.ad-ov.show{display:flex}
+.spin{width:38px;height:38px;border:3px solid var(--bd);border-top-color:var(--ac2);border-radius:50%;animation:spin .8s linear infinite}
+.ad-ov-txt{font-size:13px;color:var(--mu)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--fd);font-weight:900;font-size:21px}
+.logo .t{color:var(--ac2)}.logo .v{color:var(--bl)}
+.prog{display:flex;gap:5px;align-items:center}
+.dot{width:22px;height:4px;border-radius:2px;background:var(--bd)}
+.dot.done{background:var(--ac)}.dot.act{background:var(--ac2)}
+
+.notice{margin:14px;background:var(--sf);border:1.5px solid var(--bd);border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.notice-i{width:30px;height:30px;background:rgba(255,210,63,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.notice-t{font-size:12px;color:var(--mu);line-height:1.5}
+.notice-t strong{color:var(--tx);font-weight:600}
+
+.sh{padding:14px 14px 8px;display:flex;justify-content:space-between;align-items:center}
+.sh h2{font-family:var(--fd);font-size:15px;font-weight:800}
+
+/* Featured card */
+.feat{margin:0 13px 10px;background:var(--sf);border-radius:15px;overflow:hidden;border:1.5px solid var(--bd);display:flex;gap:13px;padding:13px;align-items:center}
+.feat-thumb{width:90px;height:65px;flex-shrink:0;border-radius:10px;background:linear-gradient(135deg,#1a0a2e,#3d1458);display:flex;align-items:center;justify-content:center;font-size:26px;position:relative}
+.new-t{position:absolute;top:4px;left:4px;background:var(--gr);color:#0d1b2a;font-size:8px;font-weight:800;padding:2px 5px;border-radius:4px}
+.feat-body .feat-title{font-family:var(--fd);font-size:14px;font-weight:800;margin-bottom:5px}
+.feat-body .feat-meta{font-size:11px;color:var(--mu)}
+
+/* Grid */
+.grid{padding:0 13px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--sf);border-radius:13px;overflow:hidden;border:1.5px solid var(--bd)}
+.thumb{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.ga{background:linear-gradient(135deg,#1e1e2e,#2d2d52)}
+.gb{background:linear-gradient(135deg,#1e2e1e,#2d522d)}
+.gc{background:linear-gradient(135deg,#2e1e1e,#522d2d)}
+.gd{background:linear-gradient(135deg,#1e2e2e,#2d4a52)}
+.ht{position:absolute;top:5px;left:5px;background:var(--ac);color:#fff;font-size:8px;font-weight:800;padding:2px 5px;border-radius:4px}
+.ci{padding:8px 10px 10px}
+.ct{font-size:12px;font-weight:700;font-family:var(--fd);margin-bottom:3px}
+.cs{font-size:11px;color:var(--mu)}
+
+/* Comments */
+.cmts{padding:0 13px;display:flex;flex-direction:column;gap:9px}
+.cmt{background:var(--sf);border-radius:12px;padding:11px 13px;border:1.5px solid var(--bd)}
+.cmt-h{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.av.a{background:linear-gradient(135deg,var(--ac),var(--ac2))}
+.av.b{background:linear-gradient(135deg,#4a4aff,#8a2be2)}
+.av.c{background:linear-gradient(135deg,var(--bl),#1a8a7a)}
+.cmt-name{font-size:12px;font-weight:600}
+.cmt-time{font-size:10px;color:var(--mu);margin-left:auto}
+.cmt-txt{font-size:12px;color:var(--mu);line-height:1.5}
+.cmt-lk{font-size:10px;color:var(--mu);margin-top:5px}
+
+/* CTA */
+.cta-wrap{padding:18px 13px 0}
+.timer{background:var(--sf);border:1.5px solid var(--bd);border-radius:13px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
+.t-cnt{font-family:var(--fd);font-size:24px;font-weight:900;color:var(--ac2);min-width:32px;text-align:right}
+.t-body .t-h{font-family:var(--fd);font-size:13px;font-weight:800;color:var(--tx);margin-bottom:2px}
+.t-body .t-s{font-size:11px;color:var(--mu)}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--ac2),var(--ac));color:#0d1b2a;transition:opacity .2s}
+.btn:disabled{background:var(--sf2);color:var(--mu);cursor:not-allowed}
+.btn:not(:disabled):active{opacity:.85}
+.btn-s{text-align:center;font-size:11px;color:var(--mu);margin-top:7px;font-weight:600}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.w>*{animation:fadeUp .35s ease both}
+.w>*:nth-child(2){animation-delay:.05s}.w>*:nth-child(3){animation-delay:.1s}
+.w>*:nth-child(4){animation-delay:.15s}.w>*:nth-child(5){animation-delay:.2s}
+</style>
+</head>
+<body>
+<div class="b1"></div><div class="b2"></div>
+<div class="ad-ov" id="ov"><div class="spin"></div><div class="ad-ov-txt">Loading your content…</div></div>
+<div class="w">
+  <nav>
+    <div class="logo"><span class="t">Toon</span><span class="v">Vault</span></div>
+    <div class="prog"><div class="dot done"></div><div class="dot act"></div><div class="dot"></div></div>
+  </nav>
+
+  <div class="notice">
+    <div class="notice-i">⚡</div>
+    <div class="notice-t"><strong>Free content powered by sponsors.</strong> A short video may play before loading.</div>
+  </div>
+
+  <div class="sh"><h2>🔥 Fresh Drops</h2></div>
+  <div class="feat">
+    <div class="feat-thumb">🌟<div class="new-t">NEW</div></div>
+    <div class="feat-body">
+      <div class="feat-title">Most requested collection — just uploaded</div>
+      <div class="feat-meta">4.9 ★ · 92K views · 1h ago</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="thumb ga">🎭<div class="ht">HOT</div></div><div class="ci"><div class="ct">Fun Stories</div><div class="cs">77K views</div></div></div>
+    <div class="card"><div class="thumb gb">🌈<div class="ht">NEW</div></div><div class="ci"><div class="ct">Rainbow Kids</div><div class="cs">63K views</div></div></div>
+    <div class="card"><div class="thumb gc">🎪</div><div class="ci"><div class="ct">Circus Time</div><div class="cs">48K views</div></div></div>
+    <div class="card"><div class="thumb gd">🏰</div><div class="ci"><div class="ct">Castle Tales</div><div class="cs">39K views</div></div></div>
+  </div>
+
+  <div class="sh"><h2>💬 What parents say</h2></div>
+  <div class="cmts">
+    <div class="cmt"><div class="cmt-h"><div class="av a">R</div><div class="cmt-name">rahul_k</div><div class="cmt-time">2h ago</div></div><div class="cmt-txt">My kids love this! Great quality cartoons, no bad content 🔥</div><div class="cmt-lk">❤️ 124 likes</div></div>
+    <div class="cmt"><div class="cmt-h"><div class="av b">P</div><div class="cmt-name">priya_mom</div><div class="cmt-time">5h ago</div></div><div class="cmt-txt">Amazing free platform. Kids watch for hours without any issues.</div><div class="cmt-lk">❤️ 89 likes</div></div>
+  </div>
+
+  <div class="cta-wrap">
+    <div class="timer" id="timerBox" style="display:none">
+      <div style="font-size:22px">⏳</div>
+      <div class="t-body"><div class="t-h">Loading your next section</div><div class="t-s">Almost there…</div></div>
+      <div class="t-cnt" id="tc">10</div>
+    </div>
+    <button class="btn" id="startBtn" onclick="startTimer()">Watch Final Preview →</button>
+    <button class="btn" id="btn" style="display:none" disabled>⏳ Please wait…</button>
+    <div class="btn-s" id="bs">One more step to unlock your videos</div>
+  </div>
+</div>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const sp = params.get('start') || sessionStorage.getItem('sp_cv') || '';
+const BLOCK_ID = "YOUR_ADSGRAM_BLOCK_ID";
+let AdCtrl, timerStarted = false;
+
+async function initAd(){ try{ AdCtrl = await window.Adsgram.init({blockId: BLOCK_ID}); }catch(e){} }
+
+function startTimer() {
+  if(timerStarted) return;
+  timerStarted = true;
+  document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('timerBox').style.display = 'flex';
+  const btn = document.getElementById('btn');
+  const bs = document.getElementById('bs');
+  const tc = document.getElementById('tc');
+  btn.style.display = 'block';
+  btn.disabled = true;
+  bs.textContent = 'Loading content…';
+  let t = 10;
+  tc.textContent = t;
+  const iv = setInterval(() => {
+    t--; tc.textContent = t;
+    if(t <= 0) {
+      clearInterval(iv);
+      tc.textContent = '✓';
+      btn.disabled = false;
+      btn.textContent = '▶ Continue to Videos';
+      bs.textContent = 'Tap to continue — almost there!';
+    }
+  }, 1000);
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('btn').onclick = async function() {
+    if(this.disabled) return;
+    this.disabled = true;
+    document.getElementById('ov').classList.add('show');
+    try{ if(AdCtrl) await AdCtrl.show(); }catch(e){}
+    finally{
+      document.getElementById('ov').classList.remove('show');
+      window.location.href = 'childvideos_page3.html?start=' + encodeURIComponent(sp);
+    }
+  };
+});
+initAd();
+</script>
+</body>
+</html>
