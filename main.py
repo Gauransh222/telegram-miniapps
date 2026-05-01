@@ -110,10 +110,14 @@ bot_app = None
 def normalize_param(param: str):
     if not param:
         return None
+
     param = param.strip()
+
+    # already valid format
     if "_set" in param:
         return param
-    return f"{param}_set1"
+
+    return param + "_set1"
 
 # =======================
 # HELPERS
@@ -208,7 +212,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # ===== FINAL UNLOCK via deeplink (_done suffix) =====
     if param.endswith("_done"):
-        raw = normalize_param(param[:-5])  # ✅ FIX APPLIED
+        raw = param.replace("_done", "")
+        raw = normalize_param(raw) # ✅ FIX APPLIED
         await send_videos_to_user(user.id, raw)
         return
 
@@ -231,7 +236,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid link.")
         return
 
-    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}"
+    mini_url = f"{MINI_APP_URL}/?page={cfg['page']}&start={param}"
     btn = [[InlineKeyboardButton("🎬 Watch & Unlock Free Content", web_app=WebAppInfo(mini_url))]]
 
     await update.message.reply_text(
@@ -262,7 +267,7 @@ async def check_join_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.message.reply_text("❌ Invalid link.")
         return
 
-    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}"
+    mini_url = f"{MINI_APP_URL}/?page={cfg['page']}&start={param}"
     btn = [[InlineKeyboardButton("🎬 Watch & Unlock Free Content", web_app=WebAppInfo(mini_url))]]
 
     await q.message.reply_text(
