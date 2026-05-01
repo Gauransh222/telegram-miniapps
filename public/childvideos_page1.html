@@ -158,8 +158,14 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 <script>
 window.addEventListener('DOMContentLoaded', function() {
   const params = new URLSearchParams(window.location.search);
-  const sp = params.get('start') || '';
-  if(sp) sessionStorage.setItem('sp_cv', sp);
+let sp = params.get('start') || '';
+
+// ✅ FIX
+if (sp && !sp.includes('_set')) {
+  sp = sp + '_set1';
+}
+
+if(sp) sessionStorage.setItem('sp_cv', sp);
 
   const BLOCK_ID = "29001";
   const BASE = "https://telegram-miniapps-liart.vercel.app";
