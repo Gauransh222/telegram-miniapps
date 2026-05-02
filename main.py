@@ -8,7 +8,6 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from datetime import datetime, timedelta, timezone
 from pymongo import MongoClient
-from urllib.parse import parse_qs, urlparse
 
 from telegram import (
     Update,
@@ -103,26 +102,33 @@ access.create_index("time")
 access.create_index("content")
 
 bot_app = None
+_event_loop = None  # ✅ store event loop for HTTP thread use
+
 
 # =======================
-# ✅ PARAM FIX (ONLY ADDITION)
+# PARAM NORMALIZER
+# ✅ FIX: "childvideos1" → "childvideos1_set1"
+# ✅ "childvideos1_set3" stays as is
 # =======================
-def normalize_param(param: str):
+def normalize_param(param: str) -> str:
     if not param:
-        return None
-
+        return ""
     param = param.strip()
-
-    # already valid format
+    # Already has _set → keep as is
     if "_set" in param:
         return param
-
+    # Has underscore but not _set (e.g. "childvideos1_done") → keep as is
+    if "_" in param:
+        return param
+    # Just content type with no set → default to set1
     return param + "_set1"
+
 
 # =======================
 # HELPERS
 # =======================
 def save_user(user):
+    """Called on every /start — stores every user in MongoDB."""
     users.update_one(
         {"user_id": user.id},
         {"$set": {
@@ -134,6 +140,7 @@ def save_user(user):
         upsert=True
     )
 
+
 async def check_joins(bot, user_id):
     for _, _, ch_id in JOIN_CHANNELS:
         try:
@@ -144,6 +151,7 @@ async def check_joins(bot, user_id):
             return False
     return True
 
+
 async def auto_delete(bot, records):
     await asyncio.sleep(45 * 60)
     for r in records:
@@ -152,19 +160,37 @@ async def auto_delete(bot, records):
         except:
             pass
 
+
 async def send_videos_to_user(user_id: int, raw: str):
+    """
+    Send videos from storage channel to user.
+    raw = "childvideos1_set1" format
+    """
+    raw = raw.strip()
+
+    # Strip _done if still present
+    if raw.endswith("_done"):
+        raw = raw[:-5]
+
+    # Normalize — add _set1 if missing
+    raw = normalize_param(raw)
+
     if "_" not in raw:
         return False
 
-    main, sub = raw.split("_", 1)
-    cfg = CONTENT_CONFIG.get(main)
+    # Split: "childvideos1_set1" → main="childvideos1", sub="set1"
+    underscore_idx = raw.find("_")
+    main = raw[:underscore_idx]
+    sub = raw[underscore_idx + 1:]
 
+    cfg = CONTENT_CONFIG.get(main)
     if not cfg or sub not in cfg["ranges"]:
         return False
 
+    # Log unlock to MongoDB
     access.insert_one({
         "user_id": user_id,
-        "content": raw,
+        "content": f"{main}_{sub}",
         "time": datetime.now(timezone.utc)
     })
 
@@ -194,12 +220,13 @@ async def send_videos_to_user(user_id: int, raw: str):
     asyncio.create_task(auto_delete(bot_app.bot, sent))
     return True
 
+
 # =======================
 # START COMMAND
 # =======================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    save_user(user)
+    save_user(user)  # ✅ always stores user in MongoDB
 
     if not context.args:
         await update.message.reply_text(
@@ -207,15 +234,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # ✅ FIX APPLIED
-    param = normalize_param(context.args[0])
+    raw_param = context.args[0].strip()
 
-    # ===== FINAL UNLOCK via deeplink (_done suffix) =====
-    if param.endswith("_done"):
-        raw = param.replace("_done", "")
-        raw = normalize_param(raw) # ✅ FIX APPLIED
-        await send_videos_to_user(user.id, raw)
+    # ===== _done suffix = deliver videos =====
+    if raw_param.endswith("_done"):
+        raw = normalize_param(raw_param[:-5])
+        result = await send_videos_to_user(user.id, raw)
+        if not result:
+            await update.message.reply_text("❌ Invalid or expired link.")
         return
+
+    # ✅ FIX 3+4: normalize param before using
+    param = normalize_param(raw_param)
 
     # ===== JOIN CHECK =====
     if not await check_joins(context.bot, user.id):
@@ -229,6 +259,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # ===== OPEN MINI APP =====
+    # ✅ FIX 3: get content type from normalized param
     main = param.split("_")[0]
     cfg = CONTENT_CONFIG.get(main)
 
@@ -236,7 +267,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid link.")
         return
 
-    mini_url = f"{MINI_APP_URL}/?page={cfg['page']}&start={param}"
+    # ✅ FIX 3: correct URL — MINI_APP_URL + / + page filename + ?start=param
+    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}"
+
     btn = [[InlineKeyboardButton("🎬 Watch & Unlock Free Content", web_app=WebAppInfo(mini_url))]]
 
     await update.message.reply_text(
@@ -244,6 +277,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(btn)
     )
+
 
 # =======================
 # JOIN CALLBACK
@@ -267,7 +301,7 @@ async def check_join_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.message.reply_text("❌ Invalid link.")
         return
 
-    mini_url = f"{MINI_APP_URL}/?page={cfg['page']}&start={param}"
+    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}"
     btn = [[InlineKeyboardButton("🎬 Watch & Unlock Free Content", web_app=WebAppInfo(mini_url))]]
 
     await q.message.reply_text(
@@ -276,8 +310,9 @@ async def check_join_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(btn)
     )
 
+
 # =======================
-# STATS
+# STATS (Admin only)
 # =======================
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
@@ -294,20 +329,30 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     unlocks_24h = access.count_documents({"time": {"$gte": day}})
     unlocks_7d = access.count_documents({"time": {"$gte": week}})
 
-    per_content = access.aggregate([
+    per_content = list(access.aggregate([
         {"$group": {"_id": "$content", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}}
-    ])
+    ]))
 
-    lines = []
-    for c in per_content:
-        main = c["_id"].split("_")[0]
-        lines.append(f"• {main}: {c['count']}")
+    lines = [f"• {c['_id']}: {c['count']}" for c in per_content]
 
-    await update.message.reply_text("Stats loaded", parse_mode="Markdown")
+    await update.message.reply_text(
+        "📊 *BOT STATS*\n\n"
+        "👥 *Users*\n"
+        f"• Total: `{total_users}`\n"
+        f"• Active 24h: `{active_24h}`\n"
+        f"• Active 7d: `{active_7d}`\n\n"
+        "🎬 *Unlocks*\n"
+        f"• Total: `{total_unlocks}`\n"
+        f"• Last 24h: `{unlocks_24h}`\n"
+        f"• Last 7d: `{unlocks_7d}`\n\n"
+        "📦 *By Content*\n" + ("\n".join(lines) if lines else "• None"),
+        parse_mode="Markdown"
+    )
+
 
 # =======================
-# BROADCAST
+# BROADCAST (Admin only)
 # =======================
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
@@ -317,54 +362,119 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     message = " ".join(context.args)
+    sent = failed = 0
     for u in users.find({}):
         try:
             await context.bot.send_message(u["user_id"], message)
+            sent += 1
             await asyncio.sleep(0.3)
         except:
-            pass
+            failed += 1
+    await update.message.reply_text(f"✅ Sent: {sent}\n❌ Failed: {failed}")
+
 
 # =======================
 # HTTP SERVER
+# /send-videos called by page3 after user clicks get videos
 # =======================
 class Handler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
+
+    def do_OPTIONS(self):
+        """Handle CORS preflight from Vercel pages."""
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+
     def do_POST(self):
         if self.path == "/send-videos":
             length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(length)
-            data = json.loads(body)
+            try:
+                data = json.loads(body)
+                start_param = data.get("start_param", "").strip()
+                user_id = data.get("user_id")
 
-            start_param = data.get("start_param", "")
-            user_id = data.get("user_id")
+                if not user_id or not start_param:
+                    self._respond(400, {"error": "missing user_id or start_param"})
+                    return
 
-            raw = start_param[:-5] if start_param.endswith("_done") else start_param
-            raw = normalize_param(raw)  # ✅ FIX APPLIED
+                # Normalize
+                raw = start_param[:-5] if start_param.endswith("_done") else start_param
+                raw = normalize_param(raw)
 
-            asyncio.run_coroutine_threadsafe(
-                send_videos_to_user(int(user_id), raw),
-                bot_app.running_loop
-            )
+                # ✅ FIX: use _event_loop stored at startup
+                future = asyncio.run_coroutine_threadsafe(
+                    send_videos_to_user(int(user_id), raw),
+                    _event_loop
+                )
+                result = future.result(timeout=30)
+                self._respond(200, {"ok": result})
 
-            self.send_response(200)
+            except Exception as e:
+                self._respond(500, {"error": str(e)})
+        else:
+            self.send_response(404)
             self.end_headers()
 
+    def _respond(self, status, body):
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(json.dumps(body).encode())
+
+    def log_message(self, format, *args):
+        pass  # suppress logs
+
+
 def run_http():
-    HTTPServer(("0.0.0.0", 10000), Handler).serve_forever()
+    port = int(os.environ.get("PORT", 10000))
+    HTTPServer(("0.0.0.0", port), Handler).serve_forever()
+
 
 # =======================
 # MAIN
+# ✅ FIX: use asyncio.run() to properly capture event loop
 # =======================
-def main():
-    global bot_app
-    bot_app = Application.builder().token(BOT_TOKEN).build()
+async def main_async():
+    global bot_app, _event_loop
 
+    # ✅ Capture event loop BEFORE polling
+    _event_loop = asyncio.get_event_loop()
+
+    bot_app = Application.builder().token(BOT_TOKEN).build()
     bot_app.add_handler(CommandHandler("start", start))
     bot_app.add_handler(CommandHandler("stats", stats))
     bot_app.add_handler(CommandHandler("broadcast", broadcast))
-    bot_app.add_handler(CallbackQueryHandler(check_join_cb))
+    bot_app.add_handler(CallbackQueryHandler(check_join_cb, pattern="check_join"))
 
+    # Start HTTP server in background thread
     threading.Thread(target=run_http, daemon=True).start()
-    bot_app.run_polling()
+
+    print("✅ Bot started...")
+
+    await bot_app.initialize()
+    await bot_app.start()
+    await bot_app.updater.start_polling()
+
+    # Run forever
+    await asyncio.Event().wait()
+
+
+def main():
+    asyncio.run(main_async())
+
 
 if __name__ == "__main__":
     main()
