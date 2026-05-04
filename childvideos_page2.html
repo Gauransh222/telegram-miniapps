@@ -169,6 +169,7 @@ window.addEventListener('DOMContentLoaded', function() {
   async function initAd() {
     try {
       if (!window.Adsgram) return;
+      if (!window.Telegram?.WebApp?.initData) return; // ← FIXED: only init inside Telegram
       AdCtrl = await window.Adsgram.init({ blockId: BLOCK_ID });
     } catch(e) { console.log('Adsgram init:', e); }
   }

@@ -210,13 +210,14 @@ window.addEventListener('DOMContentLoaded', function() {
   if (uid) sessionStorage.setItem('uid_iv', uid);
 
   // ── Adsgram Block ID for Page 2 — FILL IN YOUR BLOCK ID BELOW ──
-  const BLOCK_ID = "29389";
+  const BLOCK_ID = "YOUR_BLOCK_ID_PAGE2";
   let AdCtrl = null;
   let timerStarted = false;
 
   async function initAd() {
     try {
       if (!window.Adsgram) return;
+      if (!window.Telegram?.WebApp?.initData) return; // ← FIXED: only init inside Telegram
       AdCtrl = await window.Adsgram.init({ blockId: BLOCK_ID });
     } catch(e) { console.log('Adsgram init:', e); }
   }
