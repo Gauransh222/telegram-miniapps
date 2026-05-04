@@ -6,7 +6,7 @@
 <title>NightStream — Your Content is Ready</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 
-<!-- Monetag In-Page Push Tag — same zone as page 1 (10395704) -->
+<!-- Monetag Push/Onclick Tag -->
 <script>
 try {
   (function(s){s.dataset.zone='10395704';s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
@@ -18,76 +18,110 @@ try {
 :root{--bg:#0a0a0f;--sf:#13131a;--sf2:#1c1c26;--ac:#e8462a;--ac2:#ff6b47;--go:#f5c842;--gn:#2ecc71;--tx:#f0eff5;--mu:#7a7a8c;--bd:#2a2a3a;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif}
 html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;pointer-events:none;z-index:0}
-.b1,.b2{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
-.b1{width:280px;height:280px;background:rgba(245,200,66,.08);top:5%;right:-70px}
-.b2{width:220px;height:220px;background:rgba(46,204,113,.07);bottom:15%;left:-70px}
-.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:40px}
 
-/* Ad overlay for Adsgram */
-.ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(4px)}
+/* Blobs */
+.b1,.b2,.b3{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.b1{width:280px;height:280px;background:rgba(245,200,66,.09);top:5%;right:-70px;animation:blobFloat 7s ease-in-out infinite}
+.b2{width:220px;height:220px;background:rgba(46,204,113,.08);bottom:15%;left:-70px;animation:blobFloat 9s ease-in-out infinite reverse}
+.b3{width:160px;height:160px;background:rgba(232,70,42,.07);top:45%;left:50%;transform:translateX(-50%);animation:blobFloat 11s ease-in-out infinite}
+@keyframes blobFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(16px)}}
+
+/* Ad overlay */
+.ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(6px)}
 .ad-ov.show{display:flex}
-.spin{width:38px;height:38px;border:3px solid var(--bd);border-top-color:var(--ac2);border-radius:50%;animation:spin .8s linear infinite}
+.spin{width:40px;height:40px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}
 .ad-ov-txt{font-size:13px;color:var(--mu)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:40px}
+
+/* Nav */
 nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
 .logo{font-family:var(--fd);font-weight:800;font-size:20px;letter-spacing:-.5px}
-.logo span{color:var(--ac)}
-.prog{display:flex;gap:5px}
+.logo span{color:var(--ac);text-shadow:0 0 16px rgba(232,70,42,.5)}
+.prog{display:flex;gap:5px;align-items:center}
 .dot{width:22px;height:4px;border-radius:2px;background:var(--bd)}
-.dot.done{background:var(--ac)}
+.dot.done{background:var(--ac);box-shadow:0 0 8px rgba(232,70,42,.6)}
 
-/* Pre-unlock state */
+/* Pre-unlock */
 .pre-unlock{padding:18px 15px 0}
-.pre-card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px}
-.pre-icon{font-size:40px;margin-bottom:10px}
-.pre-title{font-family:var(--fd);font-size:17px;font-weight:700;margin-bottom:6px}
+.pre-card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px;
+  box-shadow:0 0 30px rgba(232,70,42,.08)}
+.pre-icon{font-size:44px;margin-bottom:10px;animation:iconBounce 2s ease-in-out infinite}
+@keyframes iconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pre-title{font-family:var(--fd);font-size:17px;font-weight:700;margin-bottom:6px;
+  text-shadow:0 0 20px rgba(232,70,42,.2)}
 .pre-sub{font-size:13px;color:var(--mu);line-height:1.5}
-.ad-note{background:rgba(232,70,42,.08);border:1px solid rgba(232,70,42,.2);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.5}
-.ad-note strong{color:var(--ac2)}
-.btn-pre{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;transition:opacity .2s;position:relative;overflow:hidden}
-.btn-pre:active{opacity:.88}
-.btn-pre:disabled{opacity:.5;cursor:not-allowed}
-.btn-pre::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
-.btn-sub{text-align:center;font-size:11px;color:var(--mu);margin-top:7px}
 
 /* Info grid */
-.info{margin:0 15px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.ic{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:13px;text-align:center}
+.info{margin:0 0 14px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ic{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:13px;text-align:center;transition:box-shadow .3s}
+.ic:hover{box-shadow:0 0 14px rgba(232,70,42,.1)}
 .ic-i{font-size:22px;margin-bottom:5px}
 .ic-l{font-size:10px;color:var(--mu);line-height:1.4}
 .ic-v{font-family:var(--fd);font-size:15px;font-weight:700;margin-top:4px}
 
-/* Timer box */
-.timer{background:var(--sf);border:1px solid var(--bd);border-radius:13px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
+/* Ad note */
+.ad-note{background:rgba(232,70,42,.08);border:1px solid rgba(232,70,42,.2);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.5}
+.ad-note strong{color:var(--ac2)}
 
-/* After unlock */
-.after{display:none;margin:18px 15px 0;background:var(--sf);border:1px solid rgba(46,204,113,.3);border-radius:16px;padding:22px;text-align:center}
+/* Timer */
+.timer{background:var(--sf);border:1px solid var(--bd);border-radius:13px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:11px;
+  box-shadow:0 0 20px rgba(232,70,42,.08)}
+.t-cnt{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--go);min-width:32px;text-align:right;
+  text-shadow:0 0 14px rgba(245,200,66,.7)}
+.t-body .t-h{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px}
+.t-body .t-s{font-size:11px;color:var(--mu)}
+
+/* Buttons */
+.btn-pre{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;transition:opacity .2s,box-shadow .2s;position:relative;overflow:hidden;
+  box-shadow:0 0 28px rgba(232,70,42,.4)}
+.btn-pre:active{opacity:.88}
+.btn-pre:disabled{background:var(--sf2);color:var(--mu);cursor:not-allowed;box-shadow:none}
+.btn-pre::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
+.btn-sub{text-align:center;font-size:11px;color:var(--mu);margin-top:7px}
+
+/* After section */
+.after{display:none;margin:18px 15px 0;background:var(--sf);border:1px solid rgba(46,204,113,.3);border-radius:16px;padding:22px;text-align:center;
+  box-shadow:0 0 30px rgba(46,204,113,.1)}
 .after.show{display:block}
 .after-icon{font-size:38px;margin-bottom:9px}
-.after-title{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--gn);margin-bottom:7px}
+.after-title{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--gn);margin-bottom:7px;
+  text-shadow:0 0 12px rgba(46,204,113,.4)}
 .after-txt{font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:14px}
 .pb-wrap{margin:10px 0;background:var(--sf2);border-radius:10px;height:8px;overflow:hidden}
-.pb{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:10px;width:0%;transition:width .5s linear}
+.pb{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:10px;width:0%;transition:width .5s linear;
+  box-shadow:0 0 8px rgba(232,70,42,.5)}
 .pb-lbl{font-size:11px;color:var(--mu);margin-top:5px;font-family:var(--fd);font-weight:600}
-.back-btn{width:100%;padding:13px;background:var(--gn);border:none;border-radius:12px;color:#fff;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;transition:opacity .2s}
+.back-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gn),#1a8a4a);border:none;border-radius:12px;color:#fff;
+  font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;transition:opacity .2s;
+  box-shadow:0 0 20px rgba(46,204,113,.35)}
 .back-btn:active{opacity:.88}
 
 .foot{text-align:center;padding:20px 15px 0;font-size:11px;color:var(--mu);line-height:1.6}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 28px rgba(232,70,42,.4)}50%{transform:scale(1.03);box-shadow:0 0 44px rgba(232,70,42,.7)}}
 .w>*{animation:fadeUp .35s ease both}
 .w>*:nth-child(2){animation-delay:.05s}.w>*:nth-child(3){animation-delay:.1s}
 .w>*:nth-child(4){animation-delay:.15s}
 </style>
 </head>
 <body>
-<div class="b1"></div><div class="b2"></div>
-<div class="ad-ov" id="ov"><div class="spin"></div><div class="ad-ov-txt">Loading your content…</div></div>
+<div class="b1"></div><div class="b2"></div><div class="b3"></div>
+
+<!-- Ad overlay -->
+<div class="ad-ov" id="adOv"><div class="spin"></div><div class="ad-ov-txt">Loading your content…</div></div>
+
 <div class="w">
   <nav>
     <div class="logo">Night<span>Stream</span></div>
-    <div class="prog"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+    <div class="prog">
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+    </div>
   </nav>
 
   <!-- Pre-unlock section -->
@@ -97,7 +131,7 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
       <div class="pre-title">Your content is almost ready</div>
       <div class="pre-sub">One last step to unlock your full exclusive video collection.</div>
     </div>
-    <div class="info" style="margin:0 0 14px">
+    <div class="info">
       <div class="ic"><div class="ic-i">⚡</div><div class="ic-l">Quality</div><div class="ic-v">HD</div></div>
       <div class="ic"><div class="ic-i">⏱️</div><div class="ic-l">Access window</div><div class="ic-v">45 min</div></div>
       <div class="ic"><div class="ic-i">📦</div><div class="ic-l">Videos ready</div><div class="ic-v">Multiple</div></div>
@@ -106,11 +140,8 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
     <div class="ad-note"><strong>Almost there!</strong> One more sponsored clip keeps everything on this platform 100% free for you.</div>
     <div class="timer" id="timerBox" style="display:none">
       <div style="font-size:22px">⏳</div>
-      <div style="flex:1">
-        <div style="font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Preparing final access</div>
-        <div style="font-size:11px;color:var(--mu)">Almost there…</div>
-      </div>
-      <div style="font-family:var(--fd);font-size:24px;font-weight:700;color:var(--go);min-width:32px;text-align:right" id="tc">10</div>
+      <div class="t-body"><div class="t-h">Preparing final access</div><div class="t-s">Almost there…</div></div>
+      <div class="t-cnt" id="tc">10</div>
     </div>
     <button class="btn-pre" id="startBtn">▶ Tap to Unlock My Videos</button>
     <button class="btn-pre" id="mainBtn" style="display:none" disabled>⏳ Please wait…</button>
@@ -130,33 +161,40 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
   <div class="foot">NightStream · Content auto-deletes after 45 minutes · 18+ only</div>
 </div>
 
+<!-- Adsgram SDK -->
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
 
   const params = new URLSearchParams(window.location.search);
 
-  // ── Read & save start param — same keys as page 1 ──
+  // ── Read & save start param — same keys as pages 1 & 2 ──
   let sp = params.get('start') || sessionStorage.getItem('sp_ms') || '';
   if (sp && !sp.includes('_set')) sp = sp + '_set1';
   if (sp) sessionStorage.setItem('sp_ms', sp);
 
-  // ── Read & save uid — same keys as page 1 ──
+  // ── Read & save uid — same keys as pages 1 & 2 ──
   const uid = params.get('uid') || sessionStorage.getItem('uid_ms') || '';
   if (uid) sessionStorage.setItem('uid_ms', uid);
 
-  // ── Config — same Monetag direct link as page 1 ──
+  // ── Config ──
   const MONETAG_URL  = "https://omg10.com/4/10887999";
   const RENDER_URL   = "https://telegram-bot-0x68.onrender.com";
   const BOT_USERNAME = "ContentUnlockerBot";
-  const BLOCK_ID     = 'YOUR_ADSGRAM_BLOCK_ID';
+  const BLOCK_ID     = "YOUR_BLOCK_ID_PAGE3"; // ← fill in your Adsgram block ID
 
   let timerStarted = false;
-  let AdCtrl;
+  let AdCtrl = null;
 
+  // ── Init Adsgram only inside Telegram ──
   async function initAd() {
-    try { AdCtrl = await window.Adsgram.init({ blockId: BLOCK_ID }); } catch(e) {}
+    try {
+      if (!window.Adsgram) return;
+      if (!window.Telegram?.WebApp?.initData) return; // ← no popup outside Telegram
+      AdCtrl = await window.Adsgram.init({ blockId: BLOCK_ID });
+    } catch(e) { console.log('Adsgram init:', e); }
   }
+  if (sp) initAd();
 
   // ── Start button → 10s timer ──
   document.getElementById('startBtn').onclick = function() {
@@ -185,28 +223,44 @@ window.addEventListener('DOMContentLoaded', function() {
     }, 1000);
   };
 
-  // ── Main button → load Adsgram ad then unlock ──
-  document.getElementById('mainBtn').onclick = function() {
+  // ── Main button → Adsgram → Monetag fallback → unlock ──
+  document.getElementById('mainBtn').onclick = async function() {
     if (this.disabled) return;
-    loadFinalAd();
-  };
+    this.disabled = true;
+    document.getElementById('adOv').classList.add('show');
 
-  async function loadFinalAd() {
-    document.getElementById('mainBtn').disabled = true;
-    document.getElementById('ov').classList.add('show');
-    try { if (AdCtrl) await AdCtrl.show(); } catch(e) {}
-    finally {
-      document.getElementById('ov').classList.remove('show');
-      triggerUnlock();
+    let adPlayed = false;
+
+    // Step 1: Try Adsgram
+    try {
+      if (AdCtrl) {
+        await AdCtrl.show();
+        adPlayed = true;
+      }
+    } catch(e) {
+      console.log('Adsgram no ads:', e);
     }
-  }
 
-  function triggerUnlock() { getVideos(); }
+    // Step 2: Adsgram had no ads — try Monetag video rewarded
+    if (!adPlayed) {
+      try {
+        if (typeof show_10196834 === 'function') {
+          await show_10196834();
+        }
+      } catch(e) {
+        console.log('Monetag video error:', e);
+      }
+    }
+
+    // Step 3: Hide overlay and unlock
+    document.getElementById('adOv').classList.remove('show');
+    getVideos();
+  };
 
   function getVideos() {
     const doneparam = sp.endsWith('_done') ? sp : sp + '_done';
 
-    // 1. Open Monetag direct link (same as page 1)
+    // 1. Open Monetag direct link
     window.open(MONETAG_URL, '_blank');
 
     // 2. Show progress UI
@@ -232,8 +286,8 @@ window.addEventListener('DOMContentLoaded', function() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          start_param: doneparam,
-          user_id: uid
+          start_param: doneparam,  // e.g. "miscvideo1_set1_done"
+          user_id: uid             // from sessionStorage — reliable
         })
       }).catch(() => {});
     }, 5000);
@@ -250,8 +304,6 @@ window.addEventListener('DOMContentLoaded', function() {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();
   }
-
-  initAd();
 });
 </script>
 </body>
