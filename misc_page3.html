@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>NightStream — Your Content is Ready</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<!-- Monetag In-Page Push Tag — same zone as page 1 (10395704) -->
+<script>
+try {
+  (function(s){s.dataset.zone='10395704';s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+} catch(e) {}
+</script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0a0f;--sf:#13131a;--sf2:#1c1c26;--ac:#e8462a;--ac2:#ff6b47;--go:#f5c842;--gn:#2ecc71;--tx:#f0eff5;--mu:#7a7a8c;--bd:#2a2a3a;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif}
@@ -15,7 +23,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .b2{width:220px;height:220px;background:rgba(46,204,113,.07);bottom:15%;left:-70px}
 .w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:40px}
 
-/* Ad overlay for 2nd Adsgram */
+/* Ad overlay for Adsgram */
 .ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(4px)}
 .ad-ov.show{display:flex}
 .spin{width:38px;height:38px;border:3px solid var(--bd);border-top-color:var(--ac2);border-radius:50%;animation:spin .8s linear infinite}
@@ -39,6 +47,7 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
 .ad-note strong{color:var(--ac2)}
 .btn-pre{width:100%;padding:15px;border:none;border-radius:14px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;transition:opacity .2s;position:relative;overflow:hidden}
 .btn-pre:active{opacity:.88}
+.btn-pre:disabled{opacity:.5;cursor:not-allowed}
 .btn-pre::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
 .btn-sub{text-align:center;font-size:11px;color:var(--mu);margin-top:7px}
 
@@ -48,6 +57,9 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
 .ic-i{font-size:22px;margin-bottom:5px}
 .ic-l{font-size:10px;color:var(--mu);line-height:1.4}
 .ic-v{font-family:var(--fd);font-size:15px;font-weight:700;margin-top:4px}
+
+/* Timer box */
+.timer{background:var(--sf);border:1px solid var(--bd);border-radius:13px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
 
 /* After unlock */
 .after{display:none;margin:18px 15px 0;background:var(--sf);border:1px solid rgba(46,204,113,.3);border-radius:16px;padding:22px;text-align:center}
@@ -67,7 +79,6 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
 .w>*{animation:fadeUp .35s ease both}
 .w>*:nth-child(2){animation-delay:.05s}.w>*:nth-child(3){animation-delay:.1s}
 .w>*:nth-child(4){animation-delay:.15s}
-.btn-pre{animation:pulse 2.5s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -79,7 +90,7 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
     <div class="prog"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
   </nav>
 
-  <!-- Pre-unlock: shows Adsgram ad before final unlock -->
+  <!-- Pre-unlock section -->
   <div class="pre-unlock" id="preSection">
     <div class="pre-card">
       <div class="pre-icon">🎬</div>
@@ -95,10 +106,13 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
     <div class="ad-note"><strong>Almost there!</strong> One more sponsored clip keeps everything on this platform 100% free for you.</div>
     <div class="timer" id="timerBox" style="display:none">
       <div style="font-size:22px">⏳</div>
-      <div class="t-body" style="flex:1"><div class="t-h" style="font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Preparing final access</div><div class="t-s" style="font-size:11px;color:var(--mu)">Almost there…</div></div>
+      <div style="flex:1">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Preparing final access</div>
+        <div style="font-size:11px;color:var(--mu)">Almost there…</div>
+      </div>
       <div style="font-family:var(--fd);font-size:24px;font-weight:700;color:var(--go);min-width:32px;text-align:right" id="tc">10</div>
     </div>
-    <button class="btn-pre" id="startBtn" onclick="startTimer()">▶ Tap to Unlock My Videos</button>
+    <button class="btn-pre" id="startBtn">▶ Tap to Unlock My Videos</button>
     <button class="btn-pre" id="mainBtn" style="display:none" disabled>⏳ Please wait…</button>
     <div class="btn-sub" id="bs">Tap to begin · Videos arrive instantly after</div>
   </div>
@@ -115,85 +129,130 @@ nav{padding:16px 18px 13px;display:flex;align-items:center;justify-content:space
 
   <div class="foot">NightStream · Content auto-deletes after 45 minutes · 18+ only</div>
 </div>
+
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script>
-const params = new URLSearchParams(window.location.search);
-const sp = params.get('start') || sessionStorage.getItem('sp_ms') || '';
-const MONETAG_URL = "https://omg10.com/4/10887999";
-const RENDER_URL = "https://telegram-bot-0x68.onrender.com";
-const BOT_USERNAME = "ContentUnlockerBot";
-let timerStarted = false;
-const BLOCK_ID = 'YOUR_ADSGRAM_BLOCK_ID';
-let AdCtrl; async function initAd(){try{AdCtrl=await window.Adsgram.init({blockId:BLOCK_ID});}catch(e){}}
+window.addEventListener('DOMContentLoaded', function() {
 
-async function loadFinalAd(){
-  document.getElementById('preBtn').disabled=true;
-  document.getElementById('ov').classList.add('show');
-  try{if(AdCtrl) await AdCtrl.show();}catch(e){}
-  finally{document.getElementById('ov').classList.remove('show');triggerUnlock();}
-}
+  const params = new URLSearchParams(window.location.search);
 
-function startTimer() {
-  if(timerStarted) return;
-  timerStarted = true;
-  document.getElementById('startBtn').style.display = 'none';
-  document.getElementById('timerBox').style.display = 'flex';
-  const btn = document.getElementById('mainBtn');
-  const bs = document.getElementById('bs');
-  const tc = document.getElementById('tc');
-  btn.style.display = 'block';
-  btn.disabled = true;
-  bs.textContent = 'Finalizing your access…';
-  let t = 10;
-  tc.textContent = t;
-  const iv = setInterval(() => {
-    t--; tc.textContent = t;
-    if(t <= 0) {
-      clearInterval(iv);
-      tc.textContent = '✓';
-      btn.disabled = false;
-      btn.textContent = '🎬 Get My Videos Now';
-      btn.style.animation = 'pulse 1.5s ease-in-out infinite';
-      bs.textContent = 'Tap now — videos will arrive in seconds';
+  // ── Read & save start param — same keys as page 1 ──
+  let sp = params.get('start') || sessionStorage.getItem('sp_ms') || '';
+  if (sp && !sp.includes('_set')) sp = sp + '_set1';
+  if (sp) sessionStorage.setItem('sp_ms', sp);
+
+  // ── Read & save uid — same keys as page 1 ──
+  const uid = params.get('uid') || sessionStorage.getItem('uid_ms') || '';
+  if (uid) sessionStorage.setItem('uid_ms', uid);
+
+  // ── Config — same Monetag direct link as page 1 ──
+  const MONETAG_URL  = "https://omg10.com/4/10887999";
+  const RENDER_URL   = "https://telegram-bot-0x68.onrender.com";
+  const BOT_USERNAME = "ContentUnlockerBot";
+  const BLOCK_ID     = 'YOUR_ADSGRAM_BLOCK_ID';
+
+  let timerStarted = false;
+  let AdCtrl;
+
+  async function initAd() {
+    try { AdCtrl = await window.Adsgram.init({ blockId: BLOCK_ID }); } catch(e) {}
+  }
+
+  // ── Start button → 10s timer ──
+  document.getElementById('startBtn').onclick = function() {
+    if (timerStarted) return;
+    timerStarted = true;
+    this.style.display = 'none';
+    document.getElementById('timerBox').style.display = 'flex';
+    const btn = document.getElementById('mainBtn');
+    const bs  = document.getElementById('bs');
+    const tc  = document.getElementById('tc');
+    btn.style.display = 'block';
+    btn.disabled = true;
+    bs.textContent = 'Finalizing your access…';
+    let t = 10;
+    tc.textContent = t;
+    const iv = setInterval(() => {
+      t--; tc.textContent = t;
+      if (t <= 0) {
+        clearInterval(iv);
+        tc.textContent = '✓';
+        btn.disabled = false;
+        btn.textContent = '🎬 Get My Videos Now';
+        btn.style.animation = 'pulse 1.5s ease-in-out infinite';
+        bs.textContent = 'Tap now — videos will arrive in seconds';
+      }
+    }, 1000);
+  };
+
+  // ── Main button → load Adsgram ad then unlock ──
+  document.getElementById('mainBtn').onclick = function() {
+    if (this.disabled) return;
+    loadFinalAd();
+  };
+
+  async function loadFinalAd() {
+    document.getElementById('mainBtn').disabled = true;
+    document.getElementById('ov').classList.add('show');
+    try { if (AdCtrl) await AdCtrl.show(); } catch(e) {}
+    finally {
+      document.getElementById('ov').classList.remove('show');
+      triggerUnlock();
     }
-  }, 1000);
-}
+  }
 
-document.getElementById('mainBtn').onclick = function() {
-  if(this.disabled) return;
-  loadFinalAd();
-};
+  function triggerUnlock() { getVideos(); }
 
-function getVideos(){
-  if(MONETAG_URL !== "YOUR_MONETAG_URL_HERE") window.open(MONETAG_URL,'_blank');
-  document.getElementById('ctaSection').style.display='none';
-  document.getElementById('afterSection').classList.add('show');
-  const pb=document.getElementById('pb'), pbl=document.getElementById('pbl') || document.getElementById('progLabel') || document.getElementById('pbl');
-  const pbEl = document.getElementById('pb') || document.getElementById('progBar');
-  const lblEl = document.getElementById('pbl') || document.getElementById('progLabel');
-  let pct=0;
-  const iv=setInterval(()=>{
-    pct+=2; pbEl.style.width=pct+'%'; lblEl.textContent='Sending… '+pct+'%';
-    if(pct>=100){clearInterval(iv);lblEl.textContent='✓ Videos sent!';}
-  },100);
-  setTimeout(()=>{
-    fetch(RENDER_URL+'/send-videos',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({start_param: sp+'_done', user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id})
-    }).catch(()=>{});
-  },5000);
-}
+  function getVideos() {
+    const doneparam = sp.endsWith('_done') ? sp : sp + '_done';
 
-function triggerUnlock(){getVideos();}
+    // 1. Open Monetag direct link (same as page 1)
+    window.open(MONETAG_URL, '_blank');
 
-function goTelegram(){
-  const url='https://t.me/'+BOT_USERNAME;
-  if(window.Telegram&&window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(url);
-  else window.location.href=url;
-}
-if(window.Telegram&&window.Telegram.WebApp){window.Telegram.WebApp.ready();window.Telegram.WebApp.expand();}
-initAd();
+    // 2. Show progress UI
+    document.getElementById('preSection').style.display = 'none';
+    document.getElementById('afterSection').classList.add('show');
+
+    const pbEl  = document.getElementById('pb');
+    const lblEl = document.getElementById('pbl');
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct += 2;
+      pbEl.style.width = pct + '%';
+      lblEl.textContent = 'Sending… ' + pct + '%';
+      if (pct >= 100) {
+        clearInterval(iv);
+        lblEl.textContent = '✓ Videos sent!';
+      }
+    }, 100);
+
+    // 3. After 5s — send doneparam + uid to bot
+    setTimeout(() => {
+      fetch(RENDER_URL + '/send-videos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          start_param: doneparam,
+          user_id: uid
+        })
+      }).catch(() => {});
+    }, 5000);
+  }
+
+  function goTelegram() {
+    const url = 'https://t.me/' + BOT_USERNAME;
+    if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(url);
+    else window.location.href = url;
+  }
+  window.goTelegram = goTelegram;
+
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+
+  initAd();
+});
 </script>
 </body>
 </html>
