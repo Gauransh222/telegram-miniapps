@@ -7,7 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
 <!-- Monetag Onclick Ad -->
-<script>(function(s){s.dataset.zone='10395704',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<script>
+try {
+  (function(s){s.dataset.zone='10395704';s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+} catch(e) {}
+</script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -18,21 +22,18 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .b1{width:260px;height:260px;background:rgba(255,210,63,.09);top:5%;right:-70px}
 .b2{width:220px;height:220px;background:rgba(168,224,99,.08);bottom:15%;left:-70px}
 .w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:40px}
-
 nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
 .logo{font-family:var(--fd);font-weight:900;font-size:21px}
 .logo .t{color:var(--ac2)}.logo .v{color:var(--bl)}
 .prog{display:flex;gap:5px}
 .dot{width:22px;height:4px;border-radius:2px;background:var(--bd)}
 .dot.done{background:var(--ac)}
-
 .hero{margin:18px 13px;background:linear-gradient(135deg,#1a2a10,#1e3418);border:2px solid rgba(168,224,99,.25);border-radius:20px;padding:26px 20px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:160px;height:160px;background:rgba(168,224,99,.08);border-radius:50%;filter:blur(35px)}
 .hero-icon{font-size:46px;margin-bottom:12px;position:relative;z-index:1}
 .hero-title{font-family:var(--fd);font-size:21px;font-weight:900;line-height:1.2;margin-bottom:7px;position:relative;z-index:1}
 .hero-title span{color:var(--gr)}
 .hero-sub{font-size:13px;color:var(--mu);line-height:1.5;position:relative;z-index:1}
-
 .steps{margin:0 13px;display:flex;flex-direction:column;gap:9px}
 .step{background:var(--sf);border:1.5px solid var(--bd);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:11px}
 .step-n{width:30px;height:30px;border-radius:50%;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:800;flex-shrink:0;color:var(--mu)}
@@ -41,13 +42,11 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 .step-t{font-size:13px;font-family:var(--fd);font-weight:700;display:block;margin-bottom:2px}
 .step-s{font-size:11px;color:var(--mu)}
 .step-end{margin-left:auto;font-size:16px}
-
 .info{margin:14px 13px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .ic{background:var(--sf);border:1.5px solid var(--bd);border-radius:12px;padding:13px;text-align:center}
 .ic-i{font-size:22px;margin-bottom:5px}
 .ic-l{font-size:10px;color:var(--mu);line-height:1.4}
 .ic-v{font-family:var(--fd);font-size:15px;font-weight:800;margin-top:4px;color:var(--tx)}
-
 .cta-wrap{padding:4px 13px 0}
 .timer{background:var(--sf);border:1.5px solid var(--bd);border-radius:13px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
 .t-cnt{font-family:var(--fd);font-size:24px;font-weight:900;color:var(--ac2);min-width:32px;text-align:right}
@@ -58,7 +57,6 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 .btn:active{opacity:.88}
 .btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.15) 0,transparent 60%);pointer-events:none}
 .btn-s{text-align:center;font-size:11px;color:var(--mu);margin-top:7px;font-weight:600}
-
 .after{display:none;margin:0 13px;background:var(--sf);border:1.5px solid rgba(168,224,99,.3);border-radius:16px;padding:22px;text-align:center}
 .after.show{display:block}
 .after-icon{font-size:38px;margin-bottom:9px}
@@ -69,7 +67,6 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 .prog-label{font-size:11px;color:var(--mu);margin-top:5px;font-family:var(--fd);font-weight:700}
 .back-btn{width:100%;padding:13px;background:var(--gr);border:none;border-radius:12px;color:#0d1b2a;font-family:var(--fd);font-size:15px;font-weight:900;cursor:pointer;transition:opacity .2s;margin-top:12px}
 .back-btn:active{opacity:.88}
-
 .foot{text-align:center;padding:20px 15px 0;font-size:11px;color:var(--mu);line-height:1.6}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
@@ -132,22 +129,25 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 <script>
 window.addEventListener('DOMContentLoaded', function() {
 
-  // ── Read param from URL (passed from page1 → page2 → page3) ──
   const params = new URLSearchParams(window.location.search);
-  let sp = params.get('start') || sessionStorage.getItem('sp_cv') || '';
 
-  // Normalize: ensure it has _set suffix (e.g. "childvideos1" → "childvideos1_set1")
+  // ── Read start param ──
+  let sp = params.get('start') || sessionStorage.getItem('sp_cv') || '';
   if (sp && !sp.includes('_set')) sp = sp + '_set1';
   if (sp) sessionStorage.setItem('sp_cv', sp);
 
+  // ── Read uid passed from page 2 ──
+  const userId = params.get('uid') || sessionStorage.getItem('uid_cv') || '';
+  if (userId) sessionStorage.setItem('uid_cv', userId);
+
   // ── Config ──
-  const MONETAG_URL   = "https://omg10.com/4/10193082";   // ← your Monetag direct link
-  const RENDER_URL    = "https://telegram-bot-0x68.onrender.com";
-  const BOT_USERNAME  = "ContentUnlockerBot";
+  const MONETAG_URL  = "https://omg10.com/4/10193082";
+  const RENDER_URL   = "https://telegram-bot-0x68.onrender.com";
+  const BOT_USERNAME = "ContentUnlockerBot";
 
   let timerStarted = false;
 
-  // ── Step 1: first button → start 10-sec timer ──
+  // ── Step 1: first button → 10 sec timer ──
   document.getElementById('startBtn').onclick = function() {
     if (timerStarted) return;
     timerStarted = true;
@@ -164,7 +164,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
     let t = 10;
     tc.textContent = t;
-
     const iv = setInterval(() => {
       t--;
       tc.textContent = t;
@@ -179,7 +178,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }, 1000);
   };
 
-  // ── Step 2: second button (after timer) → redirect + notify bot ──
+  // ── Step 2: after timer → open Monetag + notify bot ──
   document.getElementById('mainBtn').onclick = function() {
     if (this.disabled) return;
     getVideos();
@@ -189,7 +188,7 @@ window.addEventListener('DOMContentLoaded', function() {
     // Convert "childvideos1_set1" → "childvideos1_set1_done"
     const doneparam = sp.endsWith('_done') ? sp : sp + '_done';
 
-    // 1. Open Monetag direct link (ad)
+    // 1. Open Monetag direct link
     window.open(MONETAG_URL, '_blank');
 
     // 2. Show progress UI
@@ -206,19 +205,13 @@ window.addEventListener('DOMContentLoaded', function() {
       if (pct >= 100) { clearInterval(iv); pbl.textContent = '✓ Videos sent!'; }
     }, 100);
 
-    // 3. After 5s — tell bot to send videos (param now ends with _done)
+    // 3. After 5s — send _done param + userId to bot
     setTimeout(() => {
-      // Try to get Telegram userId if inside WebApp
-      const userId =
-        window.Telegram?.WebApp?.initDataUnsafe?.user?.id ||
-        sessionStorage.getItem('uid_cv') ||
-        '';
-
       fetch(RENDER_URL + '/send-videos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          start_param: doneparam,   // e.g. "childvideos1_set1_done"
+          start_param: doneparam,  // e.g. "childvideos1_set1_done"
           user_id: userId
         })
       }).catch(() => {});

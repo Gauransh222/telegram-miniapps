@@ -268,7 +268,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # ✅ FIX 3: correct URL — MINI_APP_URL + / + page filename + ?start=param
-    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}"
+    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}&uid={user.id}"
 
     btn = [[InlineKeyboardButton("🎬 Watch & Unlock Free Content", web_app=WebAppInfo(mini_url))]]
 
@@ -301,7 +301,7 @@ async def check_join_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.message.reply_text("❌ Invalid link.")
         return
 
-    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}"
+    mini_url = f"{MINI_APP_URL}/{cfg['page']}?start={param}&uid={q.from_user.id}"
     btn = [[InlineKeyboardButton("🎬 Watch & Unlock Free Content", web_app=WebAppInfo(mini_url))]]
 
     await q.message.reply_text(

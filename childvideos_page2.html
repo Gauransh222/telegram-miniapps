@@ -152,9 +152,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
   const BASE = window.location.origin;
   const params = new URLSearchParams(window.location.search);
+
+  // ── Read & save start param ──
   let sp = params.get('start') || sessionStorage.getItem('sp_cv') || '';
   if (sp && !sp.includes('_set')) sp = sp + '_set1';
   if (sp) sessionStorage.setItem('sp_cv', sp);
+
+  // ── Read & save uid ──
+  const uid = params.get('uid') || sessionStorage.getItem('uid_cv') || '';
+  if (uid) sessionStorage.setItem('uid_cv', uid);
 
   const BLOCK_ID = "29001";
   let AdCtrl = null;
@@ -222,9 +228,9 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    // Step 3: Always go to page 3
+    // Step 3: Go to page 3 — pass both sp and uid
     document.getElementById('adOv').classList.remove('show');
-    window.location.href = BASE + '/childvideos_page3.html?start=' + encodeURIComponent(sp);
+    window.location.href = BASE + '/childvideos_page3.html?start=' + encodeURIComponent(sp) + '&uid=' + encodeURIComponent(uid);
   };
 
 });
