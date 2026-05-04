@@ -5,20 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>DesiStream — Bollywood & Desi Content</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Hind:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<!-- Monetag Push/Onclick Tag -->
+<script>
+try {
+  (function(s){s.dataset.zone='10395704';s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+} catch(e) {}
+</script>
+
+<!-- Monetag Video Rewarded — fallback when Adsgram has no ads -->
+<script src='//libtl.com/sdk.js' data-zone='10363873' data-sdk='show_10363873'></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#120a00;--sf:#1e1200;--sf2:#2a1a00;--ac:#ff9500;--ac2:#ff6b00;--pu:#9b59b6;--gr:#27ae60;--tx:#fff5e6;--mu:#a08060;--bd:#3a2810;--fd:'Baloo 2',sans-serif;--fb:'Hind',sans-serif}
+:root{
+  --bg:#120a00;--sf:#1e1200;--sf2:#2a1a00;
+  --ac:#ff9500;--ac2:#ff6b00;--pu:#9b59b6;--gr:#27ae60;
+  --tx:#fff5e6;--mu:#a08060;--bd:#3a2810;
+  --fd:'Baloo 2',sans-serif;--fb:'Hind',sans-serif
+}
 html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at top right,rgba(255,149,0,.08) 0,transparent 60%),radial-gradient(ellipse at bottom left,rgba(155,89,182,.06) 0,transparent 60%);pointer-events:none;z-index:0}
 .b1,.b2{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
 .b1{width:280px;height:280px;background:rgba(255,149,0,.12);top:-60px;right:-50px}
 .b2{width:220px;height:220px;background:rgba(155,89,182,.1);bottom:60px;left:-60px}
-.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:60px}
 
-.ad{width:100%;min-height:60px;background:var(--sf);display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--bd)}
-.ad+.ad{border-top:1px solid var(--bd)}
-.ad-lbl{position:absolute;top:3px;right:7px;font-size:9px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase}
-.ad-ph{font-size:11px;color:var(--mu);padding:16px 0}
+/* Ad overlay (spinner) */
+.ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(6px)}
+.ad-ov.show{display:flex}
+.spin{width:40px;height:40px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}
+.ad-ov-txt{font-size:13px;color:var(--mu)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:60px}
 
 nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
 .logo{font-family:var(--fd);font-weight:800;font-size:22px;color:var(--ac)}
@@ -76,7 +95,7 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 .sn.o{color:var(--ac)}.sn.p{color:var(--pu)}.sn.g{color:var(--gr)}
 .sl{font-size:10px;color:var(--mu);margin-top:3px;font-weight:500}
 
-/* Timer */
+/* Timer & CTA */
 .cta-box{padding:0 13px}
 .timer{background:var(--sf);border:1.5px solid var(--bd);border-radius:13px;padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:11px}
 .t-cnt{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--ac);min-width:32px;text-align:right}
@@ -99,11 +118,11 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 </head>
 <body>
 <div class="b1"></div><div class="b2"></div>
+
+<!-- Ad overlay spinner -->
+<div class="ad-ov" id="adOv"><div class="spin"></div><div class="ad-ov-txt">Loading content…</div></div>
+
 <div class="w">
-  <!-- TOP AD 1 -->
-  <div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 1 --><div class="ad-ph">Advertisement</div></div>
-  <!-- TOP AD 2 -->
-  <div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 2 --><div class="ad-ph">Advertisement</div></div>
 
   <nav>
     <div class="logo">Desi<span>Stream</span></div>
@@ -154,33 +173,53 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
       <div class="t-body"><div class="t-h">Preparing your content</div><div class="t-s">Loading desi video collection…</div></div>
       <div class="t-cnt" id="tc">--</div>
     </div>
-    <button class="btn" id="startBtn" onclick="startTimer()">⚡ Tap to Prepare Content</button>
+    <button class="btn" id="startBtn">⚡ Tap to Prepare Content</button>
     <button class="btn" id="btn" style="display:none" disabled>⏳ Please wait…</button>
     <div class="btn-s" id="bs">Tap the button above to begin</div>
   </div>
 
-  <!-- BOTTOM AD 1 -->
-  <div class="ad" style="margin-top:20px;border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 3 --><div class="ad-ph">Advertisement</div></div>
-  <!-- BOTTOM AD 2 -->
-  <div class="ad" style="border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 4 --><div class="ad-ph">Advertisement</div></div>
-
   <div class="foot">DesiStream · Premium desi content · Updated daily</div>
 </div>
+
+<!-- Adsgram SDK -->
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
+
+  const BASE = window.location.origin;
   const params = new URLSearchParams(window.location.search);
-  const sp = params.get('start') || '';
-  if(sp) sessionStorage.setItem('sp_in', sp);
+
+  // ── Read & save start param ──
+  let sp = params.get('start') || sessionStorage.getItem('sp_iv') || '';
+  if (sp && !sp.includes('_set')) sp = sp + '_set1';
+  if (sp) sessionStorage.setItem('sp_iv', sp);
+
+  // ── Read & save uid from bot ──
+  const uid = params.get('uid') || sessionStorage.getItem('uid_iv') || '';
+  if (uid) sessionStorage.setItem('uid_iv', uid);
+
+  // ── Adsgram Block ID — FILL IN YOUR BLOCK ID BELOW ──
+  const BLOCK_ID = "29388";
+  let AdCtrl = null;
   let timerStarted = false;
 
-  function startTimer() {
-    if(timerStarted) return;
+  async function initAd() {
+    try {
+      if (!window.Adsgram) return;
+      AdCtrl = await window.Adsgram.init({ blockId: BLOCK_ID });
+    } catch(e) { console.log('Adsgram init:', e); }
+  }
+  if (sp) initAd();
+
+  // ── Start button: show timer ──
+  document.getElementById('startBtn').onclick = function() {
+    if (timerStarted) return;
     timerStarted = true;
-    document.getElementById('startBtn').style.display = 'none';
+    this.style.display = 'none';
     document.getElementById('timerBox').style.display = 'flex';
     const btn = document.getElementById('btn');
-    const bs = document.getElementById('bs');
-    const tc = document.getElementById('tc');
+    const tc  = document.getElementById('tc');
+    const bs  = document.getElementById('bs');
     btn.style.display = 'block';
     btn.disabled = true;
     bs.textContent = 'Preparing your content…';
@@ -188,7 +227,7 @@ window.addEventListener('DOMContentLoaded', function() {
     tc.textContent = t;
     const iv = setInterval(() => {
       t--; tc.textContent = t;
-      if(t <= 0) {
+      if (t <= 0) {
         clearInterval(iv);
         tc.textContent = '✓';
         btn.disabled = false;
@@ -197,14 +236,42 @@ window.addEventListener('DOMContentLoaded', function() {
         bs.textContent = 'Tap to continue — free access';
       }
     }, 1000);
-  }
-
-  document.getElementById('startBtn').onclick = startTimer;
-
-  document.getElementById('btn').onclick = function() {
-    if(!this.disabled)
-      window.location.href = 'indian_page2.html?start=' + encodeURIComponent(sp);
   };
+
+  // ── Watch button: show ad then redirect ──
+  document.getElementById('btn').onclick = async function() {
+    if (this.disabled) return;
+    this.disabled = true;
+    document.getElementById('adOv').classList.add('show');
+
+    let adPlayed = false;
+
+    // Step 1: Try Adsgram
+    try {
+      if (AdCtrl) {
+        await AdCtrl.show();
+        adPlayed = true;
+      }
+    } catch(e) {
+      console.log('Adsgram no ads:', e);
+    }
+
+    // Step 2: Adsgram had no ads — try Monetag video rewarded
+    if (!adPlayed) {
+      try {
+        if (typeof show_10363873 === 'function') {
+          await show_10363873();
+        }
+      } catch(e) {
+        console.log('Monetag video error:', e);
+      }
+    }
+
+    // Step 3: Go to page 2
+    document.getElementById('adOv').classList.remove('show');
+    window.location.href = BASE + '/indian_page2.html?start=' + encodeURIComponent(sp) + '&uid=' + encodeURIComponent(uid);
+  };
+
 });
 </script>
 </body>
