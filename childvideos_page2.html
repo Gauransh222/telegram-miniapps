@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>ToonVault — More Shows</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+<!-- Monetag In-Page Push Ad (top) -->
+<script src="https://oppiz.com/npphs.js?pr=18" data-zone="10363865" data-sdk="npphs_10363865"></script>
+
+<!-- Monetag Video Rewarded — fallback when Adsgram has no ads -->
+<script src='//libtl.com/sdk.js' data-zone='10363864' data-sdk='show_10363864'></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -20,11 +27,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .b1{width:230px;height:230px;background:rgba(0,255,204,.08);top:20%;right:-50px}
 .b2{width:200px;height:200px;background:rgba(0,212,255,.07);top:5px;left:-50px}
 .w{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-bottom:60px}
-
-.ad{width:100%;min-height:60px;background:var(--sf);display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--bd)}
-.ad+.ad{border-top:1px solid var(--bd)}
-.ad-lbl{position:absolute;top:3px;right:7px;font-size:9px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase}
-.ad-ph{font-size:11px;color:var(--mu);padding:16px 0}
 
 .ad-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(6px)}
 .ad-ov.show{display:flex}
@@ -97,8 +99,6 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
 <div class="b1"></div><div class="b2"></div>
 <div class="ad-ov" id="ov"><div class="spin"></div><div class="ad-ov-txt">Loading your content…</div></div>
 <div class="w">
-  <!-- TOP AD 1 --><div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 1 --><div class="ad-ph">Advertisement</div></div>
-  <!-- TOP AD 2 --><div class="ad"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 2 --><div class="ad-ph">Advertisement</div></div>
 
   <nav>
     <div class="logo"><span class="t">Toon</span><span class="v">Vault</span></div>
@@ -143,38 +143,40 @@ nav{padding:13px 15px;display:flex;align-items:center;justify-content:space-betw
     <div class="btn-s" id="bs">One more step to unlock your videos</div>
   </div>
 
-  <!-- BOTTOM AD 1 --><div class="ad" style="margin-top:20px;border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 3 --><div class="ad-ph">Advertisement</div></div>
-  <!-- BOTTOM AD 2 --><div class="ad" style="border-top:1px solid var(--bd);border-bottom:none"><div class="ad-lbl">ad</div><!-- MONETAG ZONE 4 --><div class="ad-ph">Advertisement</div></div>
-
   <div class="foot">ToonVault · Free kids entertainment · Safe &amp; fun · Updated daily</div>
 </div>
+
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
   const params = new URLSearchParams(window.location.search);
-  // ✅ sp comes from URL (Adsgram redirect carries it) OR sessionStorage fallback
-  const sp = params.get('start') || sessionStorage.getItem('sp_cv') || '';
+
+  // ✅ Retrieve sp from URL or sessionStorage (set by page 1 with _set1 suffix)
+  let sp = params.get('start') || sessionStorage.getItem('sp_cv') || '';
   const userId = params.get('userId') || sessionStorage.getItem('uid_cv') || '';
-  if(sp) sessionStorage.setItem('sp_cv', sp);
-  if(userId) sessionStorage.setItem('uid_cv', userId);
+
+  // ✅ Ensure _set1 suffix is preserved (page 1 already adds it, just store as-is)
+  if (sp) sessionStorage.setItem('sp_cv', sp);
+  if (userId) sessionStorage.setItem('uid_cv', userId);
 
   const BLOCK_ID = "29002";
   const BASE = "https://telegram-miniapps-liart.vercel.app";
   let AdCtrl, timerStarted = false;
 
-  // ✅ Init Adsgram with dynamic rewardedUrl to page3 carrying sp and userId
+  // ✅ Init Adsgram with rewardedUrl pointing to page 3 with all params
   async function initAd() {
     try {
+      if (!window.Adsgram) return;
       AdCtrl = await window.Adsgram.init({
         blockId: BLOCK_ID,
         rewardedUrl: BASE + '/childvideos_page3.html?start=' + encodeURIComponent(sp) + '&userId=[userId]'
       });
     } catch(e) { console.log('Adsgram init:', e); }
   }
-  if(sp) initAd();
+  initAd(); // Always init, regardless of sp
 
   document.getElementById('startBtn').onclick = function() {
-    if(timerStarted) return;
+    if (timerStarted) return;
     timerStarted = true;
     this.style.display = 'none';
     document.getElementById('timerBox').style.display = 'flex';
@@ -187,7 +189,7 @@ window.addEventListener('DOMContentLoaded', function() {
     let t = 10; tc.textContent = t;
     const iv = setInterval(() => {
       t--; tc.textContent = t;
-      if(t <= 0) {
+      if (t <= 0) {
         clearInterval(iv);
         tc.textContent = '✓';
         btn.disabled = false;
@@ -199,20 +201,38 @@ window.addEventListener('DOMContentLoaded', function() {
   };
 
   document.getElementById('btn').onclick = async function() {
-    if(this.disabled) return;
+    if (this.disabled) return;
     this.disabled = true;
     document.getElementById('ov').classList.add('show');
+
+    let adPlayed = false;
+
+    // Step 1: Try Adsgram video
     try {
-      if(AdCtrl) {
+      if (AdCtrl) {
         await AdCtrl.show();
-        // ✅ Adsgram redirects to page3 via rewardedUrl automatically
-      } else {
-        throw new Error('AdCtrl not ready');
+        adPlayed = true;
+        // Adsgram will redirect to page3 via rewardedUrl automatically
+        return;
       }
     } catch(e) {
-      document.getElementById('ov').classList.remove('show');
-      window.location.href = BASE + '/childvideos_page3.html?start=' + encodeURIComponent(sp) + '&userId=' + encodeURIComponent(userId);
+      console.log('Adsgram no ads:', e);
     }
+
+    // Step 2: Adsgram failed — try Monetag video rewarded fallback
+    if (!adPlayed) {
+      try {
+        if (typeof show_10363864 === 'function') {
+          await show_10363864();
+        }
+      } catch(e) {
+        console.log('Monetag video error:', e);
+      }
+    }
+
+    // Step 3: ALWAYS navigate to page 3 with params
+    document.getElementById('ov').classList.remove('show');
+    window.location.href = BASE + '/childvideos_page3.html?start=' + encodeURIComponent(sp) + '&userId=' + encodeURIComponent(userId);
   };
 });
 </script>
